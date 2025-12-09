@@ -1,0 +1,176 @@
+[
+  {
+    "type": 1,
+    "name": "files",
+    "name_localizations": {
+      "pt-BR": "arquivos"
+    },
+    "description": "Get the latest Xbox Live Stealth files",
+    "description_localizations": {
+      "pt-BR": "Obtenha os arquivos mais recentes"
+    },
+    "integration_types": [ 0, 1 ],
+    "contexts": [ 0, 1, 2 ]
+  },
+  {
+    "type": 1,
+    "name": "status",
+    "name_localizations": {
+      "pt-BR": "status"
+    },
+    "description": "View stats, system info, and more",
+    "description_localizations": {
+      "pt-BR": "Veja estatísticas, informações do sistema e muito mais."
+    },
+    "integration_types": [ 0, 1 ],
+    "contexts": [ 0, 1, 2 ]
+  },
+  {
+    "type": 1,
+    "name": "quote",
+    "name_localizations": {
+      "pt-BR": "citar"
+    },
+    "description": "Get a random SkidPaste quote",
+    "description_localizations": {
+      "pt-BR": "Obtenha uma cotação aleatória"
+    },
+    "integration_types": [ 0, 1 ],
+    "contexts": [ 0, 1, 2 ]
+  },
+  {
+    "type": 1,
+    "name": "token",
+    "name_localizations": {
+      "pt-BR": "token"
+    },
+    "description": "Check or redeem a token",
+    "description_localizations": {
+      "pt-BR": "Verifique ou resgate um token"
+    },
+    "integration_types": [ 0, 1 ],
+    "contexts": [ 0, 1, 2 ],
+    "options": [
+      {
+        "name": "check",
+        "type": 1,
+        "description": "Check a token",
+        "description_localizations": {
+          "pt-BR": "Verifique ou resgate um token"
+        },
+        "options": [
+          {
+            "name": "token",
+            "type": 3,
+            "description": "Enter the 20-character token",
+            "description_localizations": {
+              "pt-BR": "Insira o token de 20 caracteres"
+            },
+            "min_length": 20,
+            "max_length": 20,
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "redeem",
+        "type": 1,
+        "description": "Redeem a token",
+        "description_localizations": {
+          "pt-BR": "Verifique ou resgate um token"
+        },
+        "options": [
+          {
+            "name": "token",
+            "type": 3,
+            "description": "Enter the 20-character token",
+            "description_localizations": {
+              "pt-BR": "Insira o token de 20 caracteres"
+            },
+            "min_length": 20,
+            "max_length": 20,
+            "required": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": 1,
+    "name": "profile",
+    "name_localizations": {
+      "pt-BR": "perfil"
+    },
+    "description": "View your profile card",
+    "description_localizations": {
+      "pt-BR": "Ver seu cartão de perfil"
+    },
+    "integration_types": [ 0, 1 ],
+    "contexts": [ 0, 1, 2 ]
+  },
+  {
+    "type": 1,
+    "name": "link",
+    "name_localizations": {
+      "pt-BR": "conectar"
+    },
+    "description": "Connect or update your linked console",
+    "description_localizations": {
+      "pt-BR": "Conecte ou atualize seu console vinculado"
+    },
+    "integration_types": [ 0, 1 ],
+    "contexts": [ 0, 1, 2 ]
+  },
+  {
+    "type": 1,
+    "name": "settings",
+    "name_localizations": {
+      "pt-BR": "configurações"
+    },
+    "description": "View and update your bot & server settings",
+    "description_localizations": {
+      "pt-BR": "Veja e atualize as configurações do seu bot e servidor"
+    },
+    "integration_types": [ 0, 1 ],
+    "contexts": [ 0, 1, 2 ]
+  },
+  {
+    "type": 1,
+    "name": "game",
+    "name_localizations": {
+      "pt-BR": "jogo"
+    },
+    "description": "Fetch data from the Xbox Live marketplace",
+    "description_localizations": {
+      "pt-BR": "Obtenha dados do Xbox Live Marketplace."
+    },
+    "integration_types": [ 0, 1 ],
+    "contexts": [ 0, 1, 2 ],
+    "options": [
+      {
+        "name": "lookup",
+        "name_localizations": {
+          "pt-BR": "pesquisa"
+        },
+        "type": 1,
+        "description": "Lookup information for an Xbox Live title",
+        "description_localizations": {
+          "pt-BR": "Pesquise informações sobre um título do Xbox Live"
+        },
+        "options": [
+          {
+            "name": "title_id",
+            "type": 3,
+            "description": "Enter the Title ID here",
+            "description_localizations": {
+              "pt-BR": "Insira o ID do título aqui"
+            },
+            "min_length": 8,
+            "max_length": 8,
+            "required": true
+          }
+        ]
+      }
+    ]
+  }
+]

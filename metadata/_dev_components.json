@@ -1,0 +1,57 @@
+{
+  "type": 17,
+  "accent_color": 16777214,
+  "components": [
+
+    {
+      "type": 10,
+      "content": "-# **SUPER SECRET INTERGALACTIC CHOCOLATE STARFISH DEVELOPMENT PANEL!**"
+    },
+
+    {
+      "type": 14,
+      "divider": true,
+      "spacing": 1
+    },
+
+    {
+      "type": 1,
+      "id": 1,
+      "components": [
+        {
+          "type": 3,
+          "id": 2,
+          "custom_id": "btn_adventure_open_door",
+          "placeholder": "Test Component Registration",
+          "options": [
+            {
+              "label": "btn_gift_token",
+              "value": "btn_gift_token"
+            },
+            {
+              "label": "btn_change_name",
+              "value": "btn_change_name"
+            },
+            {
+              "label": "btn_adventure_open_door",
+              "value": "btn_adventure_open_door"
+            },
+            {
+              "label": "btn_acknowledgements",
+              "value": "btn_acknowledgements"
+            },
+            {
+              "label": "btn_remove_console",
+              "value": "btn_remove_console"
+            },
+            {
+              "label": "btn_settings",
+              "value": "btn_settings"
+            }
+          ]
+        }
+      ]
+    }
+    
+  ]
+}
