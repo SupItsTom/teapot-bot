@@ -37,7 +37,7 @@ export default async function (interaction, env, ctx) {
               type: MessageComponentTypes.SECTION,
               components: [
                 MessageComponent.Text(`Teapot Live`, 3),
-                MessageComponent.Text(`<:Online:1280239167363616942> ${numberWithCommas(stats.statArr.online)} Online <:Offline:1280239175290851390> ${numberWithCommas(stats.statArr.total)} Users`, -1),
+                MessageComponent.Text(`<:Online:1447729534559326279> ${numberWithCommas(stats.statArr.online)} Online <:Offline:1447729532558643210> ${numberWithCommas(stats.statArr.total)} Users`, -1),
               ],
               accessory: {
                 type: MessageComponentTypes.BUTTON,
