@@ -6,8 +6,8 @@ import { ButtonStyle, ComponentType } from "discord-api-types/v10";
 import { Xbox } from "../utils/xbox";
 
 /**
- * # Default Command
- * Default Command
+ * # Game Command
+ * Fetch Xbox 360 Marketplace content by Title ID
  */
 export default async function (interaction, env, ctx) {
 
@@ -106,12 +106,4 @@ export default async function (interaction, env, ctx) {
       ]
     }
   });
-}
-
-/*****************************************************************************
-**          							   Local Functions				                        **
-*****************************************************************************/
-
-function _localFunction() {
-
 }

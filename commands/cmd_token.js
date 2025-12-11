@@ -25,10 +25,6 @@ export default async function (interaction, env, ctx) {
   }
 }
 
-/*****************************************************************************
-**          							   Local Functions				                        **
-*****************************************************************************/
-
 async function _checkToken(request, tokenInput) {
   const _tokenData = await postTeapotRequest(request.env, { action: "checktoken", token: `${tokenInput}` });
 

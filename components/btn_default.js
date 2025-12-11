@@ -15,18 +15,28 @@ export default async function (interaction, env, ctx) {
       flags: InteractionResponseFlags.IS_COMPONENTS_V2,
 
       components: [
-        MessageComponent.Text(`**BUTTON DEFAULT**`, -1),
-        MessageComponent.Seperator(),
-        MessageComponent.Text(`This is a default button baseplate.`, 3),
+        {
+          type: MessageComponentTypes.CONTAINER,
+          components: [
+
+            MessageComponent.Text(`**DEFAULT COMMAND**`, -1),
+
+            {
+              type: MessageComponentTypes.SECTION,
+              components: [
+                MessageComponent.Text(`Default Title`, 3),
+                MessageComponent.Text(`Default Description.`, -1),
+              ],
+              accessory: {
+                type: MessageComponentTypes.BUTTON,
+                label: "Default Button",
+                style: ButtonStyle.Link,
+                url: "https://supitstom.net",
+              }
+            },
+          ]
+        }
       ]
     }
   });
-}
-
-/*****************************************************************************
-**          							   Local Functions				                        **
-*****************************************************************************/
-
-function _localFunction(env) {
-  
 }

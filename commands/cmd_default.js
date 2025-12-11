@@ -5,12 +5,10 @@ import { postTeapotRequest } from "../utils/teapot";
 import { ButtonStyle } from "discord-api-types/v10";
 
 /**
- * # Defer Testing Command
- * Test deferred responses and loading states
+ * # Default Command
+ * Generic skeleton command
  */
 export default async function (interaction, env, ctx) {
-
-  const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
 
   return new JsonResponse({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -22,17 +20,17 @@ export default async function (interaction, env, ctx) {
           type: MessageComponentTypes.CONTAINER,
           components: [
 
-            MessageComponent.Text(`**DEFERRED COMMAND**`, -1),
+            MessageComponent.Text(`**DEFAULT COMMAND**`, -1),
 
             {
               type: MessageComponentTypes.SECTION,
               components: [
-                MessageComponent.Text(`Demo Title`, 3),
-                MessageComponent.Text(`Some useful information.`, -1),
+                MessageComponent.Text(`Default Title`, 3),
+                MessageComponent.Text(`Default Description.`, -1),
               ],
               accessory: {
                 type: MessageComponentTypes.BUTTON,
-                label: "Call to action",
+                label: "Default Button",
                 style: ButtonStyle.Link,
                 url: "https://supitstom.net",
               }
@@ -42,12 +40,4 @@ export default async function (interaction, env, ctx) {
       ]
     }
   });
-}
-
-/*****************************************************************************
-**          							   Local Functions				                        **
-*****************************************************************************/
-
-function _localFunction() {
-
 }

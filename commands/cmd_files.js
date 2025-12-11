@@ -21,11 +21,6 @@ export default async function (interaction, env, ctx) {
 
             MessageComponent.Text(`**SERVER FILES**`, -1),
 
-            /*****************************************************************************
-            **							  Standard Download								                          **
-            *****************************************************************************/
-
-
             {
               type: MessageComponentTypes.SECTION,
               components: [
@@ -39,30 +34,6 @@ export default async function (interaction, env, ctx) {
                 url: "https://xboxstealth.net/files",
               }
             },
-
-            /*****************************************************************************
-            **							  Beta Download	      							                        **
-            *****************************************************************************/
-
-            // MessageComponent.Seperator(),
-
-            // {
-            //   type: MessageComponentTypes.SECTION,
-            //   components: [
-            //     MessageComponent.Text(`Beta Edition`, 3),
-            //     MessageComponent.Text(`Early access to the original Xbox Live Stealth.`, -1),
-            //   ],
-            //   accessory: {
-            //     type: MessageComponentTypes.BUTTON,
-            //     label: "Download",
-            //     style: ButtonStyle.Link,
-            //     url: "https://xboxstealth.net/beta",
-            //   }
-            // },
-
-            /*****************************************************************************
-            **							  Core/Lite Download								                        **
-            *****************************************************************************/
 
             MessageComponent.Seperator(),
 
@@ -79,10 +50,6 @@ export default async function (interaction, env, ctx) {
                 url: "https://xboxstealth.net/lite",
               }
             },
-
-            /*****************************************************************************
-            **							  XDK Download    								                          **
-            *****************************************************************************/
 
             MessageComponent.Seperator(),
 
@@ -108,12 +75,4 @@ export default async function (interaction, env, ctx) {
       ]
     }
   });
-}
-
-/*****************************************************************************
-**          							   Local Functions				                        **
-*****************************************************************************/
-
-function _localFunction(env) {
-  // This function can be used for any local logic if needed in the future.
 }

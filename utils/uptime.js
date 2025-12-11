@@ -25,7 +25,7 @@ export class BetterStack {
 
     
 
-    return request;//unsafe? removed whatwas here before coz undefined...
+    return request;
 
   }
 }

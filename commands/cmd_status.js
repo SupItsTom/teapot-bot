@@ -5,7 +5,7 @@ import { ButtonStyle } from "discord-api-types/v10";
 import { postTeapotRequest } from "../utils/teapot.js";
 import { BetterStack } from "../utils/uptime.js";
 
-import buildnotes from "../metadata/strings/buildnotes.js";
+import buildnotes from "../metadata/strings/changelog.js";
 import { Flairs } from "../utils/flairs.js";
 
 /**
@@ -78,39 +78,24 @@ export default async function (interaction, env, ctx) {
 
             MessageComponent.Text(`Application Version`, 3),
             MessageComponent.Text(`Version ID: \`${env.CF_VERSION_METADATA.id === '' ? 'Development Server' : env.CF_VERSION_METADATA.id}\`\nUpdated: <t:${Math.floor(new Date(env.CF_VERSION_METADATA.timestamp) / 1000)}:F> - <t:${Math.floor(new Date(env.CF_VERSION_METADATA.timestamp) / 1000)}:R>\n`, ATXHeader.None),
-
-            // MessageComponent.Seperator(),
-
-            // MessageComponent.Text(`**BUILD NOTES**`, -1),
-            
-            // {
-            //   type: MessageComponentTypes.ACTION_ROW,
-            //   components: [
-            //     {
-            //       type: MessageComponentTypes.BUTTON,
-            //       style: ButtonStyle.Secondary,
-            //       label: 'Acknowledgements',
-            //       custom_id: 'btn_acknowledgements',
-            //     },
-            //     {
-            //       type: MessageComponentTypes.BUTTON,
-            //       style: ButtonStyle.Secondary,
-            //       label: 'Build Notes',
-            //       custom_id: 'btn_build_notes',
-            //       disabled: true
-            //     },
-            //   ]
-            // },
           ],
+        },
+
+        {
+          type: MessageComponentTypes.ACTION_ROW,
+          components: [
+            {
+              type: MessageComponentTypes.BUTTON,
+              style: ButtonStyle.Secondary,
+              label: 'Whats New?',
+              custom_id: 'btn_whats_new',
+            },
+          ]
         },
       ]
     }
   });
 }
-
-/*****************************************************************************
-**          							   Local Functions				                        **
-*****************************************************************************/
 
 function _getButtonForStatus(monitor) {
 

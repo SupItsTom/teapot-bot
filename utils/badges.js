@@ -23,9 +23,6 @@ export class Badges {
   }
 
   async GetAll() {
-    // Temporarily disable badges until they are re-added.
-    //return `\`ⓘ Badges temporarily disabled\``;
-
     const bot_user = await new TeapotBot(this.env).GetUser(this.discord_user);
     const teapot = await postTeapotRequest(this.env, { action: "overview", email: `${bot_user.email}` });
 

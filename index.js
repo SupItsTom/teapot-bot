@@ -5,8 +5,6 @@ import { dropRequest } from "./utils/client";
 import webhooks from "./endpoints/webhooks";
 import link from "./endpoints/link";
 
-// index.js
-
 const router = AutoRouter();
 
 router.get("/", (request, env, ctx) => Response.redirect(`https://discord.com/oauth2/authorize?client_id=${env.DISCORD_APPLICATION.CLIENT_ID}`));

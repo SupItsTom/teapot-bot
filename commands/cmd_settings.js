@@ -265,19 +265,3 @@ export default async function (interaction, env, ctx) {
     }
   });
 }
-
-/*****************************************************************************
-**          							   Exported Functions				                      **
-*****************************************************************************/
-
-export function cmd_profile_chooser(interaction, env, ctx) {
-  return new ClientError("Feature Unavailable", "This feature is not yet implemented.").ShowUser();
-}
-
-/*****************************************************************************
-**          							   Local Functions				                        **
-*****************************************************************************/
-
-function _localFunction() {
-
-}
