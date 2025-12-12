@@ -1,11 +1,11 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
 import { JsonResponse } from "../utils/client";
 import { MessageComponent } from "../utils/discord";
-import { postTeapotRequest } from "../utils/teapot";
+import changelog from "../metadata/strings/changelog";
 
 /**
- * # Quote Command
- * Retrieve a random quote from SkidPaste
+ * # Changelog Command
+ * Display the latest changes in the bot
  */
 export default async function (interaction, env, ctx) {
 

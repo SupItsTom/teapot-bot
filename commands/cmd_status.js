@@ -5,9 +5,6 @@ import { ButtonStyle } from "discord-api-types/v10";
 import { postTeapotRequest } from "../utils/teapot.js";
 import { BetterStack } from "../utils/uptime.js";
 
-import buildnotes from "../metadata/strings/changelog.js";
-import { Flairs } from "../utils/flairs.js";
-
 /**
  * # Stats Command
  * Get bot and server statistics

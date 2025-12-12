@@ -18,7 +18,7 @@ MessageComponent.Text(
 MessageComponent.Seperator(),
 
 MessageComponent.Text(`**🛠 GENERAL**`, -1),
-    MessageComponent.Text(
+MessageComponent.Text(
 `- Resolved a bug that caused </profile:1447703332700295214> to time-out before responding.
 - Badges have been re-enabled for all users.
 - Removed detailed game information displaying on the Profile Card.
