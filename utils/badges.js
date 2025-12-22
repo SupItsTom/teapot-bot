@@ -53,7 +53,7 @@ export class Badges {
     const isLifetime = teapot.user.timeleft.lifetime == true ? `${ProfileCardBadges.BADGE_LIFETIME} ` : ``;
     const isPremium = teapot.user.timeleft.premium == true ? `${ProfileCardBadges.BADGE_PREMIUM} ` : ``;
 
-    const isClanMember = this.discord_user.primary_guild.identity_enabled && this.discord_user.primary_guild.identity_guild_id == "1004811174044508271" ? `${ProfileCardBadges.BADGE_CLAN_MEMBER} ` : ``;
+    //const isClanMember = this.discord_user.primary_guild.identity_enabled && this.discord_user.primary_guild.identity_guild_id == "1004811174044508271" ? `${ProfileCardBadges.BADGE_CLAN_MEMBER} ` : ``;
     
 
     // return the formatted string of badges the user has:
@@ -66,6 +66,6 @@ export class Badges {
 
     if( this.env.DISCORD_APPLICATION.CLIENT_ID !== "1447678850493321288") return `\`ⓘ Badges disabled due to env\``;
 
-    return `${isSystem}${isDeveloper}${isTester}${isSuperiority}${isMoxah}${isSlut}${isBricker}${isClanMember}${isLifetime}${isPremium}`;
+    return `${isSystem}${isDeveloper}${isTester}${isSuperiority}${isMoxah}${isSlut}${isBricker}${isLifetime}${isPremium}`;
   }
 }
