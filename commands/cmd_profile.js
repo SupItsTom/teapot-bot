@@ -31,7 +31,7 @@ export default async function (interaction, env, ctx) {
   // --------------------------------
 
   let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
-  let _profile_badges = await new Badges(env, discord_user).GetAll()
+  let _profile_badges = await new Badges(env, discord_user).GetAll();
 
 
 

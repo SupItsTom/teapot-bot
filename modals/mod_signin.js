@@ -4,6 +4,8 @@ import { ButtonStyle, TextInputStyle } from "discord-api-types/v10";
 import { getDiscordUser, getDisplayName, MessageComponent, ClientError } from "../utils/discord";
 import { postTeapotRequest, TeapotBot } from "../utils/teapot";
 import cmd_profile from "../commands/cmd_profile";
+import { Badges } from "../utils/badges";
+import { Xbox } from "../utils/xbox";
 
 /**
  * # Sign In Modal
@@ -84,7 +86,45 @@ export async function mod_signin_submitted(interaction, env, ctx){
   // IF _privacy is 'private' then set is_private to true, else DEFAULT
   await new TeapotBot(env).RegisterUser(discord_user, _email, { is_private: _privacy === 'private' ? true : false });
 
-  return cmd_profile(interaction, env, ctx);
+  const teapot = await postTeapotRequest(env, { action: "overview", email: `${_email}` });
+  const bot_user = await new TeapotBot(env).GetUser(discord_user);
+  let _profile_badges = await new Badges(env, discord_user).GetAll();
+  let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
+
+  return new JsonResponse({
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+    data: {
+      flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
+
+      components: [
+        {
+          type: MessageComponentTypes.CONTAINER,
+          components: [
+
+            
+            MessageComponent.Text(`A Great Success!`, 3),
+            MessageComponent.Text(`Your account has been successfully linked to Discord.`, -1),
+
+            MessageComponent.Seperator(true, 2),
+
+            {
+              type: MessageComponentTypes.SECTION,
+              components: [
+                MessageComponent.Text(`<@${discord_user.id}> \`${teapot.user.name}\``, 2),
+                MessageComponent.Text(`${teapot.user.online == true ? `**${teapot.user.title.name === "None Set" ? "Currently Online" : `Playing ${_game_info.name}`}**` : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${teapot.user.title.name === "None Set" ? "" : ` on ${_game_info.name}`}**`}`, -1),
+              ],
+              accessory: {
+                type: MessageComponentTypes.BUTTON,
+                label: "My Profile",
+                style: ButtonStyle.Primary,
+                custom_id: "btn_profile",
+              }
+            },
+          ]
+        }
+      ]
+    }
+  });
 }
 
 /*****************************************************************************
