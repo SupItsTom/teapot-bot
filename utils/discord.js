@@ -47,9 +47,6 @@ export class MessageComponent {
    */
   static Seperator(divider = true, spacing = 1) {
 
-    // christmas style seperator
-    return MessageComponent.Media('https://web-assets.cdn.supitstom.net/bot-teapot_christmas_seperator.png');
-
     return {
       type: MessageComponentTypes.SEPARATOR,
       divider: divider,
