@@ -120,6 +120,7 @@ function _handleMessageComponent(interaction, env, ctx) {
     case "btn_whats_new": return btn_whats_new(interaction, env, ctx);
     case "btn_remove_console": return btn_remove_console(interaction, env, ctx);
     case "btn_settings": return cmd_settings(interaction, env, ctx);
+    case "btn_profile": return cmd_profile(interaction, env, ctx);
 
     // TODO:
     case "sel_change_privacy": return sel_change_privacy(interaction, env, ctx);
