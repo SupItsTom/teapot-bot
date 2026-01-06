@@ -46,7 +46,7 @@ export default async function (interaction, env, ctx) {
           //accent_color: Number(`0x${teapot.user.colors.dashbg.substring(2)}`),
           components: [
 
-            MessageComponent.Text(`**PROFILE** ${new Flairs(env).GetFlair("BETA")}`, -1),
+            MessageComponent.Text(`**PROFILE**`, -1),
 
             ...(
               _game_info &&
@@ -71,31 +71,20 @@ export default async function (interaction, env, ctx) {
               accessory: {
                 type: ComponentType.Thumbnail,
                 media: {
-                  url: `${getAvatarUrl(discord_user)}`
+                  url: `http://avatar.xboxlive.com/avatar/${encodeURIComponent(teapot.user.gamertag.trim())}/avatarpic-l.png`
                 }
               }
             },
 
             MessageComponent.Seperator(),
 
-            {
-              type: ComponentType.Section,
-              components: [
-                MessageComponent.Text(`
+            MessageComponent.Text(`
 Gamertag: **${teapot.user.gamertag == null ? "Not Signed In" : `${teapot.user.gamertag}`}**
 CPU Key: **${bot_user.is_private ? `\`${teapot.user.cpukey}\`` : `\`••••${teapot.user.cpukey.slice(-4)}\``}**
 Challenges: **${numberWithCommas(teapot.user.xke_count)}**
 Registered: **<t:${teapot.user.date_registered_unix}:d>**
 Linked: **<t:${Math.floor(new Date(bot_user.timestamp) / 1000)}:d>**
 `),
-              ],
-              accessory: {
-                type: ComponentType.Thumbnail,
-                media: {
-                  url: `http://avatar.xboxlive.com/avatar/${encodeURIComponent(teapot.user.gamertag.trim())}/avatarpic-l.png`
-                }
-              }
-            },
 
             MessageComponent.Seperator(),
 
