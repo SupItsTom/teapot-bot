@@ -39,26 +39,11 @@ export default async function (interaction, env, ctx) {
 
         {
           type: 18,
-          label: 'Profile Privacy',
-          description: 'Would you like to allow others to view your profile?',
+          label: 'Public Profile',
+          description: 'Allow others to see your profile in commands you run?',
           component: {
-            type: MessageComponentTypes.STRING_SELECT,
+            type: 23,
             custom_id: 'mod_signin:privacy',
-            placeholder: 'Public',
-            required: true,
-            options: [
-              {
-                label: 'Public',
-                value: 'public',
-                description: 'Allow others to view your profile.',
-                default: true,
-              },
-              {
-                label: 'Private',
-                value: 'private',
-                description: 'Hide your profile from others.',
-              }
-            ]
           }
         },
 
@@ -74,17 +59,16 @@ export default async function (interaction, env, ctx) {
 export async function mod_signin_submitted(interaction, env, ctx){
 
   const _email = interaction.data.components[0].component.value;
-  const _privacy = interaction.data.components[1].component.values[0];
+  const _privacy = interaction.data.components[1].component.value;
   const discord_user = await getDiscordUser(interaction);
 
   let _teapot_are_we_registered = await postTeapotRequest(env, { action: "link", email: _email })
 
-  console.info(`[modals:mod_signin] '${discord_user.id}(${_email})' is attempting to create ${_privacy} profile, Teapot Account?: ${_teapot_are_we_registered.status}`);
+  console.info(`[modals:mod_signin] '${discord_user.id}(${_email})' is attempting to create [Public? ${_privacy}] profile, Teapot Account?: ${_teapot_are_we_registered.status}`);
 
   if(!_teapot_are_we_registered.status) return new ClientError(`Console not found`, `The email address you provided is not registered with Teapot. Check it and try again.`).ShowUser();
 
-  // IF _privacy is 'private' then set is_private to true, else DEFAULT
-  await new TeapotBot(env).RegisterUser(discord_user, _email, { is_private: _privacy === 'private' ? true : false });
+  await new TeapotBot(env).RegisterUser(discord_user, _email, { is_private: _privacy ? false : true });
 
   const teapot = await postTeapotRequest(env, { action: "overview", email: `${_email}` });
   const bot_user = await new TeapotBot(env).GetUser(discord_user);
