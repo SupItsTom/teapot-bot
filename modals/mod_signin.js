@@ -44,6 +44,7 @@ export default async function (interaction, env, ctx) {
           component: {
             type: 23,
             custom_id: 'mod_signin:privacy',
+            default: true
           }
         },
 
