@@ -16,7 +16,6 @@ import btn_remove_console from "../components/btn_remove_console";
 import cmd_game from "../commands/cmd_game";
 import { TeapotBot } from "../utils/teapot";
 import { TA_MadMan } from "../textadventure/ta_madman";
-import btn_whats_new from "../components/btn_whats_new";
 
 
 //-----------------------------------------------------------------------------
@@ -117,7 +116,6 @@ function _handleMessageComponent(interaction, env, ctx) {
     case "btn_gift_token": return mod_gift(interaction, env, ctx);
     case "btn_change_name": return mod_set_username(interaction, env, ctx);
     case "btn_adventure_open_door": return stupidTextAdventureEndGame(interaction, env, ctx);
-    case "btn_whats_new": return btn_whats_new(interaction, env, ctx);
     case "btn_remove_console": return btn_remove_console(interaction, env, ctx);
     case "btn_settings": return cmd_settings(interaction, env, ctx);
     case "btn_profile": return cmd_profile(interaction, env, ctx);
