@@ -24,8 +24,8 @@ export default async function (interaction, env, ctx) {
             {
               type: MessageComponentTypes.SECTION,
               components: [
-                MessageComponent.Text(`Standard & Premium Edition`, 3),
-                MessageComponent.Text(`The authentic XBLS experience.`, -1),
+                MessageComponent.Text(`Standard Edition`, 3),
+                MessageComponent.Text(`For RGH, JTAG & BadUpdate consoles.`, -1),
               ],
               accessory: {
                 type: MessageComponentTypes.BUTTON,
@@ -41,7 +41,7 @@ export default async function (interaction, env, ctx) {
               type: MessageComponentTypes.SECTION,
               components: [
                 MessageComponent.Text(`Lite Edition`, 3),
-                MessageComponent.Text(`Stripped down version of standard, and free.`, -1),
+                MessageComponent.Text(`A free alternative to the standard edition.`, -1),
               ],
               accessory: {
                 type: MessageComponentTypes.BUTTON,
@@ -57,7 +57,7 @@ export default async function (interaction, env, ctx) {
               type: MessageComponentTypes.SECTION,
               components: [
                 MessageComponent.Text(`XDK Edition`, 3),
-                MessageComponent.Text(`Standard, but for Dev Kits.`, -1),
+                MessageComponent.Text(`For Development Kits only.`, -1),
               ],
               accessory: {
                 type: MessageComponentTypes.BUTTON,
