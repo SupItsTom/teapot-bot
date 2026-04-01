@@ -20,6 +20,7 @@ export default async function (interaction, env, ctx) {
         {
           type: MessageComponentTypes.CONTAINER,
           components: [
+            MessageComponent.Text(`**QUOTE**`, -1),
             MessageComponent.Text(`${quote.name}`, 2),
             MessageComponent.Text(`Posted to **SkidPaste** <t:${quote.date}:R>${quote.name !== "Unnamed" ? ` by **${quote.name}**` : ""}.`, -1),
             MessageComponent.Seperator(),
