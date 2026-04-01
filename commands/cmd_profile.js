@@ -43,7 +43,7 @@ export default async function (interaction, env, ctx) {
       components: [
         {
           type: MessageComponentTypes.CONTAINER,
-          //accent_color: Number(`0x${teapot.user.colors.dashbg.substring(2)}`),
+          accent_color: Number(`0x${teapot.user.colors.dashbg.substring(2)}`),// remove alpha from hex color (substr(2))
           components: [
 
             MessageComponent.Text(`**PROFILE**`, -1),
