@@ -5,7 +5,7 @@ export class Xbox {
 
     let _title_id = title_id.replace('0x', '');
 
-    const host_url = `https://dbox.tools/api/title_ids/${_title_id}`;
+    const host_url = `https://dbox.tools/api/title_ids/${_title_id.toUpperCase()}`;
 
 
     const options = {
@@ -20,7 +20,7 @@ export class Xbox {
       .then(response => { console.log(response); return response; })
       .catch(err => console.error(err));
 
-    console.log(`Xbox:GetGameFromTitleID: ${_title_id} => ${request}`);
+    console.log(`Xbox:GetGameFromTitleID: ${_title_id.toUpperCase()} => ${request}`);
 
     if (request?.detail == "Not Found") return undefined;
     else return request;
