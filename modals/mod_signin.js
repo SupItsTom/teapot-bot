@@ -1,6 +1,6 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
 import { JsonResponse, numberWithCommas } from "../utils/client";
-import { ButtonStyle, TextInputStyle } from "discord-api-types/v10";
+import { ButtonStyle, ComponentType, TextInputStyle } from "discord-api-types/v10";
 import { getDiscordUser, getDisplayName, MessageComponent, ClientError } from "../utils/discord";
 import { postTeapotRequest, TeapotBot } from "../utils/teapot";
 import cmd_profile from "../commands/cmd_profile";
@@ -21,7 +21,7 @@ export default async function (interaction, env, ctx) {
       title: `Login to Xbox Live Stealth`,
       custom_id: 'mod_signin',
       components: [
-        
+
         {
           type: 18,
           label: 'Teapot Email',
@@ -57,7 +57,7 @@ export default async function (interaction, env, ctx) {
   });
 }
 
-export async function mod_signin_submitted(interaction, env, ctx){
+export async function mod_signin_submitted(interaction, env, ctx) {
 
   const _email = interaction.data.components[0].component.value;
   const _privacy = interaction.data.components[1].component.value;
@@ -67,7 +67,7 @@ export async function mod_signin_submitted(interaction, env, ctx){
 
   console.info(`[modals:mod_signin] '${discord_user.id}(${_email})' is attempting to create [Public? ${_privacy}] profile, Teapot Account?: ${_teapot_are_we_registered.status}`);
 
-  if(!_teapot_are_we_registered.status) return new ClientError(`Console not found`, `The email address you provided is not registered with Teapot. Check it and try again.`).ShowUser();
+  if (!_teapot_are_we_registered.status) return new ClientError(`Console not found`, `The email address you provided is not registered with Teapot. Check it and try again.`).ShowUser();
 
   await new TeapotBot(env).RegisterUser(discord_user, _email, { is_private: _privacy ? false : true });
 
@@ -85,37 +85,48 @@ export async function mod_signin_submitted(interaction, env, ctx){
         {
           type: MessageComponentTypes.CONTAINER,
           components: [
-
-            
-            MessageComponent.Text(`A Great Success!`, 3),
+            MessageComponent.Text(`Connection Successful!`, 2),
             MessageComponent.Text(`Your account has been successfully linked to Discord.`, -1),
-
-            MessageComponent.Seperator(true, 2),
-
+          ]
+        },
+        {
+          type: MessageComponentTypes.CONTAINER,
+          accent_color: Number(`0x${teapot.user.colors.dashbg.substring(2)}`),
+          components: [
             {
-              type: MessageComponentTypes.SECTION,
+              type: ComponentType.Section,
               components: [
                 MessageComponent.Text(`<@${discord_user.id}> \`${teapot.user.name}\``, 2),
                 MessageComponent.Text(`${teapot.user.online == true ? `**${teapot.user.title.name === "None Set" ? "Currently Online" : `Playing ${_game_info.name}`}**` : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${teapot.user.title.name === "None Set" ? "" : ` on ${_game_info.name}`}**`}`, -1),
+                ...(_profile_badges ? [MessageComponent.Text(`${_profile_badges}`, 1)] : []),
               ],
               accessory: {
-                type: MessageComponentTypes.BUTTON,
-                label: "My Profile",
-                style: ButtonStyle.Primary,
-                custom_id: "btn_profile",
+                type: ComponentType.Thumbnail,
+                media: {
+                  url: `http://avatar.xboxlive.com/avatar/${encodeURIComponent(teapot.user.gamertag.trim())}/avatarpic-l.png`
+                }
               }
             },
           ]
-        }
+        },
+        {
+          type: MessageComponentTypes.ACTION_ROW,
+          components: [
+            {
+              type: MessageComponentTypes.BUTTON,
+              style: ButtonStyle.Primary,
+              label: 'View Profile',
+              custom_id: 'btn_profile',
+            },
+            {
+              type: MessageComponentTypes.BUTTON,
+              style: ButtonStyle.Secondary,
+              label: 'Settings',
+              custom_id: 'btn_settings',
+            },
+          ]
+        },
       ]
     }
   });
-}
-
-/*****************************************************************************
-**          							   Local Functions				                        **
-*****************************************************************************/
-
-function _localFunction(env) {
-  // This function can be used for any local logic if needed in the future.
 }
