@@ -107,8 +107,6 @@ ${teapot_kv.time == "" ? "" : `KV Life: **\`${teapot_kv.time}`}\`**
             },
           ]
         },
-
-
       ]
     }
   });

@@ -33,6 +33,7 @@ export default async function (interaction, env, ctx) {
             type: MessageComponentTypes.CONTAINER,
             components: [
   
+               MessageComponent.Text(`**GAME INFO**`, -1),
               //...(_game_info ? [MessageComponent.Media(`http://download.xbox.com/content/images/${_game_info.bing_id}/banner.png`, { description: `Game banner for '${_game_info.name}'` })] : []),
   
               MessageComponent.Text(`${_game_info.name}`, 2),
@@ -60,6 +61,7 @@ export default async function (interaction, env, ctx) {
           type: MessageComponentTypes.CONTAINER,
           components: [
 
+            MessageComponent.Text(`**GAME INFO**`, -1),
             ...(_game_info ? [MessageComponent.Media(`http://download.xbox.com/content/images/${_game_info.bing_id}/banner.png`, { description: `Game banner for '${_game_info.name}'` })] : []),
 
             {
