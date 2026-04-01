@@ -46,7 +46,7 @@ export default async function (interaction, env, ctx) {
               type: ComponentType.Section,
               components: [
                 MessageComponent.Text(`<@${discord_user.id}> \`${teapot.user.name}\``, 2),
-                MessageComponent.Text(`${teapot.user.online == true ? `**${teapot.user.title.name === "None Set" ? "Currently Online" : `Playing ${teapot.user.title.name}`}**` : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${teapot.user.title.name === "None Set" ? "" : ` on ${teapot.user.title.name}`}**`}`, -1),
+                MessageComponent.Text(`${teapot.user.online == true ? `**${teapot.user.title.name === "None Set" ? "Currently Online" : `Playing ${_game_info.name}`}**` : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${teapot.user.title.name === "None Set" ? "" : ` on ${_game_info.name}`}**`}`, -1),
                 ...(_profile_badges ? [MessageComponent.Text(`${_profile_badges}`, 1)] : []),
               ],
               accessory: {
