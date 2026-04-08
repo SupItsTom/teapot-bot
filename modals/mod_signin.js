@@ -91,7 +91,6 @@ export async function mod_signin_submitted(interaction, env, ctx) {
         },
         {
           type: MessageComponentTypes.CONTAINER,
-          accent_color: Number(`0x${teapot.user.colors.dashbg.substring(2)}`),
           components: [
             {
               type: ComponentType.Section,
