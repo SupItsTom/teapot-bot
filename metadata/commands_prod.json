@@ -137,7 +137,13 @@
   {
     "type": 1,
     "name": "store",
+    "name_localizations": {
+      "pt-BR": "loja"
+    },
     "description": "Fetch data from the Xbox Live marketplace",
+    "description_localizations": {
+      "pt-BR": "Pesquise na Loja Xbox 360"
+    },
     "integration_types": [ 0, 1 ],
     "contexts": [ 0, 1, 2 ],
     "options": [
@@ -145,6 +151,9 @@
         "name": "game",
         "type": 3,
         "description": "Search for a game or app",
+        "description_localizations": {
+          "pt-BR": "Procure um jogo ou aplicativo"
+        },
         "autocomplete": true,
         "required": true
       }
