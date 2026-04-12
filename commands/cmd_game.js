@@ -11,7 +11,9 @@ import { Xbox } from "../utils/xbox";
  */
 export default async function (interaction, env, ctx) {
 
-  let titleId = interaction.data.options[0].options[0].value;
+  // return new ClientError("DEBUG", `${JSON.stringify(interaction)}.`).ShowUser();
+
+  let titleId = interaction.data.options[0].value;
 
   let _game_info = await new Xbox().GetGameFromTitleID(titleId);
 

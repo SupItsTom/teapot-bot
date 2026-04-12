@@ -136,40 +136,17 @@
   },
   {
     "type": 1,
-    "name": "game",
-    "name_localizations": {
-      "pt-BR": "jogo"
-    },
+    "name": "store",
     "description": "Fetch data from the Xbox Live marketplace",
-    "description_localizations": {
-      "pt-BR": "Obtenha dados do Xbox Live Marketplace."
-    },
     "integration_types": [ 0, 1 ],
     "contexts": [ 0, 1, 2 ],
     "options": [
       {
-        "name": "lookup",
-        "name_localizations": {
-          "pt-BR": "pesquisa"
-        },
-        "type": 1,
-        "description": "Lookup information for an Xbox Live title",
-        "description_localizations": {
-          "pt-BR": "Pesquise informações sobre um título do Xbox Live"
-        },
-        "options": [
-          {
-            "name": "title_id",
-            "type": 3,
-            "description": "Enter the Title ID here",
-            "description_localizations": {
-              "pt-BR": "Insira o ID do título aqui"
-            },
-            "min_length": 8,
-            "max_length": 8,
-            "required": true
-          }
-        ]
+        "name": "game",
+        "type": 3,
+        "description": "Search for a game or app",
+        "autocomplete": true,
+        "required": true
       }
     ]
   }

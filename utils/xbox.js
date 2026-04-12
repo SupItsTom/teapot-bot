@@ -96,4 +96,26 @@ export class Xbox {
     else return request;
 
   }
+
+  async GetGameTitleIdFromSearch(search_query) {
+
+    let search_limit = 25
+    const host_url = `https://dbox.tools/api/title_ids/?name=${search_query}&system=XBOX360&limit=${search_limit}&offset=0`;
+
+
+    const options = {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'DiscordBot (https://supitstom.net, 1.0)'
+      }
+    };
+
+    const request = await fetch(`${host_url}`, options)
+      .then(response => response.json())
+      .then(response => { console.log(response); return response; })
+      .catch(err => console.error(err));
+
+    return request;
+
+  }
 }

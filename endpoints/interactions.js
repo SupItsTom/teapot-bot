@@ -16,6 +16,7 @@ import btn_remove_console from "../components/btn_remove_console";
 import cmd_game from "../commands/cmd_game";
 import { TeapotBot } from "../utils/teapot";
 import { TA_MadMan } from "../textadventure/ta_madman";
+import { AutoComplete } from "../utils/autocomplete";
 
 
 //-----------------------------------------------------------------------------
@@ -38,7 +39,9 @@ export default async function (request, env, ctx) {
     }
     case InteractionType.MESSAGE_COMPONENT: {
       return _handleMessageComponent(interaction, env, ctx);
-      
+    }
+    case InteractionType.APPLICATION_COMMAND_AUTOCOMPLETE: {
+      return _handleApplicationCommandAutoComplete(interaction, env, ctx)
     }
     default: {
       return dropRequest(400);
@@ -73,7 +76,27 @@ function _handleApplicationCommand(interaction, env, ctx) {
     case "settings": return cmd_settings(interaction, env, ctx);
     case "game": return cmd_game(interaction, env, ctx);
 
+    case "store": return cmd_game(interaction, env, ctx);
+
     default: return new ClientError("Command Not Found", `The command \`${cmdName}\` is not available in this build.`).ShowUser();
+  }
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Handles command autocomplete results
+//-----------------------------------------------------------------------------
+function _handleApplicationCommandAutoComplete(interaction, env, ctx) {
+  console.log(`[endpoints:interactions][_handleApplicationCommandAutoComplete]: ${interaction.data.name}`)
+
+  console.log(JSON.stringify(interaction));
+
+  const cmdName = interaction.data.name.toLowerCase();
+
+  switch (cmdName) {
+
+    case "store": return new AutoComplete(interaction).StoreGetTitleIds(interaction.data.options[0].value);
+
+    default: return new ClientError("AutoComplete Error", `AutoComplete failed to populate fields for \`${cmdName}\`.`).ShowUser();
   }
 }
 
