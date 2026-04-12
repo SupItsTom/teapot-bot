@@ -12,6 +12,7 @@ export class AutoComplete {
     async StoreGetTitleIds(search_query) {
         let _product_search = await new Xbox().GetGameTitleIdFromSearch(search_query)
 
+        // TODO: score duplicate entries based on data they contain, until there is only one left
         return new JsonResponse({
             type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
             data: {

@@ -44,9 +44,16 @@ export default async function (interaction, env, ctx) {
               }
             },
 
-            MessageComponent.Seperator(),
 
-            MessageComponent.Text(`**SYSTEM STATUS**`, -1),
+
+          ],
+        },
+
+        {
+          type: MessageComponentTypes.CONTAINER,
+          components: [
+
+            MessageComponent.Text(`**SERVICE STATUS**`, -1),
 
             ..._uptime_info.data.map((monitor) => {
 
@@ -61,9 +68,6 @@ export default async function (interaction, env, ctx) {
                 accessory: _getButtonForStatus(monitor),
               };
             }),
-
-
-
           ],
         },
 
