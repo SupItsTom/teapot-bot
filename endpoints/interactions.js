@@ -88,8 +88,6 @@ function _handleApplicationCommand(interaction, env, ctx) {
 function _handleApplicationCommandAutoComplete(interaction, env, ctx) {
   console.log(`[endpoints:interactions][_handleApplicationCommandAutoComplete]: ${interaction.data.name}`)
 
-  console.log(JSON.stringify(interaction));
-
   const cmdName = interaction.data.name.toLowerCase();
 
   switch (cmdName) {

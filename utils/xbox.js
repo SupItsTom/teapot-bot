@@ -102,7 +102,6 @@ export class Xbox {
     let search_limit = 25
     const host_url = `https://dbox.tools/api/title_ids/?name=${search_query}&system=XBOX360&limit=${search_limit}&offset=0`;
 
-
     const options = {
       method: 'GET',
       headers: {

@@ -12,7 +12,6 @@ export class AutoComplete {
     async StoreGetTitleIds(search_query) {
         let _product_search = await new Xbox().GetGameTitleIdFromSearch(search_query)
 
-
         return new JsonResponse({
             type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
             data: {

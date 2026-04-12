@@ -11,16 +11,12 @@ import { Xbox } from "../utils/xbox";
  */
 export default async function (interaction, env, ctx) {
 
-  // return new ClientError("DEBUG", `${JSON.stringify(interaction)}.`).ShowUser();
-
   let titleId = interaction.data.options[0].value;
 
   let _game_info = await new Xbox().GetGameFromTitleID(titleId);
 
- 
-
   if (!_game_info) {
-    return new ClientError("Title Not Found", `Title found but unable to get it's Product ID for more details.`).ShowUser();
+    return new ClientError("Title Not Found", `Unable to resolve this title's game information.`).ShowUser();
   }
   
   if (!_game_info.bing_id) {
@@ -35,15 +31,13 @@ export default async function (interaction, env, ctx) {
             type: MessageComponentTypes.CONTAINER,
             components: [
   
-               MessageComponent.Text(`**GAME INFO**`, -1),
-              //...(_game_info ? [MessageComponent.Media(`http://download.xbox.com/content/images/${_game_info.bing_id}/banner.png`, { description: `Game banner for '${_game_info.name}'` })] : []),
+              MessageComponent.Text(`**GAME INFO**`, -1),
   
               MessageComponent.Text(`${_game_info.name}`, 2),
               MessageComponent.Text(`-# Title ID: **${_game_info.title_id}**`),
   
             ]
           },
-          MessageComponent.Text(`Unable to gather detailed information for this title due to it being unlisted.`, -1),
         ]
       }
     });
@@ -58,7 +52,6 @@ export default async function (interaction, env, ctx) {
       flags: InteractionResponseFlags.IS_COMPONENTS_V2,
 
       components: [
-        //MessageComponent.Text(`This command uses data provided by **[SerialStation](https://serialstation.com/)**.`, -1),
         {
           type: MessageComponentTypes.CONTAINER,
           components: [
