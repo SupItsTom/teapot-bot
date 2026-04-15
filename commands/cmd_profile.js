@@ -70,7 +70,7 @@ export default async function (interaction, env, ctx) {
               accessory: {
                 type: ComponentType.Thumbnail,
                 media: {
-                  url: `http://avatar.xboxlive.com/avatar/${encodeURIComponent(teapot.user.gamertag.trim())}/avatarpic-l.png`
+                  url: `${getAvatarUrl(discord_user)}`
                 }
               }
             },
