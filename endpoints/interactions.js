@@ -8,7 +8,7 @@ import cmd_token from "../commands/cmd_token";
 import mod_signin, { mod_signin_submitted } from "../modals/mod_signin";
 import mod_gift from "../modals/mod_gift";
 import mod_kv, { mod_kv_submitted } from "../modals/mod_kv";
-import { ClientError } from "../utils/discord";
+import { ClientError, getDiscordUser } from "../utils/discord";
 import cmd_settings from "../commands/cmd_settings";
 import mod_set_username, { mod_set_username_submitted } from "../modals/mod_set_username";
 import sel_change_privacy from "../components/sel_change_privacy";
@@ -17,6 +17,7 @@ import cmd_game from "../commands/cmd_game";
 import { TeapotBot } from "../utils/teapot";
 import { TA_MadMan } from "../textadventure/ta_madman";
 import { AutoComplete } from "../utils/autocomplete";
+import { global_blacklist } from "../metadata/blacklist.json";
 
 
 //-----------------------------------------------------------------------------
@@ -26,6 +27,13 @@ export default async function (request, env, ctx) {
   const interaction = await request.json();
 
   console.info(`[endpoints:interactions] incoming request for ${InteractionType[interaction.type]}`);
+
+  const discord_user = await getDiscordUser(interaction);
+  
+  // blacklist code....
+  if(global_blacklist.includes(discord_user.id)) {
+    return new ClientError(`Unauthorized`, "This Discord User is not authorized to use this application.").ShowUser()
+  }
 
   switch (interaction.type) {
     case InteractionType.PING: {
