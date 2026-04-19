@@ -217,44 +217,29 @@ export default async function (interaction, env, ctx) {
               components: [
                 {
                   type: MessageComponentTypes.BUTTON,
-                  style: ButtonStyle.Secondary,
+                  style: ButtonStyle.Primary,
                   label: 'Change Username',
                   custom_id: 'btn_change_name',
                 },
-                {
-                  type: MessageComponentTypes.BUTTON,
-                  style: ButtonStyle.Secondary,
-                  label: 'Redeem Token',
-                  custom_id: 'btn_redeem_token',
-                  disabled: true
-                },
-                {
-                  type: MessageComponentTypes.BUTTON,
-                  style: ButtonStyle.Secondary,
-                  label: 'Customize',
-                  custom_id: 'btn_customize',
-                  disabled: true
-                },
-              ]
-            },
-            {
-              type: MessageComponentTypes.ACTION_ROW,
-              components: [
                 {
                   type: MessageComponentTypes.BUTTON,
                   style: ButtonStyle.Link,
                   label: 'Refresh Role Metadata',
                   url: `https://discord.com/oauth2/authorize?client_id=${env.DISCORD_APPLICATION.CLIENT_ID}&response_type=code&redirect_uri=${encodeURI(env.DISCORD_APPLICATION.REDIRECT_URI)}&scope=role_connections.write+identify`,
                 },
-                {
-                  type: MessageComponentTypes.BUTTON,
-                  style: ButtonStyle.Secondary,
-                  label: 'View Entitlements',
-                  custom_id: 'btn_view_entitlements',
-                  disabled: true
-                },
               ]
             },
+            // {
+            //   type: MessageComponentTypes.ACTION_ROW,
+            //   components: [
+            //     {
+            //       type: MessageComponentTypes.BUTTON,
+            //       style: ButtonStyle.Link,
+            //       label: 'Refresh Role Metadata',
+            //       url: `https://discord.com/oauth2/authorize?client_id=${env.DISCORD_APPLICATION.CLIENT_ID}&response_type=code&redirect_uri=${encodeURI(env.DISCORD_APPLICATION.REDIRECT_URI)}&scope=role_connections.write+identify`,
+            //     },
+            //   ]
+            // },
           ]
 
         },
