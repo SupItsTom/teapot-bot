@@ -1,23 +1,26 @@
 import { InteractionResponseType, InteractionType } from "discord-interactions";
 import { dropRequest, JsonResponse } from "../utils/client";
+import { ClientError, getDiscordUser } from "../utils/discord";
+import { TeapotBot } from "../utils/teapot";
+import { AutoComplete } from "../utils/autocomplete";
+import { TA_MadMan } from "../textadventure/ta_madman";
+import { global_blacklist } from "../metadata/blacklist.json";
+
 import cmd_files from "../commands/cmd_files";
 import cmd_quote from "../commands/cmd_quote";
 import cmd_profile from "../commands/cmd_profile";
 import cmd_status from "../commands/cmd_status";
 import cmd_token from "../commands/cmd_token";
+import cmd_settings from "../commands/cmd_settings";
+import cmd_store from "../commands/cmd_store";
 import mod_signin, { mod_signin_submitted } from "../modals/mod_signin";
 import mod_gift from "../modals/mod_gift";
 import mod_kv, { mod_kv_submitted } from "../modals/mod_kv";
-import { ClientError, getDiscordUser } from "../utils/discord";
-import cmd_settings from "../commands/cmd_settings";
 import mod_set_username, { mod_set_username_submitted } from "../modals/mod_set_username";
-import sel_change_privacy from "../components/sel_change_privacy";
+
 import btn_remove_console from "../components/btn_remove_console";
-import cmd_game from "../commands/cmd_game";
-import { TeapotBot } from "../utils/teapot";
-import { TA_MadMan } from "../textadventure/ta_madman";
-import { AutoComplete } from "../utils/autocomplete";
-import { global_blacklist } from "../metadata/blacklist.json";
+
+import sel_change_privacy from "../components/sel_change_privacy";
 
 
 //-----------------------------------------------------------------------------
@@ -29,9 +32,8 @@ export default async function (request, env, ctx) {
   console.info(`[endpoints:interactions] incoming request for ${InteractionType[interaction.type]}`);
 
   const discord_user = await getDiscordUser(interaction);
-  
-  // blacklist code....
-  if(global_blacklist.includes(discord_user.id)) {
+
+  if (global_blacklist.includes(discord_user.id)) {
     return new ClientError(`Unauthorized`, "This Discord User is not authorized to use this application.").ShowUser()
   }
 
@@ -68,8 +70,7 @@ function _handlePingRequest() {
 // Purpose: Main handler for directing commands to right place
 //-----------------------------------------------------------------------------
 function _handleApplicationCommand(interaction, env, ctx) {
-
-  if(new TeapotBot(env).AreMonitorsOnline() === false)
+  if (new TeapotBot(env).AreMonitorsOnline() === false)
     return new ClientError('Teapot Outage', 'Bot unavailable due to a temporary Teapot Live API outage.').ShowUser();
 
   const cmdName = interaction.data.name.toLowerCase();
@@ -82,9 +83,7 @@ function _handleApplicationCommand(interaction, env, ctx) {
     case "profile": return cmd_profile(interaction, env, ctx);
     case "link": return mod_signin(interaction, env, ctx);
     case "settings": return cmd_settings(interaction, env, ctx);
-    case "game": return cmd_game(interaction, env, ctx);
-
-    case "store": return cmd_game(interaction, env, ctx);
+    case "store": return cmd_store(interaction, env, ctx);
 
     default: return new ClientError("Command Not Found", `The command \`${cmdName}\` is not available in this build.`).ShowUser();
   }
@@ -99,7 +98,6 @@ function _handleApplicationCommandAutoComplete(interaction, env, ctx) {
   const cmdName = interaction.data.name.toLowerCase();
 
   switch (cmdName) {
-
     case "store": return new AutoComplete(interaction).StoreGetTitleIds(interaction.data.options[0].value);
 
     default: return new ClientError("AutoComplete Error", `AutoComplete failed to populate fields for \`${cmdName}\`.`).ShowUser();
@@ -136,7 +134,7 @@ function _handleMessageComponent(interaction, env, ctx) {
   const taCmdParts = comName.split(':');
   const taParent = taCmdParts.shift();
 
-  switch(taParent){
+  switch (taParent) {
     case "madman": return new TA_MadMan(interaction, env, ctx).HandleAction(taCmdParts);
   }
   // ------------------------------
@@ -149,10 +147,9 @@ function _handleMessageComponent(interaction, env, ctx) {
     case "btn_settings": return cmd_settings(interaction, env, ctx);
     case "btn_profile": return cmd_profile(interaction, env, ctx);
 
-    // TODO:
     case "sel_change_privacy": return sel_change_privacy(interaction, env, ctx);
-    case "sel_update_cheats": return sel_settings_update(interaction, env, ctx);
-    case "sel_update_notifications": return sel_settings_update(interaction, env, ctx);
+    case "sel_update_cheats": return sel_settings_update(interaction, env, ctx);//TODO
+    case "sel_update_notifications": return sel_settings_update(interaction, env, ctx);//TODO
 
     default: return new ClientError("Component Not Found", `The component \`${comName}\` is not available in this build.`).ShowUser();
   }
