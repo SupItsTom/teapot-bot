@@ -6,8 +6,8 @@ import { ButtonStyle, ComponentType } from "discord-api-types/v10";
 import { Xbox } from "../utils/xbox";
 
 /**
- * # Game Command
- * Fetch Xbox 360 Marketplace content by Title ID
+ * # Store Command
+ * Fetch Xbox 360 Marketplace titles
  */
 export default async function (interaction, env, ctx) {
   let titleId = interaction.data.options[0].value;
@@ -84,7 +84,6 @@ export default async function (interaction, env, ctx) {
                 ),
               ]
               : []),
-
           ]
         },
 
