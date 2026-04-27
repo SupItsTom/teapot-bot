@@ -64,7 +64,7 @@ export class Badges {
     else console.log(`Badges:GetAll: No claimed badges for user ${this.discord_user.id}:`);
     
 
-    if( this.env.DISCORD_APPLICATION.CLIENT_ID !== "1447678850493321288") return `\`ⓘ Badges disabled due to env\``;
+    if( this.env.DISCORD_APPLICATION.CLIENT_ID !== "1447678850493321288") return `\`ⓘ Badges disabled\``;
 
     return `${isSystem}${isDeveloper}${isTester}${isSuperiority}${isMoxah}${isSlut}${isBricker}${isClanMember}${isLifetime}${isPremium}`;
   }
