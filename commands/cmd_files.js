@@ -1,78 +1,98 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
 import { JsonResponse } from "../utils/client";
-import { MessageComponent } from "../utils/discord";
+import { ClientError, MessageComponent } from "../utils/discord";
 import { ButtonStyle } from "discord-api-types/v10";
 
 /**
  * # Files Command
- * Retrieve static download links for Xbox Live Stealth
+ * Returns upto-date files
  */
 export default async function (interaction, env, ctx) {
 
-  return new JsonResponse({
-    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-    data: {
-      flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+  // lazy load those large ass files
+  ctx.waitUntil(_defer_file_upload(interaction, env));
 
-      components: [
-        {
-          type: MessageComponentTypes.CONTAINER,
-          components: [
-
-            MessageComponent.Text(`**SERVER FILES**`, -1),
-
-            {
-              type: MessageComponentTypes.SECTION,
-              components: [
-                MessageComponent.Text(`Standard Edition`, 3),
-                MessageComponent.Text(`For RGH, JTAG & BadUpdate consoles.`, -1),
-              ],
-              accessory: {
-                type: MessageComponentTypes.BUTTON,
-                label: "Download",
-                style: ButtonStyle.Link,
-                url: "https://xboxstealth.net/files",
-              }
-            },
-
-            MessageComponent.Seperator(),
-
-            {
-              type: MessageComponentTypes.SECTION,
-              components: [
-                MessageComponent.Text(`Lite Edition`, 3),
-                MessageComponent.Text(`A free alternative to the standard edition.`, -1),
-              ],
-              accessory: {
-                type: MessageComponentTypes.BUTTON,
-                label: "Download",
-                style: ButtonStyle.Link,
-                url: "https://xboxstealth.net/lite",
-              }
-            },
-
-            MessageComponent.Seperator(),
-
-            {
-              type: MessageComponentTypes.SECTION,
-              components: [
-                MessageComponent.Text(`XDK Edition`, 3),
-                MessageComponent.Text(`For Development Kits only.`, -1),
-              ],
-              accessory: {
-                type: MessageComponentTypes.BUTTON,
-                label: "Download",
-                style: ButtonStyle.Link,
-                url: "https://xboxstealth.net/xdk",
-              }
-            },
-
-            MessageComponent.Seperator(),
-
-            MessageComponent.Text(`Want a complete feature list? [Click here](https://xboxstealth.net#features)`, -1),
-          ],
-        },
-      ]
-    }
+  return new Response(JSON.stringify({
+    type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+  }), {
+    headers: { "Content-Type": "application/json" }
   });
+}
+
+
+async function _defer_file_upload(interaction, env){
+  const [_files_teapot_standard_zip, _files_teapot_core_zip, _files_teapot_xdk_zip] = await Promise.all([
+    fetch("https://xboxstealth.net/DL/XBLStealth.zip"),
+    fetch("https://xboxstealth.net/DL/XBLStealth-Lite.zip"),
+    fetch("https://xboxstealth.net/DL/XBLStealth-XDK.zip")
+  ]);
+
+  // check files are doing ok :D
+  if (!_files_teapot_standard_zip.ok || !_files_teapot_core_zip.ok || !_files_teapot_xdk_zip.ok) {
+    await new ClientError("Network Error", "Failed to retrieve file data.")
+    return;
+  }
+
+  // parse file buffers
+  const [_files_teapot_standard_buffer, _files_teapot_core_buffer, _files_teapot_xdk_buffer] = await Promise.all([
+    _files_teapot_standard_zip.arrayBuffer(),
+    _files_teapot_core_zip.arrayBuffer(),
+    _files_teapot_xdk_zip.arrayBuffer()
+  ]);
+
+  const payload = new FormData();
+
+  payload.append("payload_json", JSON.stringify({
+    type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+    flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+
+    components: [
+      {
+        type: MessageComponentTypes.CONTAINER,
+        components: [
+
+          MessageComponent.Text(`**SERVER FILES**`, -1),
+
+          MessageComponent.Text("Standard Edition", 2),
+          MessageComponent.Text("For RGH, JTAG & BadUpdate consoles.", 0),
+          
+          {
+            type: MessageComponentTypes.FILE,
+            file: { url: "attachment://xbls.zip" }
+          },
+
+          MessageComponent.Seperator(true, 2),
+
+          MessageComponent.Text("Lite Edition", 2),
+          MessageComponent.Text("A free alternative to the standard edition.", 0),
+          {
+            type: MessageComponentTypes.FILE,
+            file: { url: "attachment://xbls-core.zip" }
+          },
+
+          MessageComponent.Seperator(true, 2),
+
+          MessageComponent.Text("XDK Edition", 2),
+          MessageComponent.Text("For Development Kits only.", 0),
+          {
+            type: MessageComponentTypes.FILE,
+            file: { url: "attachment://xbls-devkit.zip" }
+          }
+        ]
+      }
+    ]
+  }));
+
+  payload.append("files[0]", new Blob([_files_teapot_standard_buffer]), "xbls.zip");
+  payload.append("files[1]", new Blob([_files_teapot_core_buffer]), "xbls-core.zip");
+  payload.append("files[2]", new Blob([_files_teapot_xdk_buffer]), "xbls-devkit.zip");
+
+  // follow up
+  await fetch(
+    `https://discord.com/api/v10/webhooks/${env.DISCORD_APPLICATION.CLIENT_ID}/${interaction.token}`,
+    {
+      method: "POST",
+      body: payload
+    }
+  );
 }
