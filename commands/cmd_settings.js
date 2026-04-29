@@ -100,9 +100,11 @@ export default async function (interaction, env, ctx) {
               ]
             },
 
-            MessageComponent.Seperator(false, 1),
+            MessageComponent.Seperator(),
             
-            ...(teapot.user.plugins ? [MessageComponent.Text(`**PLUGIN LIST**`, -1), MessageComponent.Text(`${teapot.user.plugins.Plugin1 ? `1. ${teapot.user.plugins.Plugin1}\n` : ""}${teapot.user.plugins.Plugin2 ? `2. ${teapot.user.plugins.Plugin2}\n` : ""}${teapot.user.plugins.Plugin3 ? `3. ${teapot.user.plugins.Plugin3}\n` : ""}${teapot.user.plugins.Plugin4 ? `4. ${teapot.user.plugins.Plugin4}\n` : ""}${teapot.user.plugins.Plugin5 ? `5. ${teapot.user.plugins.Plugin5}` : ""}`, ATXHeader.None)] : []),
+            ...(teapot.user.plugins ? [
+              MessageComponent.Text(`**PLUGIN LIST**`, -1), MessageComponent.Text(`${teapot.user.plugins.Plugin1 ? `1. ${teapot.user.plugins.Plugin1}\n` : ""}${teapot.user.plugins.Plugin2 ? `2. ${teapot.user.plugins.Plugin2}\n` : ""}${teapot.user.plugins.Plugin3 ? `3. ${teapot.user.plugins.Plugin3}\n` : ""}${teapot.user.plugins.Plugin4 ? `4. ${teapot.user.plugins.Plugin4}\n` : ""}${teapot.user.plugins.Plugin5 ? `5. ${teapot.user.plugins.Plugin5}` : ""}`, ATXHeader.None)
+            ] : []),
 
             MessageComponent.Seperator(),
 
