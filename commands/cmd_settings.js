@@ -113,8 +113,8 @@ export default async function (interaction, env, ctx) {
                 {
                   type: MessageComponentTypes.STRING_SELECT,
                   custom_id: 'sel_update_notifications',
-                  placeholder: 'Toggle Notifications',
-                  min_values: 1,
+                  placeholder: 'No Notifications Enabled',
+                  min_values: 0,
                   max_values: 3,
                   required: true,
                   disabled: false,
@@ -150,8 +150,8 @@ export default async function (interaction, env, ctx) {
                 {
                   type: MessageComponentTypes.STRING_SELECT,
                   custom_id: 'sel_update_cheats',
-                  placeholder: 'Toggle Cheats',
-                  min_values: 1,
+                  placeholder: 'No Cheats Enabled',
+                  min_values: 0,
                   max_values: 9,
                   required: true,
                   disabled: false,
