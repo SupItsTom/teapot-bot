@@ -21,6 +21,7 @@ import mod_set_username, { mod_set_username_submitted } from "../modals/mod_set_
 import btn_remove_console from "../components/btn_remove_console";
 
 import sel_change_privacy from "../components/sel_change_privacy";
+import { sel_update_engines, sel_update_notifications } from "../components/sel_update_settings";
 
 
 //-----------------------------------------------------------------------------
@@ -148,8 +149,8 @@ function _handleMessageComponent(interaction, env, ctx) {
     case "btn_profile": return cmd_profile(interaction, env, ctx);
 
     case "sel_change_privacy": return sel_change_privacy(interaction, env, ctx);
-    case "sel_update_cheats": return sel_settings_update(interaction, env, ctx);//TODO
-    case "sel_update_notifications": return sel_settings_update(interaction, env, ctx);//TODO
+    case "sel_update_cheats": return sel_update_engines(interaction, env, ctx);
+    case "sel_update_notifications": return sel_update_notifications(interaction, env, ctx);
 
     default: return new ClientError("Component Not Found", `The component \`${comName}\` is not available in this build.`).ShowUser();
   }

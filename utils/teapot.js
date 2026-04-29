@@ -14,39 +14,53 @@ import { BetterStack } from "./uptime";
 
 
 export function postTeapotRequest(env, data) {
+  const base = {
+    action: data?.action,
+    ...(data?.email ? { email: data.email } : {}),
+    ...(data?.token ? { token: data.token } : {}),
+    key: env.TEAPOT_API.SECRET,
+  };
+
+  let extra = {};
+
+  if (data?.subaction === "changename") {
+    extra = {
+      subaction: data.subaction,
+      newname: data.newname
+    };
+  }
+
+  if (data?.subaction === "setoptions") {
+    // copy ALL remaining fields except known ones
+    const { action, email, token, subaction, ...options } = data;
+
+    extra = {
+      subaction: data.subaction,
+      ...options
+    };
+  }
+
   const form = new URLSearchParams({
-    "action": data?.action,
-    ...(data?.email ? { "email": data.email } : {}),
-    ...(data?.token ? { "token": data.token } : {}),
-    ...(data?.subaction === "changename" ? { "subaction": data.subaction, "newname": data.newname } : {}),
-    ...(data?.subaction === "setoptions"
-      ? {
-          subaction: data.subaction,
-          [data.option.key]: data.option.value
-        }
-      : {}
-    ),
-    "key": env.TEAPOT_API.SECRET,
+    ...base,
+    ...extra
   });
-  
+
   console.log(`Teapot Request: ${form.toString().replace(`&key=${env.TEAPOT_API.SECRET}`, '')}`);
 
-  const options = {
+  return fetch(env.TEAPOT_API.URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       'User-Agent': 'DiscordBot (https://supitstom.net, 1.0)'
-    }
-  };
-
-  options.body = form;
-
-  const request = fetch(`${env.TEAPOT_API.URL}`, options)
-    .then(response => response.json())
-    .then(response => { console.log(response); return response; })
-    .catch(err => console.error(err));
-
-  return request;
+    },
+    body: form
+  })
+    .then(res => res.json())
+    .then(res => {
+      console.log(res);
+      return res;
+    })
+    .catch(console.error);
 }
 
 export class TeapotBot {

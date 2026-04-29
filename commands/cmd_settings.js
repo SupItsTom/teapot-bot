@@ -106,7 +106,7 @@ export default async function (interaction, env, ctx) {
 
             MessageComponent.Seperator(),
 
-            MessageComponent.Text(`**NOTIFICATION SETTINGS** • CURRENTLY READ ONLY`, -1),
+            MessageComponent.Text(`**NOTIFICATION SETTINGS**`, -1),
             {
               type: ComponentType.ActionRow,
               components: [
@@ -115,21 +115,27 @@ export default async function (interaction, env, ctx) {
                   custom_id: 'sel_update_notifications',
                   placeholder: 'Toggle Notifications',
                   min_values: 1,
-                  max_values: 2,
+                  max_values: 3,
                   required: true,
-                  disabled: true,
+                  disabled: false,
     
                   options: [
                     {
-                      label: 'Logon',
-                      value: '01_motd',
+                      label: 'Welcome Message',
+                      value: 'welcome',
                       description: 'Toggle Server Logon Notifications',
                       default: teapot.user.options.xnotify.welcome
                     },
                     {
-                      label: 'LIVE Connection',
-                      value: '02_xamchal',
-                      description: 'Toggle Live Logon Notifications',
+                      label: 'XAM',
+                      value: 'xamchal',
+                      description: 'Toggle XAM Challenge Success',
+                      default: teapot.user.options.xnotify.xamchal
+                    },
+                    {
+                      label: 'XOS',
+                      value: 'xoschal',
+                      description: 'Toggle XOS Challenge Success',
                       default: teapot.user.options.xnotify.xoschal
                     },
                   ]
@@ -137,7 +143,7 @@ export default async function (interaction, env, ctx) {
               ]
             },
 
-            MessageComponent.Text(`**CHEAT ENGINE SETTINGS** • CURRENTLY READ ONLY`, -1),
+            MessageComponent.Text(`**CHEAT ENGINE SETTINGS**`, -1),
             {
               type: ComponentType.ActionRow,
               components: [
@@ -148,7 +154,7 @@ export default async function (interaction, env, ctx) {
                   min_values: 1,
                   max_values: 9,
                   required: true,
-                  disabled: true,
+                  disabled: false,
     
                   options: [
                     {
@@ -217,7 +223,7 @@ export default async function (interaction, env, ctx) {
               components: [
                 {
                   type: MessageComponentTypes.BUTTON,
-                  style: ButtonStyle.Primary,
+                  style: ButtonStyle.Secondary,
                   label: 'Change Username',
                   custom_id: 'btn_change_name',
                 },
