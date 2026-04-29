@@ -167,6 +167,13 @@ export class MessageComponent {
       spoiler: options?.spoiler
     }
   }
+
+  static File(fileUrl) {
+    return {
+      type: MessageComponentTypes.FILE,
+      file: { url: fileUrl }
+    }
+  }
 }
 
 

@@ -55,29 +55,19 @@ async function _defer_file_upload(interaction, env){
 
           MessageComponent.Text("Standard Edition", 2),
           MessageComponent.Text("For RGH, JTAG & BadUpdate consoles.", 0),
-          
-          {
-            type: MessageComponentTypes.FILE,
-            file: { url: "attachment://xbls.zip" }
-          },
+          MessageComponent.File("attachment://xbls.zip"),
 
           MessageComponent.Seperator(true, 2),
 
           MessageComponent.Text("Lite Edition", 2),
           MessageComponent.Text("A free alternative to the standard edition.", 0),
-          {
-            type: MessageComponentTypes.FILE,
-            file: { url: "attachment://xbls-core.zip" }
-          },
+          MessageComponent.File("attachment://xbls-core.zip"),
 
           MessageComponent.Seperator(true, 2),
 
           MessageComponent.Text("XDK Edition", 2),
           MessageComponent.Text("For Development Kits only.", 0),
-          {
-            type: MessageComponentTypes.FILE,
-            file: { url: "attachment://xbls-devkit.zip" }
-          }
+          MessageComponent.File("attachment://xbls-devkit.zip"),
         ]
       }
     ]
