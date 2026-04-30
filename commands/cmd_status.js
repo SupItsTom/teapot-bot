@@ -81,6 +81,19 @@ export default async function (interaction, env, ctx) {
             MessageComponent.Text(`Version ID: \`${env.CF_VERSION_METADATA.id === '' ? 'Development Server' : env.CF_VERSION_METADATA.id}\`\nUpdated: <t:${Math.floor(new Date(env.CF_VERSION_METADATA.timestamp) / 1000)}:F> - <t:${Math.floor(new Date(env.CF_VERSION_METADATA.timestamp) / 1000)}:R>\n`, ATXHeader.None),
           ],
         },
+
+        {
+          type: MessageComponentTypes.ACTION_ROW,
+          components: [
+            {
+              type: MessageComponentTypes.BUTTON,
+                label: "View Discovery Page",
+                style: ButtonStyle.Link,
+                url: `https://discord.com/discovery/applications/${env.DISCORD_APPLICATION.CLIENT_ID}`,
+            },
+          ]
+        },
+
       ]
     }
   });
