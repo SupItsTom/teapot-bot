@@ -75,37 +75,31 @@ export default async function (interaction, env, ctx) {
               }
             },
 
+            MessageComponent.Seperator(false),
+
+            MessageComponent.Text(`**Gamertag:** ${teapot.user.gamertag == null ? "Not Signed In" : `${teapot.user.gamertag}`}`),
             MessageComponent.Seperator(),
-
-            MessageComponent.Text(`
-Gamertag: **${teapot.user.gamertag == null ? "Not Signed In" : `${teapot.user.gamertag}`}**
-CPU Key: **${bot_user.is_private ? `\`${teapot.user.cpukey}\`` : `\`••••${teapot.user.cpukey.slice(-4)}\``}**
-Challenges: **${numberWithCommas(teapot.user.xke_count)}**
-Registered: **<t:${teapot.user.date_registered_unix}:d>**
-Linked: **<t:${Math.floor(new Date(bot_user.timestamp) / 1000)}:d>**
-`),
-
+            MessageComponent.Text(`**Challenges Passed:** ${numberWithCommas(teapot.user.xke_count)}`),
             MessageComponent.Seperator(),
-
-            MessageComponent.Text(`
-Time Left: ${teapot.user.timeleft.lifetime == true ? `**Lifetime${teapot.user.timeleft.premium == true ? " (Premium)**" : `**`}` : `**${teapot.user.timeleft.current_day}d ${teapot.user.timeleft.timeleft}**\n- Reserved: **${teapot.user.timeleft.banked.days}d**`}
-${teapot_kv.time == "" ? "" : `KV Life: **\`${teapot_kv.time}`}\`**
-`),
-
+            MessageComponent.Text(`**Keyvault Life:** ${teapot_kv.time == "" ? "Unknown" : `${teapot_kv.time}`}`),
+            MessageComponent.Seperator(),
+            MessageComponent.Text(`**Member Since:** <t:${teapot.user.date_registered_unix}:f>`),
+            MessageComponent.Seperator(),
+            MessageComponent.Text(`**Time Remaining:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? " (Premium)" : ``}` : `${teapot.user.timeleft.current_day}d ${teapot.user.timeleft.timeleft} (${teapot.user.timeleft.banked.days}d reserved)`}`),
           ]
         },
 
-        {
-          type: MessageComponentTypes.ACTION_ROW,
-          components: [
-            {
-              type: MessageComponentTypes.BUTTON,
-              style: ButtonStyle.Secondary,
-              label: 'Settings',
-              custom_id: 'btn_settings',
-            },
-          ]
-        },
+        // {
+        //   type: MessageComponentTypes.ACTION_ROW,
+        //   components: [
+        //     {
+        //       type: MessageComponentTypes.BUTTON,
+        //       style: ButtonStyle.Secondary,
+        //       label: 'Settings',
+        //       custom_id: 'btn_settings',
+        //     },
+        //   ]
+        // },
       ]
     }
   });
