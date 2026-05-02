@@ -89,17 +89,17 @@ export default async function (interaction, env, ctx) {
           ]
         },
 
-        // {
-        //   type: MessageComponentTypes.ACTION_ROW,
-        //   components: [
-        //     {
-        //       type: MessageComponentTypes.BUTTON,
-        //       style: ButtonStyle.Secondary,
-        //       label: 'Settings',
-        //       custom_id: 'btn_settings',
-        //     },
-        //   ]
-        // },
+        {
+          type: MessageComponentTypes.ACTION_ROW,
+          components: [
+            {
+              type: MessageComponentTypes.BUTTON,
+              style: ButtonStyle.Secondary,
+              label: 'View Settings',
+              custom_id: 'btn_settings',
+            },
+          ]
+        },
       ]
     }
   });
