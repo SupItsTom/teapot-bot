@@ -1,7 +1,7 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
 import { JsonResponse, numberWithCommas } from "../utils/client";
 import { ButtonStyle, ComponentType, TextInputStyle } from "discord-api-types/v10";
-import { getDiscordUser, getDisplayName, MessageComponent, ClientError } from "../utils/discord";
+import { getDiscordUser, getDisplayName, MessageComponent, ClientError, getAvatarUrl } from "../utils/discord";
 import { postTeapotRequest, TeapotBot } from "../utils/teapot";
 import cmd_profile from "../commands/cmd_profile";
 import { Badges } from "../utils/badges";
@@ -102,7 +102,7 @@ export async function mod_signin_submitted(interaction, env, ctx) {
               accessory: {
                 type: ComponentType.Thumbnail,
                 media: {
-                  url: `http://avatar.xboxlive.com/avatar/${encodeURIComponent(teapot.user.gamertag.trim())}/avatarpic-l.png`
+                  url: `${getAvatarUrl(discord_user)}`
                 }
               }
             },
