@@ -75,17 +75,15 @@ export default async function (interaction, env, ctx) {
               }
             },
 
-            MessageComponent.Seperator(false),
+            MessageComponent.Seperator(true, 2),
 
-            MessageComponent.Text(`**Gamertag:** ${teapot.user.gamertag == null ? "Not Signed In" : `${teapot.user.gamertag}`}`),
-            MessageComponent.Seperator(),
-            MessageComponent.Text(`**Challenges Passed:** ${numberWithCommas(teapot.user.xke_count)}`),
-            MessageComponent.Seperator(),
-            MessageComponent.Text(`**Keyvault Life:** ${teapot_kv.time == "" ? "Unknown" : `${teapot_kv.time}`}`),
-            MessageComponent.Seperator(),
-            MessageComponent.Text(`**Member Since:** <t:${teapot.user.date_registered_unix}:f>`),
-            MessageComponent.Seperator(),
-            MessageComponent.Text(`**Time Remaining:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? " (Premium)" : ``}` : `${teapot.user.timeleft.current_day}d ${teapot.user.timeleft.timeleft} (${teapot.user.timeleft.banked.days}d reserved)`}`),
+            MessageComponent.Text(`
+**Gamertag:** ${teapot.user.gamertag == null ? "Not Signed In" : `${teapot.user.gamertag}`}
+**Challenges Passed:** ${numberWithCommas(teapot.user.xke_count)}
+**Keyvault Life:** ${teapot_kv.time == "" ? "Unknown" : `${teapot_kv.time}`}
+**Member Since:** <t:${teapot.user.date_registered_unix}:f>
+**Time Remaining:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? " (Premium)" : ``}` : `${teapot.user.timeleft.current_day}d ${teapot.user.timeleft.timeleft} (${teapot.user.timeleft.banked.days}d reserved)`}
+`),
           ]
         },
 
