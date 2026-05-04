@@ -75,15 +75,23 @@ export default async function (interaction, env, ctx) {
               }
             },
 
-            MessageComponent.Seperator(true, 2),
+            MessageComponent.Seperator(),
 
             MessageComponent.Text(`
-**Gamertag:** ${teapot.user.gamertag == null ? "Not Signed In" : `${teapot.user.gamertag}`}
-**Challenges Passed:** ${numberWithCommas(teapot.user.xke_count)}
-**Keyvault Life:** ${teapot_kv.time == "" ? "Unknown" : `${teapot_kv.time}`}
-**Member Since:** <t:${teapot.user.date_registered_unix}:f>
-**Time Remaining:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? " (Premium)" : ``}` : `${teapot.user.timeleft.current_day}d ${teapot.user.timeleft.timeleft} (${teapot.user.timeleft.banked.days}d reserved)`}
+Gamertag: **${teapot.user.gamertag == null ? "Not Signed In" : `${teapot.user.gamertag}`}**
+CPU Key: **${bot_user.is_private ? `\`${teapot.user.cpukey}\`` : `\`••••${teapot.user.cpukey.slice(-4)}\``}**
+Challenges: **${numberWithCommas(teapot.user.xke_count)}**
+Registered: **<t:${teapot.user.date_registered_unix}:d>**
+Linked: **<t:${Math.floor(new Date(bot_user.timestamp) / 1000)}:d>**
 `),
+
+            MessageComponent.Seperator(),
+
+            MessageComponent.Text(`
+Time Left: ${teapot.user.timeleft.lifetime == true ? `**Lifetime${teapot.user.timeleft.premium == true ? " (Premium)**" : `**`}` : `**${teapot.user.timeleft.current_day}d ${teapot.user.timeleft.timeleft}**\n- Reserved: **${teapot.user.timeleft.banked.days}d**`}
+${teapot_kv.time == "" ? "" : `KV Life: **\`${teapot_kv.time}`}\`**
+`),
+
           ]
         },
 
@@ -93,7 +101,7 @@ export default async function (interaction, env, ctx) {
             {
               type: MessageComponentTypes.BUTTON,
               style: ButtonStyle.Secondary,
-              label: 'View Settings',
+              label: 'Settings',
               custom_id: 'btn_settings',
             },
           ]
