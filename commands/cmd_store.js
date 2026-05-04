@@ -76,10 +76,10 @@ export default async function (interaction, env, ctx) {
               ? [
                 MessageComponent.Seperator(),
                 MessageComponent.Text(
-                  `-# **DLC PACKS**\n${_product_addons
+                  `-# **DLC PACKS (${_product_addons.length})**\n${_product_addons
                     .slice(0, 5)
                     .map(a => `- [${a.default_title}](https://dbox.tools/marketplace/products/${a.product_id})`)
-                    .join('\n')}${_product_addons.length > 5 ? `\n- and ${_product_addons.length - 5} more...` : ''}`,
+                    .join('\n')}`,
                   0 // or 3 for smaller style
                 ),
               ]
