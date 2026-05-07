@@ -1,6 +1,6 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
 import { ATXHeader, JsonResponse } from "../utils/client";
-import { getDiscordUser, MessageComponent, ClientError, getAvatarUrl } from "../utils/discord";
+import { getDiscordUser, MessageComponent, ClientError } from "../utils/discord";
 import { postTeapotRequest, TeapotBot } from "../utils/teapot";
 import { ButtonStyle, ComponentType } from "discord-api-types/v10";
 import mod_signin from "../modals/mod_signin";
@@ -53,7 +53,7 @@ export default async function (interaction, env, ctx) {
               accessory: {
                 type: ComponentType.Thumbnail,
                 media: {
-                  url: `${getAvatarUrl(discord_user)}`
+                  url: `http://avatar.xboxlive.com/avatar/${encodeURIComponent(teapot.user.gamertag.trim())}/avatarpic-l.png`
                 }
               }
             },
