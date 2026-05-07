@@ -83,9 +83,9 @@ export default async function (interaction, env, ctx) {
           components: [
             {
               type: MessageComponentTypes.BUTTON,
-                label: "View Discovery Page",
-                style: ButtonStyle.Link,
-                url: `https://discord.com/discovery/applications/${env.DISCORD_APPLICATION.CLIENT_ID}`,
+              label: "View Discovery Page",
+              style: ButtonStyle.Link,
+              url: `https://discord.com/discovery/applications/${env.DISCORD_APPLICATION.CLIENT_ID}`,
             },
           ]
         },
