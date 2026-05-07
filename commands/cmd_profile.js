@@ -94,10 +94,17 @@ function getYearsOfService(teapot, bot_user) {
     (60 * 60 * 24 * 365.25)
   );
 
-  if (years <= 0 || teapot.user.date_registered_unix === 920950991) {
+  if (teapot.user.date_registered_unix === 920950991) {
     return MessageComponent.Text(`
 -# **MEMBER SINCE**
 -# <:Teapot:1502039411582566440> Legacy Account **•** <:Discord:1502039384944414790> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
+`);
+  }
+
+  if (years <= 0) {
+    return MessageComponent.Text(`
+-# **MEMBER SINCE**
+-# <:Teapot:1502039411582566440> <t:${teapot.user.date_registered_unix}:D> **•** <:Discord:1502039384944414790> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
 `);
   }
 
