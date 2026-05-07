@@ -37,7 +37,7 @@ const skidpaste = await postTeapotRequest(env, { action: "randquote" });
           components: [
             MessageComponent.Text(`**A WILD QUOTE APPEARS...**`, -1),
             MessageComponent.Text(`>>> ${skidpaste.quote}`, 3),
-            MessageComponent.Text(`<:Teapot:1500914280051114064> ${skidpaste.name !== "Unnamed" ? `**${skidpaste.name}**` : "**SkidPaste User**"} • <t:${skidpaste.date}:R>`, 0),
+            MessageComponent.Text(`<:Teapot:1502039411582566440> ${skidpaste.name !== "Unnamed" ? `**${skidpaste.name}**` : "**SkidPaste User**"} • <t:${skidpaste.date}:R>`, 0),
           ]
         }
       ]
