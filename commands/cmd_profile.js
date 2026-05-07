@@ -42,8 +42,8 @@ export default async function (interaction, env, ctx) {
 
             ...(
               _game_info &&
-              _game_info.bing_id &&
-              teapot.user.title.id !== "0xFFFE07D1"
+                _game_info.bing_id &&
+                teapot.user.title.id !== "0xFFFE07D1"
                 ? [
                   MessageComponent.Media(
                     `http://download.xbox.com/content/images/${_game_info.bing_id}/banner.png`,
@@ -74,19 +74,42 @@ export default async function (interaction, env, ctx) {
 -# **XBOX LIVE STEALTH**
 **Gamertag:** ${teapot.user.gamertag == "" ? "Not Signed In" : `${teapot.user.gamertag}`}
 **Challenges:** ${numberWithCommas(teapot.user.xke_count)}
-**Time Remaining:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? " (Premium)": ""}` : `${teapot.user.timeleft.banked.days}d ${teapot.user.timeleft.banked.timeleft}`}
+**Time Remaining:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? " (Premium)" : ""}` : `${teapot.user.timeleft.banked.days}d ${teapot.user.timeleft.banked.timeleft}`}
 **Keyvault Time:** ${teapot_kv.time == "" ? "Not set" : `${truncateRelativeTime(teapot_kv.time)}`}
 `),
 
             MessageComponent.Seperator(),
 
-            MessageComponent.Text(`
+            {
+              type: ComponentType.Section,
+              components: [
+                MessageComponent.Text(`
 -# **MEMBER SINCE**
 -# <:Teapot:1502039411582566440> <t:${teapot.user.date_registered_unix}:D> **•** <:Discord:1502039384944414790> <t:${Math.floor(new Date(bot_user.timestamp) / 1000)}:D>
 `),
+              ],
+              accessory: getTenureButtonLabel(teapot.user.date_registered_unix, bot_user),
+            },
           ]
         },
       ]
     }
   });
+}
+
+function getTenureButtonLabel(teapot_date_registered, bot_user) {
+  const years = Math.floor(
+    (Date.now() / 1000 - teapot_date_registered) / (60 * 60 * 24 * 365.25)
+  );
+
+  if (years <= 0) return null;
+
+  return {
+    type: MessageComponentTypes.BUTTON,
+    // todo: incremement emoji tenure badge
+    label: `${years} Year${years !== 1 ? "s" : ""} of Service`,
+    style: ButtonStyle.Secondary,
+    custom_id: `btn_readonly-${bot_user.id}-tenure`,
+    disabled: true,
+  };
 }
