@@ -80,7 +80,7 @@ export default async function (interaction, env, ctx) {
 
             MessageComponent.Seperator(),
 
-            getYearsOfService(teapot, bot_user)
+            _memberYearsOfService(teapot, bot_user)
           ]
         },
       ]
@@ -88,7 +88,8 @@ export default async function (interaction, env, ctx) {
   });
 }
 
-function getYearsOfService(teapot, bot_user) {
+// Return Member Since component, with tenure if available for user
+function _memberYearsOfService(teapot, bot_user) {
   const years = Math.floor(
     (Date.now() / 1000 - teapot.user.date_registered_unix) /
     (60 * 60 * 24 * 365.25)
