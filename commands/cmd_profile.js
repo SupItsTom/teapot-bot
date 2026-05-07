@@ -80,16 +80,7 @@ export default async function (interaction, env, ctx) {
 
             MessageComponent.Seperator(),
 
-            {
-              type: ComponentType.Section,
-              components: [
-                MessageComponent.Text(`
--# **MEMBER SINCE**
--# <:Teapot:1502039411582566440> <t:${teapot.user.date_registered_unix}:D> **•** <:Discord:1502039384944414790> <t:${Math.floor(new Date(bot_user.timestamp) / 1000)}:D>
-`),
-              ],
-              accessory: getTenureButtonLabel(teapot.user.date_registered_unix, bot_user),
-            },
+            getYearsOfService(teapot, bot_user)
           ]
         },
       ]
@@ -97,22 +88,33 @@ export default async function (interaction, env, ctx) {
   });
 }
 
-function getTenureButtonLabel(teapot_date_registered, bot_user) {
-
-  if(!teapot_date_registered || teapot_date_registered === 920950991) return null;
-
+function getYearsOfService(teapot, bot_user) {
   const years = Math.floor(
-    (Date.now() / 1000 - teapot_date_registered) / (60 * 60 * 24 * 365.25)
+    (Date.now() / 1000 - teapot.user.date_registered_unix) /
+    (60 * 60 * 24 * 365.25)
   );
 
-  if (years <= 0) return null;
+  if (years <= 0 || teapot.user.date_registered_unix === 920950991) {
+    return MessageComponent.Text(`
+-# **MEMBER SINCE**
+-# <:Teapot:1502039411582566440> Legacy Account **•** <:Discord:1502039384944414790> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
+`);
+  }
 
   return {
-    type: MessageComponentTypes.BUTTON,
-    // todo: incremement emoji tenure badge
-    label: `${years} Year${years !== 1 ? "s" : ""} of Service`,
-    style: ButtonStyle.Secondary,
-    custom_id: `btn_readonly-${bot_user.id}-tenure`,
-    disabled: true,
+    type: ComponentType.Section,
+    components: [
+      MessageComponent.Text(`
+-# **MEMBER SINCE**
+-# <:Teapot:1502039411582566440> <t:${teapot.user.date_registered_unix}:D> **•** <:Discord:1502039384944414790> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
+`)
+    ],
+    accessory: {
+      type: MessageComponentTypes.BUTTON,
+      label: `${years} Year${years !== 1 ? "s" : ""} of Service`,
+      style: ButtonStyle.Secondary,
+      custom_id: `btn_readonly-${bot_user.id}-tenure`,
+      disabled: true,
+    },
   };
 }
