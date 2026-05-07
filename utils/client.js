@@ -81,6 +81,30 @@ export function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+// get truncated time string
+export function truncateRelativeTime(str) {
+  const regex = /(\d+)\s+(year|month|day|hour|minute)s?/g;
+
+  const parts = [];
+
+  let match;
+  while ((match = regex.exec(str)) !== null) {
+    parts.push({
+      value: parseInt(match[1], 10),
+      unit: match[2],
+    });
+  }
+
+  const filtered = parts.filter(p => p.value > 0);
+  const result = filtered.slice(0, 2);
+
+  return result
+    .map(({ value, unit }) => {
+      return `${value} ${unit}${value !== 1 ? "s" : ""}`;
+    })
+    .join(", ");
+}
+
 export const ATXHeader = {
   None: 0,
   Large: 1,

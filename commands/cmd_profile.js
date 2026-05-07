@@ -1,5 +1,5 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
-import { JsonResponse, numberWithCommas } from "../utils/client";
+import { JsonResponse, numberWithCommas, truncateRelativeTime } from "../utils/client";
 import { getDiscordUser, MessageComponent, ClientError, getAvatarUrl } from "../utils/discord";
 import { postTeapotRequest, TeapotBot } from "../utils/teapot";
 import { ButtonStyle, ComponentType } from "discord-api-types/v10";
@@ -65,7 +65,7 @@ export default async function (interaction, env, ctx) {
               type: ComponentType.Section,
               components: [
                 MessageComponent.Text(`<@${discord_user.id}> \`${teapot.user.name}\``, 2),
-                MessageComponent.Text(`${teapot.user.online == true ? `**${teapot.user.title.name === "None Set" ? "Currently Online" : `Playing ${_game_info.name}`}**` : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${teapot.user.title.name === "None Set" ? "" : ` on ${_game_info.name}`}**`}`, -1),
+                MessageComponent.Text(`${teapot.user.online == true ? `**${teapot.user.title.name === "None Set" ? "Currently Online" : `Playing [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`}**` : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${teapot.user.title.name === "None Set" ? "" : ` on [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`}**`}`, -1),
                 ...(_profile_badges ? [MessageComponent.Text(`${_profile_badges}`, 1)] : []),
               ],
               accessory: {
@@ -79,34 +79,31 @@ export default async function (interaction, env, ctx) {
             MessageComponent.Seperator(),
 
             MessageComponent.Text(`
-Gamertag: **${teapot.user.gamertag == null ? "Not Signed In" : `${teapot.user.gamertag}`}**
-CPU Key: **${bot_user.is_private ? `\`${teapot.user.cpukey}\`` : `\`••••${teapot.user.cpukey.slice(-4)}\``}**
-Challenges: **${numberWithCommas(teapot.user.xke_count)}**
-Registered: **<t:${teapot.user.date_registered_unix}:d>**
-Linked: **<t:${Math.floor(new Date(bot_user.timestamp) / 1000)}:d>**
+-# **XBOX LIVE STEALTH**
+**Gamertag:** ${teapot.user.gamertag == "" ? "Not Signed In" : `${teapot.user.gamertag}`}
+**Challenges:** ${numberWithCommas(teapot.user.xke_count)}
+**Time Remaining:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? " (Premium)": ""}` : `${teapot.user.timeleft.banked.days}d ${teapot.user.timeleft.banked.timeleft}`}
+**Keyvault Time:** ${teapot_kv.time == "" ? "Not set" : `\*\`${truncateRelativeTime(teapot_kv.time)}\`\*`}
 `),
-
             MessageComponent.Seperator(),
-
             MessageComponent.Text(`
-Time Left: ${teapot.user.timeleft.lifetime == true ? `**Lifetime${teapot.user.timeleft.premium == true ? " (Premium)**" : `**`}` : `**${teapot.user.timeleft.current_day}d ${teapot.user.timeleft.timeleft}**\n- Reserved: **${teapot.user.timeleft.banked.days}d**`}
-${teapot_kv.time == "" ? "" : `KV Life: **\`${teapot_kv.time}`}\`**
+-# **MEMBER SINCE**
+-# \`XBLS\` <t:1591286002:D> **•** \`BOT\` <t:1777762137:D>
 `),
-
           ]
         },
 
-        {
-          type: MessageComponentTypes.ACTION_ROW,
-          components: [
-            {
-              type: MessageComponentTypes.BUTTON,
-              style: ButtonStyle.Secondary,
-              label: 'Settings',
-              custom_id: 'btn_settings',
-            },
-          ]
-        },
+        // {
+        //   type: MessageComponentTypes.ACTION_ROW,
+        //   components: [
+        //     {
+        //       type: MessageComponentTypes.BUTTON,
+        //       style: ButtonStyle.Secondary,
+        //       label: 'Settings',
+        //       custom_id: 'btn_settings',
+        //     },
+        //   ]
+        // },
       ]
     }
   });
