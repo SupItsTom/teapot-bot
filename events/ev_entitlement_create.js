@@ -1,6 +1,6 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
 import { dropRequest, JsonResponse } from "../utils/client";
-import { MessageComponent, sendDirectMessage } from "../utils/discord";
+import { MessageComponent } from "../utils/discord";
 import { postTeapotRequest } from "../utils/teapot";
 
 /**

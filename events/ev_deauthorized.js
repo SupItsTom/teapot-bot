@@ -3,11 +3,6 @@ import { dropRequest, JsonResponse } from "../utils/client";
 import { MessageComponent } from "../utils/discord";
 import { postTeapotRequest } from "../utils/teapot";
 
-import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
-import { dropRequest, JsonResponse } from "../utils/client";
-import { MessageComponent, sendDirectMessage } from "../utils/discord";
-import { postTeapotRequest } from "../utils/teapot";
-
 /**
  * # APPLICATION_DEAUTHORIZED Event
  * Webhook recieved when the app is deauthorized by a user.
