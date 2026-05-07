@@ -21,7 +21,6 @@ export default async function (interaction, env, ctx) {
       title: `Login to Xbox Live Stealth`,
       custom_id: 'mod_signin',
       components: [
-
         {
           type: 18,
           label: 'Teapot Email',
@@ -36,7 +35,6 @@ export default async function (interaction, env, ctx) {
             required: true
           }
         },
-
         {
           type: 18,
           label: 'Public Profile',
@@ -47,7 +45,6 @@ export default async function (interaction, env, ctx) {
             default: true
           }
         },
-
         {
           type: 10,
           content: `### Need Help?\n-# To be able to lookup your console on the service, you will need to enter the email for it here. This is the email you entered when you signed up on the console, and you can find it again in the **Teapot Preferences** setting on the Xbox Guide menu.`,
@@ -58,7 +55,6 @@ export default async function (interaction, env, ctx) {
 }
 
 export async function mod_signin_submitted(interaction, env, ctx) {
-
   const _email = interaction.data.components[0].component.value;
   const _privacy = interaction.data.components[1].component.value;
   const discord_user = await getDiscordUser(interaction);

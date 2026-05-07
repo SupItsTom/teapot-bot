@@ -19,7 +19,6 @@ export default async function (interaction, env, ctx) {
   });
 }
 
-
 async function _defer_file_upload(interaction, env){
   const [_files_teapot_standard_zip, _files_teapot_core_zip, _files_teapot_xdk_zip] = await Promise.all([
     fetch("https://xboxstealth.net/DL/XBLStealth.zip"),

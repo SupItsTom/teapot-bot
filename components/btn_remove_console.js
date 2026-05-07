@@ -4,8 +4,8 @@ import { ClientError, getDiscordUser, MessageComponent } from "../utils/discord"
 import { postTeapotRequest, TeapotBot } from "../utils/teapot";
 
 /**
- * # Quote Command
- * Retrieve a random quote from SkidPaste
+ * # Remove Console Button
+ * Remove claims for console on active user
  */
 export default async function (interaction, env, ctx) {
   const discord_user = await getDiscordUser(interaction);
@@ -29,9 +29,7 @@ export default async function (interaction, env, ctx) {
         {
           type: MessageComponentTypes.CONTAINER,
           components: [
-
             MessageComponent.Text(`**REMOVE CONSOLE**`, -1),
-
             MessageComponent.Text(`Account Unlinked`, 2),
             MessageComponent.Text(`Your console has been unlinked successfully!`),
           ],

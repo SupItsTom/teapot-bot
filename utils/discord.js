@@ -37,16 +37,8 @@ export function getAvatarUrl(discordUser) {
 }
 
 export class MessageComponent {
-
-  /**
-   * Creates a separator object for use in Discord message components.
-   *
-   * @param {boolean} [divider=true] - Indicates whether the separator includes a dividing line.
-   * @param {number} [spacing=1] - Specifies the spacing around the separator (1 = small, 2 = large).
-   * @returns {Object} An object representing the separator with type, divider, and spacing properties.
-   */
+  // Creates a separator object for use in Discord message components
   static Seperator(divider = true, spacing = 1) {
-
     return {
       type: MessageComponentTypes.SEPARATOR,
       divider: divider,
@@ -54,20 +46,7 @@ export class MessageComponent {
     }
   }
 
-  /**
-   * Generates a text object with an optional ATX-style header prefix based on the specified header depth.
-   *
-   * @param {string} content - The main content of the text to be displayed.
-   * @param {number} [headerDepth=0] - The depth of the ATX header. 
-   *                                   - `-1` for sub-text,
-   *                                   - `0` for normal text, 
-   *                                   - `1` for header, 2 for sub-header,
-   *                                   - `3` for sub-sub-header lol.
-   *                                   - Defaults to 0 if not specified.
-   * @returns {Object} An object representing the text component with the following properties:
-   *                   - `type` {string}: The type of the message component (e.g., `MessageComponentTypes.TEXT_DISPLAY`).
-   *                   - `content` {string}: The formatted content with the appropriate header prefix.
-   */
+  // Generates a text object with an optional ATX-style header prefix based on the specified header depth
   static Text(content, headerDepth = 0) {
     let header_indent = ``;
 
@@ -88,7 +67,6 @@ export class MessageComponent {
         header_indent = `### `;
         break;
       default:
-        console.warn(`Unknown ATX header depth: ${headerDepth}. Defaulting to no indent.`);
         header_indent = ``;
     }
 
@@ -98,51 +76,7 @@ export class MessageComponent {
     }
   }
 
-  static Admonition(content) {
-    let sidebar_color;
-
-    switch (content.title) {
-      case "warning":
-        content.title = "⚠️ Warning";
-        sidebar_color = 0xFFA500; // Orange
-        break;
-      case "info":
-        content.title = "ⓘ Info";
-        sidebar_color = 0x0000FF; // Blue
-        break;
-      case "tip":
-        content.title = "💡 Tip";
-        sidebar_color = 0x00FF00; // Green
-        break;
-      case "danger":
-        content.title = "❌ Danger";
-        sidebar_color = 0xFF0000; // Red
-        break;
-      default:
-        sidebar_color = 0x808080; // Gray
-        break;
-    }
-
-    return {
-      type: MessageComponentTypes.CONTAINER,
-      accent_color: sidebar_color || null,
-      components: [
-
-        MessageComponent.Text(`**${content.title}**`, -1),
-        MessageComponent.Text(`${content.text}`, ATXHeader.None),
-      ],
-    }
-  }
-
-  /**
-   * Creates a media gallery message component for Discord.
-   *
-   * @param {string} mediaUrl - The URL of the media to be displayed.
-   * @param {Object} [options] - Optional settings for the media component.
-   * @param {string} [options.description] - An accessible description for the media item.
-   * @param {boolean} [options.spoiler] - Whether the media item should be marked as a spoiler.
-   * @returns {Object} The media gallery message component object.
-   */
+  // Media Gallery component
   static Media(mediaUrl, options) {
     return {
       type: MessageComponentTypes.MEDIA_GALLERY,
@@ -158,6 +92,7 @@ export class MessageComponent {
     }
   }
 
+  // Media Gallery Item (needed?)
   static MediaGalleryItem(mediaUrl, options) {
     return {
       media: {
@@ -168,6 +103,7 @@ export class MessageComponent {
     }
   }
 
+  // File component
   static File(fileUrl) {
     return {
       type: MessageComponentTypes.FILE,
@@ -175,8 +111,6 @@ export class MessageComponent {
     }
   }
 }
-
-
 
 export class ClientError {
   constructor(title, message) {
@@ -195,9 +129,7 @@ export class ClientError {
           {
             type: MessageComponentTypes.CONTAINER,
             components: [
-
               MessageComponent.Text(`**ERROR**`, ATXHeader.Tiny),
-
               {
                 type: MessageComponentTypes.SECTION,
                 components: [
@@ -212,9 +144,7 @@ export class ClientError {
                   disabled: true
                 }
               },
-
               MessageComponent.Seperator(),
-
               MessageComponent.Text(`If error persists, contact [SupItsTom](discord://-/users/820362947146153994) on Discord and attach a screenshot.`, ATXHeader.Tiny),
             ],
           },
@@ -222,66 +152,4 @@ export class ClientError {
       }
     });
   }
-}
-
-
-
-export async function sendDirectMessage(user, content, env) {
-
-  // create and get dm channel id
-  const _dm_channel = await fetch(`https://discord.com/api/v10/users/@me/channels`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bot ${env.DISCORD_APPLICATION.TOKEN}`,
-      'Content-Type': 'application/json',
-      'User-Agent': 'DiscordBot (https://supitstom.net, 1.0)'
-    },
-    body: JSON.stringify({
-      recipient_id: `${user.id}`
-    })
-  });
-
-  const dm_channel = await _dm_channel.json();
-
-  if (!dm_channel) console.error(`Failed to create DM channel with user '${user.id}'`)
-
-  // send that shit
-  const _prepare_message = await fetch(`https://discord.com/api/v10/channels/${dm_channel.id}/messages`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bot ${env.DISCORD_APPLICATION.TOKEN}`,
-      'Content-Type': 'application/json',
-      'User-Agent': 'DiscordBot (https://supitstom.net, 1.0)'
-    },
-    body: JSON.stringify({
-      "flags": 32768,
-      "components": [
-        {
-          "type": 17,
-          "accent_color": null,
-          "spoiler": false,
-          "components": [
-            {
-              "type": 10,
-              "content": `### Hey, <@${user.id}>`
-            },
-            {
-              "type": 14,
-              "divider": false,
-              "spacing": 1
-            },
-            {
-              "type": 10,
-              "content": `${content}`
-            }
-          ]
-        },
-      ]
-    })
-  });
-
-  const final_message = await _prepare_message.json();
-
-  return final_message;
-
 }

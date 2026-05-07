@@ -4,8 +4,8 @@ import { MessageComponent } from "../utils/discord";
 import { postTeapotRequest } from "../utils/teapot";
 
 /**
- * # Quote Command
- * Retrieve a random quote from SkidPaste
+ * # Default Command
+ * Generic skeleton command
  */
 export default async function (interaction, env, ctx) {
 

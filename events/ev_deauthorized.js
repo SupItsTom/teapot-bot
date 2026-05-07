@@ -3,25 +3,27 @@ import { dropRequest, JsonResponse } from "../utils/client";
 import { MessageComponent } from "../utils/discord";
 import { postTeapotRequest } from "../utils/teapot";
 
+import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
+import { dropRequest, JsonResponse } from "../utils/client";
+import { MessageComponent, sendDirectMessage } from "../utils/discord";
+import { postTeapotRequest } from "../utils/teapot";
+
 /**
  * # APPLICATION_DEAUTHORIZED Event
- * Ran when the application recieves the 'APPLICATION_AUTHORIZED' webhook.
+ * Webhook recieved when the app is deauthorized by a user.
+ * 
+ * https://discord.com/developers/docs/events/webhook-events#application-deauthorized
  */
-export default async function (interaction, env, ctx) {
-  //    https://discord.com/developers/docs/events/webhook-events#application-deauthorized
+export default async function (interaction, env, ctx) {  
+  const event_data = interaction.event.data;
+  const event_user = interaction.event.data.user;
 
-  console.info(`[events:deauthorized] ${JSON.stringify(interaction)}`);
+  console.log(`[events:authorized] event_user: '${event_user.id}'`)
 
-  // delete user data from database when they unlink here.
+  /* TODO - AUTOMATICALLY CLEAR DATA FOR USER:
+  * Clear data stored for event_user if any
+  * Eg: Remove from database if connection records exist
+  */
 
-
-  return dropRequest(200)
-}
-
-/*****************************************************************************
-**          							   Local Functions				                        **
-*****************************************************************************/
-
-function _localFunction(){
-
+  return new dropRequest(304);
 }

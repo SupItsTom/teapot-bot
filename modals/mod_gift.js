@@ -10,7 +10,7 @@ import { postTeapotRequest } from "../utils/teapot";
  */
 export default async function (interaction, env, ctx) {
 
-  //const stats = await postTeapotRequest(env, { action: "get_stats_filter" });
+  // PROTOTYPE, TODO
 
   return new JsonResponse({
     type: InteractionResponseType.MODAL,
@@ -56,17 +56,7 @@ export default async function (interaction, env, ctx) {
           type: 10,
           content: `### NOTE\n-# Once you send this gift, the time on the token will be applied to the selected friend.`,
         },
-
-
       ]
     }
   });
-}
-
-/*****************************************************************************
-**          							   Local Functions				                        **
-*****************************************************************************/
-
-function _localFunction(env) {
-  // This function can be used for any local logic if needed in the future.
 }

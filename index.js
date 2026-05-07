@@ -25,7 +25,6 @@ router.all("*", () => dropRequest(418));
 
 export default {
   async fetch(request, env, ctx) {
-
     const { method, headers } = request;
     if (method === "POST") {
       const signature = headers.get("x-signature-ed25519");

@@ -1,6 +1,5 @@
 import { error } from "itty-router";
 
-
 export class JsonResponse extends Response {
   constructor(body, init) {
     const jsonBody = JSON.stringify(body);
@@ -14,13 +13,7 @@ export class JsonResponse extends Response {
 }
 
 
-/**
- * Retrieves the value of a specific search parameter from a given request URL.
- *
- * @param {Request} request - The HTTP request object containing the URL.
- * @param {string} param - The name of the search parameter to retrieve.
- * @returns {string | null} The value of the specified search parameter, or null if it does not exist.
- */
+// Retrieves the value of a specific search parameter from a given request URL
 export function getSearchParams(request, param) {
   const { searchParams } = new URL(request.url);
   let value = searchParams.get(param);
@@ -28,31 +21,7 @@ export function getSearchParams(request, param) {
 }
 
 
-/**
- * Handles HTTP response codes and returns an error message based on the code.
- *
- * @param {number} code - The HTTP status code to handle.
- * @returns {Error} An error object containing the status code and a corresponding message.
- *
- * @description
- * This function maps common HTTP status codes to descriptive error messages.
- * It is useful for interpreting server responses and providing meaningful feedback
- * to the user or developer.
- *
- * Supported status codes:
- * - 200: The request completed successfully.
- * - 201: The entity was created successfully.
- * - 204: The request completed successfully but returned no content.
- * - 304: The entity was not modified (no action was taken).
- * - 400: The request was improperly formatted, or the server couldn't understand it.
- * - 401: The request was denied permission to the resource.
- * - 403: The request failed authentication.
- * - 404: The resource at the location specified doesn't exist.
- * - 405: The HTTP method used is not valid for the location specified.
- * - 418: This maze isn't meant for you.
- * - 429: You are being rate limited.
- * - Default: The server had an error processing your request (these are rare).
- */
+// Handles HTTP response codes and returns an error message based on the code
 export function dropRequest(code) {
   switch (code) {
     case 200: return error(code, "The request completed successfully.");
@@ -71,23 +40,18 @@ export function dropRequest(code) {
 }
 
 
-/**
- * Formats a number by adding commas as thousand separators.
- *
- * @param {number|string} x - The number or numeric string to format.
- * @returns {string} The formatted string with commas as thousand separators.
- */
+// Formats a number string by adding commas as thousand separators
 export function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-// get truncated time string
+// Truncate time relative to input string
+// Eg: 8 months, 28 days, 13 hours, 19 minutes => 8 months, 28 days
 export function truncateRelativeTime(str) {
   const regex = /(\d+)\s+(year|month|day|hour|minute)s?/g;
-
   const parts = [];
-
   let match;
+
   while ((match = regex.exec(str)) !== null) {
     parts.push({
       value: parseInt(match[1], 10),
@@ -105,6 +69,7 @@ export function truncateRelativeTime(str) {
     .join(", ");
 }
 
+// Can maybe remove this or actually fuckin' use it :sob:
 export const ATXHeader = {
   None: 0,
   Large: 1,
@@ -113,7 +78,7 @@ export const ATXHeader = {
   Tiny: -1
 };
 
+// Check if bot is running locally by lack of deployment ID
 export const IsStaging = (env) => {
-  // CF_VERSION_METADATA.id returns an empty string when not deployed to edge server
   return env.CF_VERSION_METADATA.id === '' ? true : false;
 }

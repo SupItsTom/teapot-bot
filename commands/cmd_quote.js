@@ -23,7 +23,7 @@ export async function cmd_quote_discord(interaction, env, ctx){
 }
 
 export async function cmd_quote_skidpaste(interaction, env, ctx){
-const skidpaste = await postTeapotRequest(env, { action: "randquote" });
+  const skidpaste = await postTeapotRequest(env, { action: "randquote" });
 
   return new JsonResponse({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

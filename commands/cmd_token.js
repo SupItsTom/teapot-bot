@@ -36,7 +36,6 @@ async function _checkToken(request, tokenInput) {
   }
 
   if (!_tokenData.token.valid || _tokenData.token.redeemed) return new ClientError("Token Invalid", "Sorry, looks like this code isn't valid.").ShowUser();
-  // if (_tokenData.token.redeemed) return new ClientError("Token Redeemed", "Sorry, looks like this code has already been redeemed.").ShowUser();
 
   return new JsonResponse({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -86,12 +85,10 @@ async function _applyToken(request, tokenInput) {
         {
           type: MessageComponentTypes.CONTAINER,
           components: [
-
             MessageComponent.Text(`**REDEEM A TOKEN**`, ATXHeader.Tiny),
 
             MessageComponent.Text(`Awesome!`, ATXHeader.Small),
             MessageComponent.Text(`**${_tokenData.token.lifetime ? "Unlimited Access (Lifetime)" : `${_tokenData.token.length} day(s)`}** has been applied to **${bot_user.email}**.`, ATXHeader.Tiny),
-
           ]
         }
       ]

@@ -4,8 +4,8 @@ import { ClientError, getDiscordUser, MessageComponent } from "../utils/discord"
 import { postTeapotRequest, TeapotBot } from "../utils/teapot";
 
 /**
- * # Quote Command
- * Retrieve a random quote from SkidPaste
+ * # Change Privacy Select Menu
+ * Update Privacy settings from selection menu
  */
 export default async function (interaction, env, ctx) {
   const discord_user = await getDiscordUser(interaction);
@@ -31,9 +31,7 @@ export default async function (interaction, env, ctx) {
         {
           type: MessageComponentTypes.CONTAINER,
           components: [
-
             MessageComponent.Text(`**PROFILE PRIVACY**`, -1),
-
             MessageComponent.Text(`${interaction.data.values[0] === 'private' ? "Private Profile" : "Public Profile"}`, 2),
             MessageComponent.Text(`${interaction.data.values[0] === 'private' ? "Your profile and activity is now only visible to you!" : "Your profile is now visible to everyone on Discord!"}`),
           ],

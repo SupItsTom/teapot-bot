@@ -24,16 +24,8 @@ export default async function (interaction, env, ctx) {
   const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
   const teapot_kv = await postTeapotRequest(env, { action: "kvstatus", email: `${bot_user.email}` });
 
-
-  // -------- Mock Title ID --------
-  //let _mock_titleid = "FFED3001"; // Spoof title id information
-  //let _game_info = await new Xbox().GetGameFromTitleID(_mock_titleid);
-  // --------------------------------
-
   let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
   let _profile_badges = await new Badges(env, discord_user).GetAll();
-
-
 
   return new JsonResponse({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -85,25 +77,15 @@ export default async function (interaction, env, ctx) {
 **Time Remaining:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? " (Premium)": ""}` : `${teapot.user.timeleft.banked.days}d ${teapot.user.timeleft.banked.timeleft}`}
 **Keyvault Time:** ${teapot_kv.time == "" ? "Not set" : `\*\`${truncateRelativeTime(teapot_kv.time)}\`\*`}
 `),
+
             MessageComponent.Seperator(),
+            
             MessageComponent.Text(`
 -# **MEMBER SINCE**
 -# <:Teapot:1502039411582566440> <t:${teapot.user.date_registered_unix}:D> **•** <:Discord:1502039384944414790> <t:${Math.floor(new Date(bot_user.timestamp) / 1000)}:D>
 `),
           ]
         },
-
-        // {
-        //   type: MessageComponentTypes.ACTION_ROW,
-        //   components: [
-        //     {
-        //       type: MessageComponentTypes.BUTTON,
-        //       style: ButtonStyle.Secondary,
-        //       label: 'Settings',
-        //       custom_id: 'btn_settings',
-        //     },
-        //   ]
-        // },
       ]
     }
   });

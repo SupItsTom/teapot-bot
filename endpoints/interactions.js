@@ -4,7 +4,6 @@ import { ClientError, getDiscordUser } from "../utils/discord";
 import { TeapotBot } from "../utils/teapot";
 import { AutoComplete } from "../utils/autocomplete";
 import { TA_MadMan } from "../textadventure/ta_madman";
-import { global_blacklist } from "../metadata/blacklist.json";
 
 import cmd_files from "../commands/cmd_files";
 import cmd_quote from "../commands/cmd_quote";
@@ -23,6 +22,8 @@ import btn_remove_console from "../components/btn_remove_console";
 import sel_change_privacy from "../components/sel_change_privacy";
 import { sel_update_engines, sel_update_notifications } from "../components/sel_update_settings";
 
+import { global_blacklist } from "../metadata/blacklist.json";
+
 
 //-----------------------------------------------------------------------------
 // Purpose: Entry point to handle various command types
@@ -31,6 +32,7 @@ export default async function (request, env, ctx) {
   const interaction = await request.json();
 
   console.info(`[endpoints:interactions] incoming request for ${InteractionType[interaction.type]}`);
+  //console.log(`${JSON.stringify(interaction)}`);
 
   const discord_user = await getDiscordUser(interaction);
 
@@ -71,8 +73,7 @@ function _handlePingRequest() {
 // Purpose: Main handler for directing commands to right place
 //-----------------------------------------------------------------------------
 function _handleApplicationCommand(interaction, env, ctx) {
-  if (new TeapotBot(env).AreMonitorsOnline() === false)
-    return new ClientError('Teapot Outage', 'Bot unavailable due to a temporary Teapot Live API outage.').ShowUser();
+  console.log(`[endpoints:interactions][_handleApplicationCommand]: ${interaction.data.name}`)
 
   const cmdName = interaction.data.name.toLowerCase();
 
@@ -100,7 +101,6 @@ function _handleApplicationCommandAutoComplete(interaction, env, ctx) {
 
   switch (cmdName) {
     case "store": return new AutoComplete(interaction).StoreGetTitleIds(interaction.data.options[0].value);
-
     default: return new ClientError("AutoComplete Error", `AutoComplete failed to populate fields for \`${cmdName}\`.`).ShowUser();
   }
 }
@@ -111,15 +111,11 @@ function _handleApplicationCommandAutoComplete(interaction, env, ctx) {
 function _handleModalSubmit(interaction, env, ctx) {
   console.log(`[endpoints:interactions][_handleModalSubmit]: ${interaction.data.custom_id}`)
 
-  //console.log(JSON.stringify(interaction));
-
   const modName = interaction.data.custom_id.toLowerCase();
 
   switch (modName) {
     case "mod_signin": return mod_signin_submitted(interaction, env, ctx);
     case "mod_set_username": return mod_set_username_submitted(interaction, env, ctx);
-    //case "mod_kv": return mod_kv_submitted(interaction, env, ctx);
-
     default: return new ClientError("Modal Not Found", `The modal \`${modName}\` is not available in this build.`).ShowUser();
   }
 }
@@ -128,18 +124,16 @@ function _handleModalSubmit(interaction, env, ctx) {
 // Purpose: Handles submitted modals
 //-----------------------------------------------------------------------------
 function _handleMessageComponent(interaction, env, ctx) {
-  //console.log(`${JSON.stringify(interaction)}`)
   const comName = interaction.data.custom_id.toLowerCase();
 
-  // madman text adventure handler
+  // text adventure:
   const taCmdParts = comName.split(':');
   const taParent = taCmdParts.shift();
-
   switch (taParent) {
     case "madman": return new TA_MadMan(interaction, env, ctx).HandleAction(taCmdParts);
   }
-  // ------------------------------
 
+  // normal shit:
   switch (comName) {
     case "btn_gift_token": return mod_gift(interaction, env, ctx);
     case "btn_change_name": return mod_set_username(interaction, env, ctx);
@@ -147,11 +141,9 @@ function _handleMessageComponent(interaction, env, ctx) {
     case "btn_remove_console": return btn_remove_console(interaction, env, ctx);
     case "btn_settings": return cmd_settings(interaction, env, ctx);
     case "btn_profile": return cmd_profile(interaction, env, ctx);
-
     case "sel_change_privacy": return sel_change_privacy(interaction, env, ctx);
     case "sel_update_cheats": return sel_update_engines(interaction, env, ctx);
     case "sel_update_notifications": return sel_update_notifications(interaction, env, ctx);
-
     default: return new ClientError("Component Not Found", `The component \`${comName}\` is not available in this build.`).ShowUser();
   }
 }

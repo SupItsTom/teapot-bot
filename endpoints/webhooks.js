@@ -30,7 +30,6 @@ export default async function (request, env, ctx) {
 // Purpose: Let's Discord know we are alive
 //-----------------------------------------------------------------------------
 function _handlePingRequest() {
-  // Docs say we should return 204 no content but only 200 works :/
   return text({ status: 200 });
 }
 

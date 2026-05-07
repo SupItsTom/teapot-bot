@@ -16,8 +16,6 @@ export default async function (interaction, env, ctx) {
   var bs_teapot_monitor_group = "1368667";
   let _uptime_info = await new BetterStack(env).GetMonitorsInGroup(bs_teapot_monitor_group);
 
-  //await console.log(env.CF_VERSION_METADATA)
-
   return new JsonResponse({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
@@ -44,9 +42,6 @@ export default async function (interaction, env, ctx) {
                 url: "https://status.supitstom.net",
               }
             },
-
-
-
           ],
         },
 
@@ -94,7 +89,6 @@ export default async function (interaction, env, ctx) {
             },
           ]
         },
-
       ]
     }
   });

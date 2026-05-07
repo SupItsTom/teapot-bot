@@ -64,7 +64,6 @@ export default async function (interaction, env, ctx) {
             {
               type: MessageComponentTypes.SECTION,
               components: [
-                //MessageComponent.Text(`${bot_user.is_private ? `\`${teapot.user.cpukey}\`` : `\`••••${teapot.user.cpukey.slice(-4)}\``}`, 3),
                 MessageComponent.Text(`\`${teapot.user.cpukey}\``, 3),
                 MessageComponent.Text(`Connected: <t:${Math.floor(new Date(bot_user.timestamp) / 1000)}:F>`, -1),
               ],
@@ -81,7 +80,6 @@ export default async function (interaction, env, ctx) {
                 {
                   type: MessageComponentTypes.STRING_SELECT,
                   custom_id: 'sel_change_privacy',
-                  // placeholder: `${bot_user.is_private ? `Public` : `Private`}`,
                   required: false,
                   options: [
                     {
@@ -238,17 +236,6 @@ export default async function (interaction, env, ctx) {
                 },
               ]
             },
-            // {
-            //   type: MessageComponentTypes.ACTION_ROW,
-            //   components: [
-            //     {
-            //       type: MessageComponentTypes.BUTTON,
-            //       style: ButtonStyle.Link,
-            //       label: 'Refresh Role Metadata',
-            //       url: `https://discord.com/oauth2/authorize?client_id=${env.DISCORD_APPLICATION.CLIENT_ID}&response_type=code&redirect_uri=${encodeURI(env.DISCORD_APPLICATION.REDIRECT_URI)}&scope=role_connections.write+identify`,
-            //     },
-            //   ]
-            // },
           ]
 
         },

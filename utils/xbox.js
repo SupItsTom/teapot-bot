@@ -1,12 +1,10 @@
 
 export class Xbox {
-
+  // Get's partial title information from title id
   async GetGameFromTitleID(title_id) {
-
     let _title_id = title_id.replace('0x', '');
 
     const host_url = `https://dbox.tools/api/title_ids/${_title_id.toUpperCase()}`;
-
 
     const options = {
       method: 'GET',
@@ -24,13 +22,11 @@ export class Xbox {
 
     if (request?.detail == "Not Found") return undefined;
     else return request;
-
   }
 
+  // Get's detailed information for a marketplace product
   async GetMarketplaceProduct(product_id) {
-
     const host_url = `https://dbox.tools/api/marketplace/products/${product_id}`;
-
 
     const options = {
       method: 'GET',
@@ -46,26 +42,13 @@ export class Xbox {
 
     console.log(`Xbox:GetMarketplaceProduct: ${product_id} => ${request}`);
 
-    /// -----
-    // console.log(`DEBUG: Dumping capabilities for product [${request.developer_name}]${request.default_title} - ${request.title_id}`);
-    // request.capabilities.forEach(entry => {
-    //   console.log(`--- ${entry.capability.name} ---`);
-    //   console.log("Description:", entry.capability.description);
-    //   console.log("Value:", entry.value);
-    //   console.log("");
-    // });
-
-    /// -----
-
     if (request?.detail == "Not Found") return undefined;
     else return request;
-
   }
 
+  // Get's children from a parent marketplace product
   async GetMarketplaceProductAddons(product_id) {
-
     const host_url = `https://dbox.tools/api/marketplace/products/${product_id}/children?product_type=8`;
-
 
     const options = {
       method: 'GET',
@@ -81,22 +64,11 @@ export class Xbox {
 
     console.log(`Xbox:GetMarketplaceProductAddons: ${product_id} => ${request}`);
 
-    /// -----
-    // console.log(`DEBUG: Dumping capabilities for product [${request.developer_name}]${request.default_title} - ${request.title_id}`);
-    // request.capabilities.forEach(entry => {
-    //   console.log(`--- ${entry.capability.name} ---`);
-    //   console.log("Description:", entry.capability.description);
-    //   console.log("Value:", entry.value);
-    //   console.log("");
-    // });
-
-    /// -----
-
     if (request?.detail == "Not Found") return undefined;
     else return request;
-
   }
 
+  // Used for Command AutoComplete
   async GetGameTitleIdFromSearch(search_query) {
 
     let search_limit = 25
@@ -115,8 +87,5 @@ export class Xbox {
       .catch(err => console.error(err));
 
     return request;
-
   }
-
-  
 }

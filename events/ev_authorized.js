@@ -5,33 +5,41 @@ import { postTeapotRequest } from "../utils/teapot";
 
 /**
  * # APPLICATION_AUTHORIZED Event
- * Ran when the application recieves the 'APPLICATION_AUTHORIZED' webhook.
+ * Webhook recieved when the app is added to a server or user account.
+ * 
+ * https://discord.com/developers/docs/events/webhook-events#application-authorized
  */
-export default async function (interaction, env, ctx) {
-  //    https://discord.com/developers/docs/events/webhook-events#application-authorized
-
-  console.info(`[events:authorized] ${JSON.stringify(interaction)}`);
-
-  
+export default async function (interaction, env, ctx) {  
   const event_data = interaction.event.data;
   const event_user = interaction.event.data.user;
 
-
   console.log(`[events:authorized] event_user: '${event_user.id}'`)
 
-  // this works fine but have no real use for it yet..
-  
-  // if(event_data.scopes.includes("role_connections.write")){
-  //   await sendDirectMessage(event_user, `This message is a confirmation that your role metadata has been refreshed.`, env)
-  // }
-
-  return dropRequest(200)
+  switch(event_data.scopes.includes){
+    case "indetify": return OAUTH_IDENTIFY(interaction, env, ctx);
+    case "role_connections.write": return OAUTH_ROLE_CONNECTIONS_WRITE(interaction, env, ctx);
+    default: return new dropRequest(304)
+  }
 }
 
 /*****************************************************************************
 **          							   Local Functions				                        **
 *****************************************************************************/
 
-function _localFunction(){
+function OAUTH_IDENTIFY(interaction, env, ctx){
+  /* TODO - TRANSPARENCY REPORT:
+   * Message event_user about actions the bot has taken on their behalf 
+   * Eg: Checked their account email
+  */
 
+  return new dropRequest(304);
+}
+
+function OAUTH_ROLE_CONNECTIONS_WRITE(interaction, env, ctx){
+  /* TODO - TRANSPARENCY REPORT:
+  * Message event_user about actions the bot has taken on their behalf 
+  * Eg: Updated role connection metadata for the application
+  */
+
+  return new dropRequest(304);
 }

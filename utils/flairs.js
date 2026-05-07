@@ -5,8 +5,8 @@ export class Flairs {
     this.env = env;
   }
 
+  // TODO: Currently unused but is planned for use soon
   GetFlair(key) {
-    // Dec 11th: Using text-based fallback as new icons haven't been uploaded yet.
     return `[\`ⓘ ${key}\`](https://supitstom.net/teapot-bot/badges/#flairs)`;
     
     if (this.env.DISCORD_APPLICATION.CLIENT_ID !== "1040809994012069919") {

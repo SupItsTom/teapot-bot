@@ -1,30 +1,24 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
 import { dropRequest, JsonResponse } from "../utils/client";
-import { MessageComponent } from "../utils/discord";
-import { postTeapotRequest, TeapotBot } from "../utils/teapot";
+import { MessageComponent, sendDirectMessage } from "../utils/discord";
+import { postTeapotRequest } from "../utils/teapot";
 
 /**
  * # ENTITLEMENT_CREATE Event
- * Ran when the application recieves the 'ENTITLEMENT_CREATE' webhook.
+ * Webhook recieved when an entitlement is created when a user purchases or is otherwise granted one of the app’s SKUs. 
+ * 
+ * https://docs.discord.com/developers/events/webhook-events#entitlement-create
  */
-//    https://discord.com/developers/docs/events/webhook-events#entitlement-create
-export default async function (interaction, env, ctx) {
+export default async function (interaction, env, ctx) {  
+  const event_data = interaction.event.data;
+  const event_user = interaction.event.data.user_id;
 
-  const entitlement_data = interaction.event.data;
-  console.info(`[events:entitlement_create] ${JSON.stringify(interaction)}`);
-  
-  // 1. user buys item from the store
-  // 2. we get this event
-  // 3. grant the item value to the teapot account
-  // 4. invalidate the entitlement with a "claim" so it can't be used again
+  console.log(`[events:authorized] event_user: '${event_user.id}'`)
 
-  // OR
+  /* TODO - GRANT USER SKU PURCHASE:
+  * Applies contents of the SKU to the users linked console
+  * Eg: 
+  */
 
-  // 3. do nothing
-  // 4. wait for user to claim it themselves from their gift inventory
-  
+  return new dropRequest(304);
 }
-
-/*****************************************************************************
-**          							   Local Functions				                        **
-*****************************************************************************/

@@ -23,10 +23,8 @@ export default async function (request, env, ctx) {
     // swap code for access token
     const tokenResponse = await _exchangeCode(code, env);
 
-    // update connection metadata from bearer above (could store it and refresh automatically )
+    // update connection metadata from tokenResponse
     return _updateRoleConnection(tokenResponse.access_token, env, request);
-
-    
   } catch (error) {
     console.error(`[endpoints:link] error processing link request:`, error);
     return new Response(_htmlToClient({ title: `Connection Failed`, info: `Failed to connect your <strong>Teapot</strong> account to <strong>Discord</strong>.`, tip: `Close this tab and try again.`, code: `${JSON.parse(error.message).error_description}` }), {
@@ -122,7 +120,6 @@ async function _updateRoleConnection(access_token, env, request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        //platform_name: "Teapot Live",
         platform_username: teapot.user.name,
         metadata,
       }),
@@ -146,9 +143,8 @@ async function _updateRoleConnection(access_token, env, request) {
 
 // ------------------------------
 
-function _htmlToClient(content){
-
-return `<!DOCTYPE html>
+function _htmlToClient(content) {
+  return `<!DOCTYPE html>
 <html>
 
 <head>
@@ -240,7 +236,7 @@ return `<!DOCTYPE html>
 </head>
 
 <body>
-  <header aria-hidden="true"><a href="https://discord.com/" target="_blank" aria-label="Discord" id="home">
+  <header aria-hidden="true"><a href="https://supitstom.net/teapot-bot" target="_blank" aria-label="Discord" id="home">
       <svg width="124" height="34">
         <g fill="currentColor">
           <path

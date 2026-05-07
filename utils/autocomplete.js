@@ -8,11 +8,10 @@ export class AutoComplete {
         this.interaction = interaction;
     }
 
-    // GET title ids from game name search
+    // Populate Store Command Game search box with data from here
     async StoreGetTitleIds(search_query) {
         let _product_search = await new Xbox().GetGameTitleIdFromSearch(search_query)
 
-        // TODO: score duplicate entries based on data they contain, until there is only one left
         return new JsonResponse({
             type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
             data: {
@@ -23,12 +22,7 @@ export class AutoComplete {
                         name: item.name,
                         value: item.title_id
                     }))
-
-
             }
         });
-
     }
-
-
 }

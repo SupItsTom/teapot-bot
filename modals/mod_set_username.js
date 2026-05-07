@@ -12,7 +12,6 @@ import { TA_MadMan } from "../textadventure/ta_madman";
  * Modal to change a users username
  */
 export default async function (interaction, env, ctx) {
-
   const discord_user = await getDiscordUser(interaction);
   const bot_user = await new TeapotBot(env).GetUser(discord_user);
 
@@ -28,7 +27,6 @@ export default async function (interaction, env, ctx) {
       title: `Change Username`,
       custom_id: 'mod_set_username',
       components: [
-
         {
           type: 18,
           label: 'Username',
@@ -49,9 +47,7 @@ export default async function (interaction, env, ctx) {
 }
 
 export async function mod_set_username_submitted(interaction, env, ctx) {
-
   const _username = interaction.data.components[0].component.value;
-
   
   if(_username.toLowerCase() === "madman"){
     console.log(`MadMan: attempting to 'start => new' game`)
@@ -72,12 +68,4 @@ export async function mod_set_username_submitted(interaction, env, ctx) {
   if(!_update_username.status) return new ClientError("Username Change Failed", "Unable to change username. Try again later maybe?").ShowUser();
 
   return cmd_profile(interaction, env, ctx);
-}
-
-/*****************************************************************************
-**          							   Local Functions				                        **
-*****************************************************************************/
-
-function _localFunction(env) {
-  // This function can be used for any local logic if needed in the future.
 }

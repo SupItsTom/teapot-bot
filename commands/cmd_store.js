@@ -26,7 +26,6 @@ export default async function (interaction, env, ctx) {
         flags: InteractionResponseFlags.IS_COMPONENTS_V2,
 
         components: [
-
           {
             type: MessageComponentTypes.CONTAINER,
             components: [
