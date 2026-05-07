@@ -98,6 +98,9 @@ export default async function (interaction, env, ctx) {
 }
 
 function getTenureButtonLabel(teapot_date_registered, bot_user) {
+
+  if(!teapot_date_registered || teapot_date_registered === 920950991) return null;
+
   const years = Math.floor(
     (Date.now() / 1000 - teapot_date_registered) / (60 * 60 * 24 * 365.25)
   );
