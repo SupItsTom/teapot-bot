@@ -75,11 +75,11 @@ export default async function (interaction, env, ctx) {
 **Gamertag:** ${teapot.user.gamertag == "" ? "Not Signed In" : `${teapot.user.gamertag}`}
 **Challenges:** ${numberWithCommas(teapot.user.xke_count)}
 **Time Remaining:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? " (Premium)": ""}` : `${teapot.user.timeleft.banked.days}d ${teapot.user.timeleft.banked.timeleft}`}
-**Keyvault Time:** ${teapot_kv.time == "" ? "Not set" : `\*\`${truncateRelativeTime(teapot_kv.time)}\`\*`}
+**Keyvault Time:** ${teapot_kv.time == "" ? "Not set" : `${truncateRelativeTime(teapot_kv.time)}`}
 `),
 
             MessageComponent.Seperator(),
-            
+
             MessageComponent.Text(`
 -# **MEMBER SINCE**
 -# <:Teapot:1502039411582566440> <t:${teapot.user.date_registered_unix}:D> **•** <:Discord:1502039384944414790> <t:${Math.floor(new Date(bot_user.timestamp) / 1000)}:D>
