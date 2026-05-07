@@ -38,6 +38,7 @@ export default async function (interaction, env, ctx) {
   return new JsonResponse({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
+      allowed_mentions: { parse: [] },
       flags: InteractionResponseFlags.IS_COMPONENTS_V2 | (bot_user.is_private ? InteractionResponseFlags.EPHEMERAL : null),
 
       components: [

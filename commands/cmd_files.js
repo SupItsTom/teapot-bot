@@ -44,6 +44,7 @@ async function _defer_file_upload(interaction, env){
 
   payload.append("payload_json", JSON.stringify({
     type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+    allowed_mentions: { parse: [] },
     flags: InteractionResponseFlags.IS_COMPONENTS_V2,
 
     components: [

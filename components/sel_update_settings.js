@@ -42,6 +42,7 @@ export async function sel_update_notifications(interaction, env, ctx) {
   return new JsonResponse({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
+      allowed_mentions: { parse: [] },
       flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
 
       components: [
@@ -104,6 +105,7 @@ export async function sel_update_engines(interaction, env, ctx) {
   return new JsonResponse({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
+      allowed_mentions: { parse: [] },
       flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
       components: [
         {

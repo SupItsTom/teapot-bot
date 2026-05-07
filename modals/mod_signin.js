@@ -79,6 +79,7 @@ export async function mod_signin_submitted(interaction, env, ctx) {
   return new JsonResponse({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
+      allowed_mentions: { parse: [] },
       flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
 
       components: [
