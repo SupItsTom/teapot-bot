@@ -88,7 +88,7 @@ export default async function (interaction, env, ctx) {
             MessageComponent.Seperator(),
             MessageComponent.Text(`
 -# **MEMBER SINCE**
--# \`XBLS\` <t:${teapot.user.date_registered_unix}:D> **•** \`BOT\` <t:${Math.floor(new Date(bot_user.timestamp) / 1000)}:D>
+-# <:Teapot:1500914280051114064> <t:${teapot.user.date_registered_unix}:D> **•** <:Discord:1502038062115328301> <t:${Math.floor(new Date(bot_user.timestamp) / 1000)}:D>
 `),
           ]
         },
