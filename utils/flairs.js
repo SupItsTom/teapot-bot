@@ -9,7 +9,7 @@ export class Flairs {
   GetFlair(key) {
     //return `[\`ⓘ ${key}\`](https://supitstom.net/teapot-bot/badges/#flairs)`;
     
-    if (this.env.DISCORD_APPLICATION.CLIENT_ID !== "1040809994012069919") {
+    if (this.env.DISCORD_APPLICATION.CLIENT_ID !== "1447678850493321288") {
       return `\`ⓘ ${key}\``;
     }
 
