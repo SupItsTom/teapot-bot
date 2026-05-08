@@ -7,7 +7,7 @@ export class Flairs {
 
   // TODO: Currently unused but is planned for use soon
   GetFlair(key) {
-    return `[\`ⓘ ${key}\`](https://supitstom.net/teapot-bot/badges/#flairs)`;
+    //return `[\`ⓘ ${key}\`](https://supitstom.net/teapot-bot/badges/#flairs)`;
     
     if (this.env.DISCORD_APPLICATION.CLIENT_ID !== "1040809994012069919") {
       return `\`ⓘ ${key}\``;

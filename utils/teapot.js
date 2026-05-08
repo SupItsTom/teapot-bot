@@ -16,6 +16,7 @@ export function postTeapotRequest(env, data) {
     action: data?.action,
     ...(data?.email ? { email: data.email } : {}),
     ...(data?.token ? { token: data.token } : {}),
+    ...(data?.column ? { column: data.column } : {}),
     key: env.TEAPOT_API.SECRET,
   };
 

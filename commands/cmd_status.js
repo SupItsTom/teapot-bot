@@ -4,13 +4,14 @@ import { MessageComponent } from "../utils/discord.js";
 import { ButtonStyle } from "discord-api-types/v10";
 import { postTeapotRequest } from "../utils/teapot.js";
 import { BetterStack } from "../utils/uptime.js";
+import { Flairs } from "../utils/flairs.js";
 
 /**
  * # Stats Command
  * Get bot and server statistics
  */
 export default async function (interaction, env, ctx) {
-
+  const teapot = await postTeapotRequest(env, { action: "config", column: "guestmode" });
   const stats = await postTeapotRequest(env, { action: "get_stats_filter" });
 
   var bs_teapot_monitor_group = "1368667";
@@ -32,7 +33,7 @@ export default async function (interaction, env, ctx) {
             {
               type: MessageComponentTypes.SECTION,
               components: [
-                MessageComponent.Text(`Teapot Live`, 3),
+                MessageComponent.Text(`Teapot Live${teapot.ret?.[0]?.guestmode === "1" ? `\t${new Flairs(env).GetFlair("FREEMODE")}` : ``}`, 3),
                 MessageComponent.Text(`<:Online:1447729534559326279> ${numberWithCommas(stats.statArr.online)} Online <:Offline:1447729532558643210> ${numberWithCommas(stats.statArr.total)} Users`, -1),
               ],
               accessory: {
