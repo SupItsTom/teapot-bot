@@ -3,7 +3,6 @@ import { JsonResponse } from "../utils/client";
 import { ClientError, MessageComponent } from "../utils/discord";
 import { ButtonStyle } from "discord-api-types/v10";
 import { postTeapotRequest } from "../utils/teapot";
-import { Flairs } from "../utils/flairs";
 
 /**
  * # Files Command
@@ -21,8 +20,6 @@ export default async function (interaction, env, ctx) {
 }
 
 async function _defer_file_upload(interaction, env){
-  const teapot = await postTeapotRequest(env, { action: "config", column: "guestmode" });
-
   const [_files_teapot_standard_zip, _files_teapot_core_zip, _files_teapot_xdk_zip] = await Promise.all([
     fetch("https://xboxstealth.net/DL/XBLStealth.zip"),
     fetch("https://xboxstealth.net/DL/XBLStealth-Lite.zip"),
@@ -54,7 +51,7 @@ async function _defer_file_upload(interaction, env){
         type: MessageComponentTypes.CONTAINER,
         components: [
 
-          MessageComponent.Text(`**XBLS: STANDARD EDITION**${teapot.ret?.[0]?.guestmode === "1" ? `\t${new Flairs(env).GetFlair("FREEMODE")}` : ``}`, -1),
+          MessageComponent.Text(`**XBLS: STANDARD EDITION**`, -1),
           MessageComponent.Text("Client for RGH, JTAG & Retail consoles.", 0),
           MessageComponent.File("attachment://xbls.zip"),
         ]
