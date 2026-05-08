@@ -33,7 +33,7 @@ export default async function (interaction, env, ctx) {
             {
               type: MessageComponentTypes.SECTION,
               components: [
-                MessageComponent.Text(`Teapot Live${teapot.ret?.[0]?.guestmode === "1" ? `\t${new Flairs(env).GetFlair("FREEMODE")}` : ``}`, 3),
+                MessageComponent.Text(`Teapot Live`, 3),
                 MessageComponent.Text(`<:Online:1447729534559326279> ${numberWithCommas(stats.statArr.online)} Online <:Offline:1447729532558643210> ${numberWithCommas(stats.statArr.total)} Users`, -1),
               ],
               accessory: {
@@ -43,6 +43,13 @@ export default async function (interaction, env, ctx) {
                 url: "https://status.supitstom.net",
               }
             },
+
+            ...(teapot.ret?.[0]?.guestmode === "1"
+              ? [
+                MessageComponent.Seperator(),
+                MessageComponent.Text(`Freemode is currently enabled.`, -1),
+              ]
+              : []),
           ],
         },
 
