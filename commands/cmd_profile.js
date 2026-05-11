@@ -74,7 +74,7 @@ export default async function (interaction, env, ctx) {
 -# **XBOX LIVE STEALTH**
 **Gamertag:** ${teapot.user.gamertag == "" ? "Not Signed In" : `${teapot.user.gamertag}`}
 **Challenges:** ${numberWithCommas(teapot.user.xke_count)}
-**Time Remaining:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? " (Premium)" : ""}` : `${teapot.user.timeleft.banked.days}d ${teapot.user.timeleft.banked.timeleft}`}
+**Time Left:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? " (Premium)" : ""}` : `${teapot.user.timeleft.banked.days}d ${teapot.user.timeleft.banked.timeleft}`}
 **Keyvault Time:** ${teapot_kv.time == "" ? "Not set" : `${truncateRelativeTime(teapot_kv.time)}`}
 `),
 
@@ -98,14 +98,14 @@ function _memberYearsOfService(teapot, bot_user) {
   if (teapot.user.date_registered_unix === 920950991) {
     return MessageComponent.Text(`
 -# **MEMBER SINCE**
--# <:Teapot:1502039411582566440> Legacy Account **•** <:Discord:1502039384944414790> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
+-# <:Teapot:1502039411582566440> Legacy Account **•** <:Discord:1502039384944414790> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
 `);
   }
 
   if (years <= 0) {
     return MessageComponent.Text(`
 -# **MEMBER SINCE**
--# <:Teapot:1502039411582566440> <t:${teapot.user.date_registered_unix}:D> **•** <:Discord:1502039384944414790> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
+-# <:Teapot:1502039411582566440> <t:${teapot.user.date_registered_unix}:D> **•** <:Discord:1502039384944414790> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
 `);
   }
 
@@ -114,7 +114,7 @@ function _memberYearsOfService(teapot, bot_user) {
     components: [
       MessageComponent.Text(`
 -# **MEMBER SINCE**
--# <:Teapot:1502039411582566440> <t:${teapot.user.date_registered_unix}:D> **•** <:Discord:1502039384944414790> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
+-# <:Teapot:1502039411582566440> <t:${teapot.user.date_registered_unix}:D> **•** <:Discord:1502039384944414790> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
 `)
     ],
     accessory: {
