@@ -162,7 +162,6 @@ function _handleMessageComponent(interaction, env, ctx) {
 
     // classics - kept for compatibility
     case "btn_adventure_open_door": return stupidTextAdventureEndGame(interaction, env, ctx);
-    case "btn_settings": return cmd_settings(interaction, env, ctx);
     case "btn_profile": return cmd_profile(interaction, env, ctx);
 
     default: return new ClientError("Component Not Found", `The component \`${comName}\` is not available in this build.`).ShowUser();
