@@ -1,16 +1,11 @@
-import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
-import { ATXHeader, JsonResponse } from "../utils/client";
-import { getDiscordUser, MessageComponent, ClientError } from "../utils/discord";
-import { postTeapotRequest, TeapotBot } from "../utils/teapot";
+import { InteractionResponseFlags, InteractionResponseType, InteractionType, MessageComponentTypes } from "discord-interactions";
 import { ButtonStyle, ComponentType } from "discord-api-types/v10";
+import { JsonResponse } from "../utils/client";
+import { getDiscordUser, MessageComponent } from "../utils/discord";
+import { postTeapotRequest, TeapotBot } from "../utils/teapot";
+import { GetColorText } from "../utils/colors";
 import mod_signin from "../modals/mod_signin";
-import { Xbox } from "../utils/xbox";
-import { Badges } from "../utils/badges";
 
-/**
- * # Settings Command
- * Update bot & server settings
- */
 export default async function (interaction, env, ctx) {
   const discord_user = await getDiscordUser(interaction);
 
@@ -21,228 +16,257 @@ export default async function (interaction, env, ctx) {
   }
 
   const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
-  const teapot_kv = await postTeapotRequest(env, { action: "kvstatus", email: `${bot_user.email}` });
 
+  // which page? default is general
+  let selected = "sel_settings_general";
 
-  let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
-  let _profile_badges = await new Badges(env, discord_user).GetAll()
+  // Select menu interaction
+  if (interaction.type === InteractionType.MESSAGE_COMPONENT) {
+    selected = interaction.data.values[0];
+  }
+
+  // response type
+  const responseType = interaction.type === 3 ? InteractionResponseType.UPDATE_MESSAGE : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE;
 
   return new JsonResponse({
-    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+    type: responseType,
     data: {
       allowed_mentions: { parse: [] },
       flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
 
-      components: [
-        
-        {
-          type: MessageComponentTypes.CONTAINER,
-          components: [
-
-            MessageComponent.Text(`**SETTINGS**`, -1),
-
-            ...(_game_info ? [MessageComponent.Media(`http://download.xbox.com/content/images/${_game_info.bing_id}/banner.png`, { description: `Game banner for '${_game_info.name}'` })] : []),
-
-            {
-              type: ComponentType.Section,
-              components: [
-                MessageComponent.Text(`<@${discord_user.id}> \`${teapot.user.name}\``, 2),
-                MessageComponent.Text(`${teapot.user.online == true ? `**${teapot.user.title.name === "None Set" ? "Currently Online" : `Playing ${_game_info.name}`}**` : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${teapot.user.title.name === "None Set" ? "" : ` on ${_game_info.name}`}**`}`, -1),
-                ...(_profile_badges ? [MessageComponent.Text(`${_profile_badges}`, 1)] : []),
-              ],
-              accessory: {
-                type: ComponentType.Thumbnail,
-                media: {
-                  url: `http://avatar.xboxlive.com/avatar/${encodeURIComponent(teapot.user.gamertag.trim())}/avatarpic-l.png`
-                }
-              }
-            },
-
-            MessageComponent.Seperator(),
-
-            MessageComponent.Text(`**CONNECTION DETAILS**`, -1),
-            {
-              type: MessageComponentTypes.SECTION,
-              components: [
-                MessageComponent.Text(`\`${teapot.user.cpukey}\``, 3),
-                MessageComponent.Text(`Connected: <t:${Math.floor(new Date(bot_user.timestamp) / 1000)}:F>`, -1),
-              ],
-              accessory: {
-                type: MessageComponentTypes.BUTTON,
-                style: ButtonStyle.Danger,
-                label: `Remove Console`,
-                custom_id: 'btn_remove_console',
-              }
-            },
-            {
-              type: ComponentType.ActionRow,
-              components: [
-                {
-                  type: MessageComponentTypes.STRING_SELECT,
-                  custom_id: 'sel_change_privacy',
-                  required: false,
-                  options: [
-                    {
-                      label: 'Others can see your profile',
-                      value: 'public',
-                      description: 'Allow others to view your profile.',
-                      default: bot_user.is_private ? false : true,
-                    },
-                    {
-                      label: 'Nobody can see your profile',
-                      value: 'private',
-                      description: 'Hide your profile from others.',
-                      default: bot_user.is_private ? true : false,
-                    }
-                  ]
-                }
-              ]
-            },
-
-            MessageComponent.Seperator(),
-            
-            ...(teapot.user.plugins ? [
-              MessageComponent.Text(`**PLUGIN LIST**`, -1), MessageComponent.Text(`${teapot.user.plugins.Plugin1 ? `1. ${teapot.user.plugins.Plugin1}\n` : ""}${teapot.user.plugins.Plugin2 ? `2. ${teapot.user.plugins.Plugin2}\n` : ""}${teapot.user.plugins.Plugin3 ? `3. ${teapot.user.plugins.Plugin3}\n` : ""}${teapot.user.plugins.Plugin4 ? `4. ${teapot.user.plugins.Plugin4}\n` : ""}${teapot.user.plugins.Plugin5 ? `5. ${teapot.user.plugins.Plugin5}` : ""}`, ATXHeader.None)
-            ] : []),
-
-            MessageComponent.Seperator(),
-
-            MessageComponent.Text(`**NOTIFICATION SETTINGS**`, -1),
-            {
-              type: ComponentType.ActionRow,
-              components: [
-                {
-                  type: MessageComponentTypes.STRING_SELECT,
-                  custom_id: 'sel_update_notifications',
-                  placeholder: 'No Notifications Enabled',
-                  min_values: 0,
-                  max_values: 3,
-                  required: true,
-                  disabled: false,
-    
-                  options: [
-                    {
-                      label: 'Welcome Message',
-                      value: 'welcome',
-                      description: 'Toggle Server Logon Notifications',
-                      default: teapot.user.options.xnotify.welcome
-                    },
-                    {
-                      label: 'XAM',
-                      value: 'xamchal',
-                      description: 'Toggle XAM Challenge Success',
-                      default: teapot.user.options.xnotify.xamchal
-                    },
-                    {
-                      label: 'XOS',
-                      value: 'xoschal',
-                      description: 'Toggle XOS Challenge Success',
-                      default: teapot.user.options.xnotify.xoschal
-                    },
-                  ]
-                }
-              ]
-            },
-
-            MessageComponent.Text(`**CHEAT ENGINE SETTINGS**`, -1),
-            {
-              type: ComponentType.ActionRow,
-              components: [
-                {
-                  type: MessageComponentTypes.STRING_SELECT,
-                  custom_id: 'sel_update_cheats',
-                  placeholder: 'No Cheats Enabled',
-                  min_values: 0,
-                  max_values: 9,
-                  required: true,
-                  disabled: false,
-    
-                  options: [
-                    {
-                      label: 'MW2',
-                      value: '41560817',
-                      description: 'Toggle MW2 Cheats',
-                      default: teapot.user.options.engines["41560817"][1]
-                    },
-                    {
-                      label: 'BO1',
-                      value: '41560855',
-                      description: 'Toggle BO1 Cheats',
-                      default: teapot.user.options.engines["41560855"][1]
-                    },
-                    {
-                      label: 'AW',
-                      value: '41560914',
-                      description: 'Toggle AW Cheats',
-                      default: teapot.user.options.engines["41560914"][1]
-                    },
-                    {
-                      label: 'BO2',
-                      value: '415608C3',
-                      description: 'Toggle BO2 Cheats',
-                      default: teapot.user.options.engines["415608C3"][1]
-                    },
-                    {
-                      label: 'MW3',
-                      value: '415608CB',
-                      description: 'Toggle MW3 Cheats',
-                      default: teapot.user.options.engines["415608CB"][1]
-                    },
-                    {
-                      label: 'Ghosts',
-                      value: '415608FC',
-                      description: 'Toggle Ghosts Cheats',
-                      default: teapot.user.options.engines["415608FC"][1]
-                    },
-                    {
-                      label: 'BO3',
-                      value: '4156091D',
-                      description: 'Toggle BO3 Cheats',
-                      default: teapot.user.options.engines["4156091D"][1]
-                    },
-                    {
-                      label: 'WAW',
-                      value: '4156081C',
-                      description: 'Toggle WAW Cheats',
-                      default: teapot.user.options.engines["4156081C"][1]
-                    },
-                    {
-                      label: 'COD4',
-                      value: '415607E6',
-                      description: 'Toggle COD4 Cheats',
-                      default: teapot.user.options.engines["415607E6"][1]
-                    },
-                  ]
-                }
-              ]
-            },
-
-            MessageComponent.Seperator(),
-
-            {
-              type: MessageComponentTypes.ACTION_ROW,
-              components: [
-                {
-                  type: MessageComponentTypes.BUTTON,
-                  style: ButtonStyle.Secondary,
-                  label: 'Change Username',
-                  custom_id: 'btn_change_name',
-                },
-                {
-                  type: MessageComponentTypes.BUTTON,
-                  style: ButtonStyle.Link,
-                  label: 'Refresh Role Metadata',
-                  url: `https://discord.com/oauth2/authorize?client_id=${env.DISCORD_APPLICATION.CLIENT_ID}&response_type=code&redirect_uri=${encodeURI(env.DISCORD_APPLICATION.REDIRECT_URI)}&scope=role_connections.write+identify`,
-                },
-              ]
-            },
-          ]
-
-        },
-
-
-
-      ]
+      components: await _renderSettings(teapot, bot_user, selected)
     }
   });
+}
+
+export async function _renderSettings(teapot, bot_user, selected) {
+  let settingsPage = [];
+
+  switch (selected) {
+    case "sel_settings_general":
+      settingsPage = await _cmd_settings_general(teapot, bot_user);
+      break;
+    case "sel_settings_preference":
+      settingsPage = await _cmd_settings_preference(teapot, bot_user);
+      break;
+  }
+
+  return [
+    {
+      type: MessageComponentTypes.CONTAINER,
+      components: [
+        MessageComponent.Text(`**SETTINGS**`, -1),
+
+        {
+          type: 1,
+          components: [
+            {
+              type: 3,
+              custom_id: "sel_settings",
+              placeholder: "User Settings",
+              min_values: 1,
+              max_values: 1,
+              options: [
+                {
+                  label: "General Settings",
+                  value: "sel_settings_general",
+                  default: selected === "sel_settings_general"
+                },
+                {
+                  label: "Preference Settings",
+                  value: "sel_settings_preference",
+                  default: selected === "sel_settings_preference"
+                }
+              ]
+            }
+          ]
+        },
+
+        ...settingsPage
+      ]
+    }
+  ];
+}
+
+// done so far!
+function _cmd_settings_general(teapot, bot_user) {
+  return [
+    // USERNAME SETTING
+    MessageComponent.Seperator(),
+    {
+      type: ComponentType.Section,
+      components: [
+        MessageComponent.Text(`
+**Display Name**
+-# **${teapot.user.name}**
+`)
+      ],
+      accessory: {
+        type: MessageComponentTypes.BUTTON,
+        label: `Edit`,
+        style: ButtonStyle.Secondary,
+        custom_id: `btn_settings_change_username`,
+        disabled: false
+      }
+    },
+    // EMAIL SETTING
+    MessageComponent.Seperator(),
+    {
+      type: ComponentType.Section,
+      components: [
+        MessageComponent.Text(`
+**Email**
+-# **${bot_user.email}**
+`)
+      ],
+      accessory: {
+        type: MessageComponentTypes.BUTTON,
+        label: `Edit`,
+        style: ButtonStyle.Secondary,
+        custom_id: `btn_settings_change_email`,
+        disabled: true
+      }
+    },
+    // PROFILE PRIVACY SETTING
+    MessageComponent.Seperator(),
+    {
+      type: ComponentType.Section,
+      components: [
+        MessageComponent.Text(`
+**Profile Privacy**
+-# **${bot_user.is_private ? "Only visible to you" : "Others can see your profile"}**
+`)
+      ],
+      accessory: {
+        type: MessageComponentTypes.BUTTON,
+        label: `Edit`,
+        style: ButtonStyle.Secondary,
+        custom_id: `btn_settings_change_privacy`,
+        disabled: false
+      }
+    },
+    // LINKED DATE
+    MessageComponent.Seperator(),
+    MessageComponent.Text(`
+**Linked Date**
+-# **<t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:F>**
+`),
+
+    MessageComponent.Seperator(false),
+    MessageComponent.Text("**DANGER ZONE**", -1),
+    // ACTIVE CONSOLE SETTING
+    MessageComponent.Seperator(),
+    {
+      type: ComponentType.Section,
+      components: [
+        MessageComponent.Text(`
+**Linked Console**
+-# **\`${teapot.user.cpukey}\`**
+`)
+      ],
+      accessory: {
+        type: MessageComponentTypes.BUTTON,
+        label: `Unlink`,
+        style: ButtonStyle.Danger,
+        custom_id: `btn_settings_remove_console`,
+        disabled: false
+      }
+    },
+  ];
+}
+
+// todo when i wake up
+async function _cmd_settings_preference(teapot, bot_user) {
+  return [
+    // NOTIFICATION SETTING
+    MessageComponent.Seperator(),
+    {
+      type: ComponentType.Section,
+      components: [
+        MessageComponent.Text(`
+**Notifications**
+-# **Manage your server Notifications**
+`)
+      ],
+      accessory: {
+        type: MessageComponentTypes.BUTTON,
+        label: `Edit`,
+        style: ButtonStyle.Secondary,
+        custom_id: `btn_settings_toggle_notifications`,
+        disabled: false
+      }
+    },
+    // ENGINE SETTING
+    MessageComponent.Seperator(),
+    {
+      type: ComponentType.Section,
+      components: [
+        MessageComponent.Text(`
+**Cheat Engines**
+-# **Manage your Cheat Engines**
+`)
+      ],
+      accessory: {
+        type: MessageComponentTypes.BUTTON,
+        label: `Edit`,
+        style: ButtonStyle.Secondary,
+        custom_id: `btn_settings_toggle_cheats`,
+        disabled: false
+      }
+    },
+    // COLOR SETTING
+    MessageComponent.Seperator(),
+    {
+      type: ComponentType.Section,
+      components: [
+        MessageComponent.Text(`
+**Color Scheme**
+-# **[${await GetColorText(teapot.user.colors.dashbg.substring(2))}](https://www.thecolorapi.com/id?format=svg&hex=${teapot.user.colors.dashbg.substring(2)}&w=1280&h=720) - \`#${teapot.user.colors.dashbg.substring(2)}\`**
+`)
+      ],
+      accessory: {
+        type: MessageComponentTypes.BUTTON,
+        label: `Edit`,
+        style: ButtonStyle.Secondary,
+        custom_id: `btn_settings_change_colors`,
+        disabled: true
+      }
+    },
+    // AVATAR SETTING
+    MessageComponent.Seperator(),
+    {
+      type: ComponentType.Section,
+      components: [
+        MessageComponent.Text(`
+**Avatar Preference**
+-# **This feature is temporarily unavailable.**
+`)
+      ],
+      accessory: {
+        type: MessageComponentTypes.BUTTON,
+        label: `Edit`,
+        style: ButtonStyle.Secondary,
+        custom_id: `btn_settings_change_avatar`,
+        disabled: true
+      }
+    },
+    // BANNER SETTING
+    MessageComponent.Seperator(),
+    {
+      type: ComponentType.Section,
+      components: [
+        MessageComponent.Text(`
+**Banner Preference**
+-# **This feature is temporarily unavailable.**
+`)
+      ],
+      accessory: {
+        type: MessageComponentTypes.BUTTON,
+        label: `Edit`,
+        style: ButtonStyle.Secondary,
+        custom_id: `btn_settings_change_banner`,
+        disabled: true
+      }
+    }
+  ];
 }

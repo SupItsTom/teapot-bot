@@ -4,7 +4,6 @@ import { MessageComponent, ClientError, getDiscordUser } from "../utils/discord"
 import { postTeapotRequest, TeapotBot } from "../utils/teapot";
 import { ButtonStyle } from "discord-api-types/v10";
 import mod_signin from "../modals/mod_signin";
-import mod_gift from "../modals/mod_gift";
 
 /**
  * # Token
@@ -20,7 +19,6 @@ export default async function (interaction, env, ctx) {
   switch (subCmdName) {
     case "check": return _checkToken({env, interaction, ctx}, tokenInput);
     case "redeem": return _applyToken({env, interaction, ctx}, tokenInput);
-    case "gift": return mod_gift(interaction, env, ctx);
     default: return new ClientError("Command Not Found", `The sub-command \`${subCmdName}\` is not available in this build.`).ShowUser();
   }
 }

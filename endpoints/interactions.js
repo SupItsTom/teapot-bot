@@ -13,16 +13,19 @@ import cmd_token from "../commands/cmd_token";
 import cmd_settings from "../commands/cmd_settings";
 import cmd_store from "../commands/cmd_store";
 import mod_signin, { mod_signin_submitted } from "../modals/mod_signin";
-import mod_gift from "../modals/mod_gift";
-import mod_kv, { mod_kv_submitted } from "../modals/mod_kv";
-import mod_set_username, { mod_set_username_submitted } from "../modals/mod_set_username";
 
 import btn_remove_console from "../components/btn_remove_console";
 
-import sel_change_privacy from "../components/sel_change_privacy";
-import { sel_update_engines, sel_update_notifications } from "../components/sel_update_settings";
-
 import { global_blacklist } from "../metadata/blacklist.json";
+
+import mod_settings_change_username, { mod_settings_change_username_submitted } from "../modals/mod_settings_change_username";
+import mod_settings_change_privacy, { mod_settings_change_privacy_submitted } from "../modals/mod_settings_change_privacy";
+import mod_settings_remove_console, { mod_settings_remove_console_submitted } from "../modals/mod_settings_remove_console";
+import mod_settings_change_avatar, { mod_settings_change_avatar_submitted } from "../modals/mod_settings_change_avatar";
+import mod_settings_change_banner, { mod_settings_change_banner_submitted } from "../modals/mod_settings_change_banner";
+import mod_settings_toggle_notifications, { mod_settings_toggle_notifications_submitted } from "../modals/mod_settings_toggle_notifications";
+import mod_settings_toggle_cheats, { mod_settings_toggle_cheats_submitted } from "../modals/mod_settings_toggle_cheats";
+import mod_settings_change_colors, { mod_settings_change_colors_submitted } from "../modals/mod_settings_change_colors";
 
 
 //-----------------------------------------------------------------------------
@@ -115,7 +118,16 @@ function _handleModalSubmit(interaction, env, ctx) {
 
   switch (modName) {
     case "mod_signin": return mod_signin_submitted(interaction, env, ctx);
-    case "mod_set_username": return mod_set_username_submitted(interaction, env, ctx);
+
+    // NEW
+    case "mod_settings_change_username": return mod_settings_change_username_submitted(interaction, env, ctx);
+    case "mod_settings_change_privacy": return mod_settings_change_privacy_submitted(interaction, env, ctx);
+    case "mod_settings_remove_console": return mod_settings_remove_console_submitted(interaction, env, ctx);
+    case "mod_settings_change_avatar": return mod_settings_change_avatar_submitted(interaction, env, ctx);
+    case "mod_settings_change_banner": return mod_settings_change_banner_submitted(interaction, env, ctx);
+    case "mod_settings_toggle_notifications": return mod_settings_toggle_notifications_submitted(interaction, env, ctx);
+    case "mod_settings_toggle_cheats": return mod_settings_toggle_cheats_submitted(interaction, env, ctx);
+    case "mod_settings_change_colors": return mod_settings_change_colors_submitted(interaction, env, ctx);
     default: return new ClientError("Modal Not Found", `The modal \`${modName}\` is not available in this build.`).ShowUser();
   }
 }
@@ -133,17 +145,32 @@ function _handleMessageComponent(interaction, env, ctx) {
     case "madman": return new TA_MadMan(interaction, env, ctx).HandleAction(taCmdParts);
   }
 
-  // normal shit:
+  // new component system
   switch (comName) {
-    case "btn_gift_token": return mod_gift(interaction, env, ctx);
-    case "btn_change_name": return mod_set_username(interaction, env, ctx);
-    case "btn_adventure_open_door": return stupidTextAdventureEndGame(interaction, env, ctx);
-    case "btn_remove_console": return btn_remove_console(interaction, env, ctx);
-    case "btn_settings": return cmd_settings(interaction, env, ctx);
-    case "btn_profile": return cmd_profile(interaction, env, ctx);
-    case "sel_change_privacy": return sel_change_privacy(interaction, env, ctx);
-    case "sel_update_cheats": return sel_update_engines(interaction, env, ctx);
-    case "sel_update_notifications": return sel_update_notifications(interaction, env, ctx);
+    // Selecton Menus
+    case "sel_settings": return cmd_settings(interaction, env, ctx);
+    // Buttons
+    case "btn_settings_change_username": return mod_settings_change_username(interaction, env, ctx);
+    case "btn_settings_change_email": return new ClientError("Coming Soon™", "You cannot currently change your XBLS account email. This feature is coming soon.").ShowUser();
+    case "btn_settings_change_privacy": return mod_settings_change_privacy(interaction, env, ctx);
+    case "btn_settings_remove_console": return mod_settings_remove_console(interaction, env, ctx);
+    case "btn_settings_change_avatar": return mod_settings_change_avatar(interaction, env, ctx);
+    case "btn_settings_change_banner": return mod_settings_change_banner(interaction, env, ctx);
+    case "btn_settings_toggle_notifications": return mod_settings_toggle_notifications(interaction, env, ctx);
+    case "btn_settings_toggle_cheats": return mod_settings_toggle_cheats(interaction, env, ctx);
+    case "btn_settings_change_colors": return mod_settings_change_colors(interaction, env, ctx);
     default: return new ClientError("Component Not Found", `The component \`${comName}\` is not available in this build.`).ShowUser();
   }
+
+  // normal shit:
+  // switch (comName) {
+  //   case "sel_settings": return cmd_settings(interaction, env, ctx);
+  //   case "btn_change_name": return mod_set_username(interaction, env, ctx);
+  //   case "btn_adventure_open_door": return stupidTextAdventureEndGame(interaction, env, ctx);
+  //   case "btn_remove_console": return btn_remove_console(interaction, env, ctx);
+  //   case "btn_settings": return cmd_settings(interaction, env, ctx);
+  //   case "btn_profile": return cmd_profile(interaction, env, ctx);
+  //   case "sel_change_privacy": return sel_change_privacy(interaction, env, ctx);
+  //   default: return new ClientError("Component Not Found", `The component \`${comName}\` is not available in this build.`).ShowUser();
+  // }
 }

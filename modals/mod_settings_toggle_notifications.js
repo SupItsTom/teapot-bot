@@ -1,0 +1,104 @@
+import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
+import { JsonResponse, numberWithCommas } from "../utils/client";
+import { ButtonStyle, ComponentType, TextInputStyle } from "discord-api-types/v10";
+import { getDiscordUser, getDisplayName, MessageComponent, ClientError } from "../utils/discord";
+import { postTeapotRequest, TeapotBot } from "../utils/teapot";
+import cmd_profile from "../commands/cmd_profile";
+import mod_signin from "./mod_signin";
+import { TA_MadMan } from "../textadventure/ta_madman";
+import { _renderSettings } from "../commands/cmd_settings";
+
+/**
+ * # Change Username Modal
+ * Modal to change a users username
+ */
+export default async function (interaction, env, ctx) {
+  const discord_user = await getDiscordUser(interaction);
+  const bot_user = await new TeapotBot(env).GetUser(discord_user);
+
+  if (!bot_user.email) {
+    return mod_signin(interaction, env, ctx);
+  }
+
+  const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
+
+  return new JsonResponse({
+    type: InteractionResponseType.MODAL,
+    data: {
+      "title": `Notifications Preference`,
+      "custom_id": 'mod_settings_toggle_notifications',
+      "components": [
+        {
+          "type": ComponentType.Label,
+          "label": "System Notifications",
+          "component": {
+            "type": ComponentType.CheckboxGroup,
+            "custom_id": "mod_settings_toggle_notifications:general",
+            "min_values": 0,
+            "max_values": 3,
+            "required": false,
+            "options": [
+              { "value": "welcome", "label": "Welcome Notification", "description": "", "default": teapot.user.options.xnotify.welcome },
+              { "value": "xamchal", "label": "XAM Challenge Passed", "description": "", "default": teapot.user.options.xnotify.xamchal },
+              { "value": "xoschal", "label": "XOS Challenge Passed", "description": "", "default": teapot.user.options.xnotify.xoschal },
+            ]
+          }
+        },
+        {
+          "type": ComponentType.TextDisplay,
+          "content": "-# **NOTE:**\n-# Changes made here will take affect after your next console restart."
+        }
+      ]
+    }
+  });
+}
+
+export async function mod_settings_toggle_notifications_submitted(interaction, env, ctx) {
+  const _notify_welcome_request = interaction.data.components[0].component.values.includes("welcome");
+  const _notify_xamchal_request = interaction.data.components[0].component.values.includes("xamchal");
+  const _notify_xoschal_request = interaction.data.components[0].component.values.includes("xoschal");
+
+  await console.log(interaction.data.components[0].component.value)
+
+  const discord_user = await getDiscordUser(interaction);
+  const bot_user = await new TeapotBot(env).GetUser(discord_user);
+  const teapot = await postTeapotRequest(env, { action: "overview", email: bot_user.email });
+
+  if (!bot_user.email) {
+    return mod_signin(interaction, env, ctx);
+  }
+
+  const _current_engines = Object.values(teapot.user.options.engines)
+  .reduce((acc, [name, enabled]) => {
+    acc[name] = enabled ? 1 : 0;
+    return acc;
+  }, {});
+
+  const teapot_data = await postTeapotRequest(env, {
+    action: "setdata",
+    subaction: "setoptions",
+    email: bot_user.email,
+
+    N_WELCOME: _notify_welcome_request ? 1 : 0,
+    N_XAM: _notify_xamchal_request ? 1 : 0,
+    N_XOSC: _notify_xoschal_request ? 1 : 0,
+
+    ..._current_engines
+  });
+
+  // fetch new data, not needed if it doesn't update the server account
+  const bot_user_refresh = await new TeapotBot(env).GetUser(discord_user);
+  const teapot_refresh = await postTeapotRequest(env, { action: "overview", email: bot_user.email });
+
+  // refreshes the settings component like a madman
+  return new JsonResponse({
+    type: InteractionResponseType.UPDATE_MESSAGE,
+    data: {
+      allowed_mentions: { parse: [] },
+      flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
+      components: [
+        ...await _renderSettings(teapot_refresh, bot_user_refresh, "sel_settings_preference")
+      ]
+    }
+  });
+}
