@@ -159,18 +159,12 @@ function _handleMessageComponent(interaction, env, ctx) {
     case "btn_settings_toggle_notifications": return mod_settings_toggle_notifications(interaction, env, ctx);
     case "btn_settings_toggle_cheats": return mod_settings_toggle_cheats(interaction, env, ctx);
     case "btn_settings_change_colors": return mod_settings_change_colors(interaction, env, ctx);
+
+    // classics - kept for compatibility
+    case "btn_adventure_open_door": return stupidTextAdventureEndGame(interaction, env, ctx);
+    case "btn_settings": return cmd_settings(interaction, env, ctx);
+    case "btn_profile": return cmd_profile(interaction, env, ctx);
+
     default: return new ClientError("Component Not Found", `The component \`${comName}\` is not available in this build.`).ShowUser();
   }
-
-  // normal shit:
-  // switch (comName) {
-  //   case "sel_settings": return cmd_settings(interaction, env, ctx);
-  //   case "btn_change_name": return mod_set_username(interaction, env, ctx);
-  //   case "btn_adventure_open_door": return stupidTextAdventureEndGame(interaction, env, ctx);
-  //   case "btn_remove_console": return btn_remove_console(interaction, env, ctx);
-  //   case "btn_settings": return cmd_settings(interaction, env, ctx);
-  //   case "btn_profile": return cmd_profile(interaction, env, ctx);
-  //   case "sel_change_privacy": return sel_change_privacy(interaction, env, ctx);
-  //   default: return new ClientError("Component Not Found", `The component \`${comName}\` is not available in this build.`).ShowUser();
-  // }
 }
