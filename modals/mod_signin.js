@@ -114,12 +114,6 @@ export async function mod_signin_submitted(interaction, env, ctx) {
               label: 'View Profile',
               custom_id: 'btn_profile',
             },
-            {
-              type: MessageComponentTypes.BUTTON,
-              style: ButtonStyle.Secondary,
-              label: 'Settings',
-              custom_id: 'btn_settings',
-            },
           ]
         },
       ]
