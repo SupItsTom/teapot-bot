@@ -30,7 +30,7 @@ export default async function (interaction, env, ctx) {
       "components": [
         {
           "type": ComponentType.Label,
-          "label": 'Enter a new Username',
+          "label": 'Username',
           "component": {
             "type": ComponentType.TextInput,
             "custom_id": 'mod_settings_change_username:username',
