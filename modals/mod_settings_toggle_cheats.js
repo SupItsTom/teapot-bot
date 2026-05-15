@@ -52,7 +52,11 @@ export default async function (interaction, env, ctx) {
         },
         {
           "type": ComponentType.TextDisplay,
-          "content": "-# **NOTE:**\n-# Changes made here will take affect after your next console restart."
+          ...teapot.user.online ? {
+            "content": "-# **YOUR CONSOLE IS ON**\n-# Changes will be applied next time you reboot your console."
+          } : {
+            "content": "-# **YOUR CONSOLE IS OFF**\n-# Changes will be applied next time you turn on your console."
+          }
         }
       ]
     }
