@@ -39,6 +39,10 @@ export default async function (interaction, env, ctx) {
               { "value": "private", "label": "Only Me", "description": "Your profile will only be visible to you in commands you use.", "default": bot_user.is_private ? true : null },
             ]
           }
+        },
+        {
+          "type": ComponentType.TextDisplay,
+          "content": "-# Reguardless of your privacy setting, we will never disclose potentially sensitive information, such as your email or console key."
         }
       ]
     }

@@ -30,15 +30,15 @@ export default async function (interaction, env, ctx) {
       "components": [
         {
           "type": ComponentType.Label,
-          "label": 'User Name',
+          "label": 'Enter a new Username',
           "component": {
             "type": ComponentType.TextInput,
             "custom_id": 'mod_settings_change_username:username',
             "style": TextInputStyle.Short,
             "min_length": 1,
-            "max_length": 32,
-            "value": `${teapot.user.name}`,
-            "placeholder": `${teapot.user.name}`,
+            "max_length": 15,
+            "value": `${teapot.user.name.substring(0, 15)}`,
+            "placeholder": `${teapot.user.name.substring(0, 15)}`,
             "required": true
           }
         },
