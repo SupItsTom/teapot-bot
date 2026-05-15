@@ -1,6 +1,6 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
 import { JsonResponse, numberWithCommas, truncateRelativeTime } from "../utils/client";
-import { getDiscordUser, MessageComponent, ClientError, getAvatarUrl } from "../utils/discord";
+import { getDiscordUser, MessageComponent, ClientError, getAvatarUrl, Discord, AppWebhookEventType } from "../utils/discord";
 import { postTeapotRequest, TeapotBot } from "../utils/teapot";
 import { ButtonStyle, ComponentType } from "discord-api-types/v10";
 import mod_signin from "../modals/mod_signin";
@@ -26,6 +26,12 @@ export default async function (interaction, env, ctx) {
 
   let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
   let _profile_badges = await new Badges(env, discord_user).GetAll();
+
+  if(interaction.guild_id === env.DISCORD_APPLICATION.GUILD_ID && !bot_user.is_private){
+    await new Discord(env).SendWebhookEvent(AppWebhookEventType.USER_VAULT_LOG,
+      `-# **[${discord_user.username}](discord://-/users/${discord_user.id})** has been unbanned for **${teapot_kv.time == "" ? "Not set" : `${truncateRelativeTime(teapot_kv.time)}`}**.`
+    )
+  }
 
   return new JsonResponse({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

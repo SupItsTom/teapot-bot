@@ -36,6 +36,53 @@ export function getAvatarUrl(discordUser) {
   }
 }
 
+export const AppWebhookEventType = Object.freeze({
+  USER_VAULT_LOG: "USER_VAULT_LOG",
+  // USER_VAULT_LOG: "USER_VAULT_STATUS",
+});
+
+export class Discord {
+  constructor(env) {
+    this.env = env;
+
+    this.webhooks = Object.freeze({
+      [AppWebhookEventType.USER_VAULT_LOG]:
+        env.DISCORD_APPLICATION.WEBHOOKS.USER_VAULT_LOG,
+
+      // [AppWebhookEventType.USER_VAULT_LOG]:
+      //   env.DISCORD_APPLICATION.WEBHOOKS.USER_VAULT_LOG,
+    });
+  }
+
+  async SendWebhookEvent(type, message) {
+    const webhookUrl = this.webhooks[type];
+
+    if (!webhookUrl) {
+      throw new Error(`Invalid AppWebhookEventType: ${type}`);
+    }
+
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        content: message
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+
+      throw new Error(
+        `[Discord:SendWebhookEvent]: ${response.status} - ${errorText}`
+      );
+    }
+
+    return true;
+  }
+}
+
 export class MessageComponent {
   // Creates a separator object for use in Discord message components
   static Seperator(divider = true, spacing = 1) {
