@@ -24,6 +24,8 @@ export default async function (interaction, env, ctx) {
 
   const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
 
+  await console.log(bot_user)
+
   return new JsonResponse({
     type: InteractionResponseType.MODAL,
     data: {
@@ -37,14 +39,14 @@ export default async function (interaction, env, ctx) {
             "type": ComponentType.RadioGroup,
             "custom_id": "mod_settings_change_privacy:type",
             "options": [
-              { "value": "public", "label": "Everyone on Discord", "description": "Your profile is visible to Server Members in commands you use.", "default": bot_user.is_private ? null : true },
-              { "value": "private", "label": "Only Me", "description": "Your profile will only be visible to you in commands you use.", "default": bot_user.is_private ? true : null },
+              { "value": "public", "label": "Everyone on Discord", "description": "Your profile is visible to Server Members in commands you use.", "default": !bot_user.is_private },
+              { "value": "private", "label": "Only Me", "description": "Your profile will only be visible to you in commands you use.", "default": bot_user.is_private },
             ]
           }
         },
         {
           "type": ComponentType.TextDisplay,
-          "content": "-# Reguardless of your privacy setting, we will never disclose potentially sensitive information, such as your email or console key."
+          "content": "-# Reguardless of your privacy setting, we will never disclose potentially sensitive information, such as your email or console CPU Key."
         }
       ]
     }
