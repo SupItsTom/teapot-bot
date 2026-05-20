@@ -10,8 +10,8 @@ import { Xbox } from "../utils/xbox";
 import { Badges } from "../utils/badges";
 
 /**
- * # Change Username Modal
- * Modal to change a users username
+ * # Sign-in Modal (onboarding)
+ * Modal to register a user to the bot
  */
 export default async function (interaction, env, ctx) {
   const discord_user = await getDiscordUser(interaction);

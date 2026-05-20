@@ -11,8 +11,8 @@ import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/
 import { _renderSettings } from "../commands/cmd_settings";
 
 /**
- * # Change Username Modal
- * Modal to change a users username
+ * # Remove Console Modal (Not in use)
+ * Modal to remove a users primary console
  */
 export default async function (interaction, env, ctx) {
   const discord_user = await getDiscordUser(interaction);
