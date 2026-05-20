@@ -29,7 +29,7 @@ export async function cmd_quote_skidpaste(interaction, env, ctx){
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       allowed_mentions: { parse: [] },
-      flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+      flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
 
       components: [
         {
