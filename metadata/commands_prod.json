@@ -110,19 +110,6 @@
   },
   {
     "type": 1,
-    "name": "link",
-    "name_localizations": {
-      "pt-BR": "conectar"
-    },
-    "description": "Connect or update your linked console",
-    "description_localizations": {
-      "pt-BR": "Conecte ou atualize seu console vinculado"
-    },
-    "integration_types": [ 0, 1 ],
-    "contexts": [ 0, 1, 2 ]
-  },
-  {
-    "type": 1,
     "name": "settings",
     "name_localizations": {
       "pt-BR": "configurações"

@@ -4,8 +4,10 @@ import { ButtonStyle, ComponentType, TextInputStyle } from "discord-api-types/v1
 import { getDiscordUser, getDisplayName, MessageComponent, ClientError } from "../utils/discord";
 import { postTeapotRequest, TeapotBot } from "../utils/teapot";
 import cmd_profile from "../commands/cmd_profile";
-import mod_signin from "./mod_signin";
 import { TA_MadMan } from "../textadventure/ta_madman";
+
+import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
+
 import { _renderSettings } from "../commands/cmd_settings";
 
 /**
@@ -17,7 +19,7 @@ export default async function (interaction, env, ctx) {
   const bot_user = await new TeapotBot(env).GetUser(discord_user);
 
   if (!bot_user.email) {
-    return mod_signin(interaction, env, ctx);
+    return mod_onboarding_logon(interaction, env, ctx);
   }
 
   const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
@@ -58,7 +60,7 @@ export async function mod_settings_change_privacy_submitted(interaction, env, ct
   const bot_user = await new TeapotBot(env).GetUser(discord_user);
 
   if (!bot_user.email) {
-    return mod_signin(interaction, env, ctx);
+    return mod_onboarding_logon(interaction, env, ctx);
   }
 
   await new TeapotBot(env).UpdatePrivacy(discord_user, _privacy_setting_requested === "private" ? true : false)

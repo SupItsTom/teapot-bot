@@ -4,7 +4,8 @@ import { JsonResponse } from "../utils/client";
 import { getDiscordUser, MessageComponent } from "../utils/discord";
 import { postTeapotRequest, TeapotBot } from "../utils/teapot";
 import { GetColorText } from "../utils/colors";
-import mod_signin from "../modals/mod_signin";
+
+import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
 
 export default async function (interaction, env, ctx) {
   const discord_user = await getDiscordUser(interaction);
@@ -12,7 +13,7 @@ export default async function (interaction, env, ctx) {
   const bot_user = await new TeapotBot(env).GetUser(discord_user);
 
   if (!bot_user.email) {
-    return mod_signin(interaction, env, ctx);
+    return mod_onboarding_logon(interaction, env, ctx);
   }
 
   const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
@@ -145,33 +146,12 @@ function _cmd_settings_general(teapot, bot_user) {
         disabled: false
       }
     },
-    // LINKED DATE
-    MessageComponent.Seperator(),
-    MessageComponent.Text(`
-**Linked Date**
--# **<t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:F>**
-`),
-
-    MessageComponent.Seperator(false),
-    MessageComponent.Text("**DANGER ZONE**", -1),
     // ACTIVE CONSOLE SETTING
     MessageComponent.Seperator(),
-    {
-      type: ComponentType.Section,
-      components: [
         MessageComponent.Text(`
 **Linked Console**
 -# **\`${teapot.user.cpukey}\`**
 `)
-      ],
-      accessory: {
-        type: MessageComponentTypes.BUTTON,
-        label: `Unlink`,
-        style: ButtonStyle.Danger,
-        custom_id: `btn_settings_remove_console`,
-        disabled: false
-      }
-    },
   ];
 }
 

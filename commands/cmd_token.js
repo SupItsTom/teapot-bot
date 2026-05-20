@@ -3,7 +3,8 @@ import { ATXHeader, JsonResponse } from "../utils/client";
 import { MessageComponent, ClientError, getDiscordUser } from "../utils/discord";
 import { postTeapotRequest, TeapotBot } from "../utils/teapot";
 import { ButtonStyle } from "discord-api-types/v10";
-import mod_signin from "../modals/mod_signin";
+
+import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
 
 /**
  * # Token
@@ -30,7 +31,7 @@ async function _checkToken(request, tokenInput) {
   const bot_user = await new TeapotBot(request.env).GetUser(discord_user);
 
   if (!bot_user.email) {
-    return mod_signin(request.interaction, request.env, request.ctx);
+    return mod_onboarding_logon(request.interaction, request.env, request.ctx);
   }
 
   if (!_tokenData.token.valid || _tokenData.token.redeemed) return new ClientError("Token Invalid", "Sorry, looks like this code isn't valid.").ShowUser();

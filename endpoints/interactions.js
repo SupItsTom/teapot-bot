@@ -12,7 +12,6 @@ import cmd_status from "../commands/cmd_status";
 import cmd_token from "../commands/cmd_token";
 import cmd_settings from "../commands/cmd_settings";
 import cmd_store from "../commands/cmd_store";
-import mod_signin, { mod_signin_submitted } from "../modals/mod_signin";
 
 import btn_remove_console from "../components/btn_remove_console";
 
@@ -26,6 +25,7 @@ import mod_settings_change_banner, { mod_settings_change_banner_submitted } from
 import mod_settings_toggle_notifications, { mod_settings_toggle_notifications_submitted } from "../modals/mod_settings_toggle_notifications";
 import mod_settings_toggle_cheats, { mod_settings_toggle_cheats_submitted } from "../modals/mod_settings_toggle_cheats";
 import mod_settings_change_colors, { mod_settings_change_colors_submitted } from "../modals/mod_settings_change_colors";
+import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
 
 
 //-----------------------------------------------------------------------------
@@ -86,7 +86,6 @@ function _handleApplicationCommand(interaction, env, ctx) {
     case "status": return cmd_status(interaction, env, ctx);
     case "token": return cmd_token(interaction, env, ctx);
     case "profile": return cmd_profile(interaction, env, ctx);
-    case "link": return mod_signin(interaction, env, ctx);
     case "settings": return cmd_settings(interaction, env, ctx);
     case "store": return cmd_store(interaction, env, ctx);
 
@@ -122,12 +121,12 @@ function _handleModalSubmit(interaction, env, ctx) {
     // NEW
     case "mod_settings_change_username": return mod_settings_change_username_submitted(interaction, env, ctx);
     case "mod_settings_change_privacy": return mod_settings_change_privacy_submitted(interaction, env, ctx);
-    case "mod_settings_remove_console": return mod_settings_remove_console_submitted(interaction, env, ctx);
     case "mod_settings_change_avatar": return mod_settings_change_avatar_submitted(interaction, env, ctx);
     case "mod_settings_change_banner": return mod_settings_change_banner_submitted(interaction, env, ctx);
     case "mod_settings_toggle_notifications": return mod_settings_toggle_notifications_submitted(interaction, env, ctx);
     case "mod_settings_toggle_cheats": return mod_settings_toggle_cheats_submitted(interaction, env, ctx);
     case "mod_settings_change_colors": return mod_settings_change_colors_submitted(interaction, env, ctx);
+    case "mod_onboarding_logon": return mod_onboarding_logon_submitted(interaction, env, ctx);
     default: return new ClientError("Modal Not Found", `The modal \`${modName}\` is not available in this build.`).ShowUser();
   }
 }
@@ -153,7 +152,6 @@ function _handleMessageComponent(interaction, env, ctx) {
     case "btn_settings_change_username": return mod_settings_change_username(interaction, env, ctx);
     case "btn_settings_change_email": return new ClientError("Coming Soon™", "You cannot currently change your XBLS account email. This feature is coming soon.").ShowUser();
     case "btn_settings_change_privacy": return mod_settings_change_privacy(interaction, env, ctx);
-    case "btn_settings_remove_console": return mod_settings_remove_console(interaction, env, ctx);
     case "btn_settings_change_avatar": return mod_settings_change_avatar(interaction, env, ctx);
     case "btn_settings_change_banner": return mod_settings_change_banner(interaction, env, ctx);
     case "btn_settings_toggle_notifications": return mod_settings_toggle_notifications(interaction, env, ctx);

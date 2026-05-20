@@ -3,10 +3,11 @@ import { JsonResponse, numberWithCommas, truncateRelativeTime } from "../utils/c
 import { getDiscordUser, MessageComponent, ClientError, getAvatarUrl, Discord, AppWebhookEventType } from "../utils/discord";
 import { postTeapotRequest, TeapotBot } from "../utils/teapot";
 import { ButtonStyle, ComponentType } from "discord-api-types/v10";
-import mod_signin from "../modals/mod_signin";
 import { Xbox } from "../utils/xbox";
 import { Badges } from "../utils/badges";
 import { Flairs } from "../utils/flairs";
+
+import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
 
 /**
  * # Profile Command
@@ -18,7 +19,7 @@ export default async function (interaction, env, ctx) {
   const bot_user = await new TeapotBot(env).GetUser(discord_user);
 
   if (!bot_user.email) {
-    return mod_signin(interaction, env, ctx);
+    return mod_onboarding_logon(interaction, env, ctx);
   }
 
   const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
