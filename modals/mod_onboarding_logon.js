@@ -17,7 +17,7 @@ export default async function (interaction, env, ctx) {
   const discord_user = await getDiscordUser(interaction);
   const bot_user = await new TeapotBot(env).GetUser(discord_user);
 
-  if (bot_user.email !== null) {
+  if (bot_user) {
     return new ClientError(`Already Connected`, `This Discord account (${discord_user.username}) is already connected to a Teapot account. Please contact staff if you wish to change it.`).ShowUser();
   }
 
