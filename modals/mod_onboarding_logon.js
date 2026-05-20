@@ -145,13 +145,7 @@ export async function mod_onboarding_logon_submitted(interaction, env, ctx) {
                   style: ButtonStyle.Link,
                   label: 'Learn More',
                   url: 'https://supitstom.net/teapot-bot'
-                },
-                {
-                  type: MessageComponentTypes.BUTTON,
-                  style: ButtonStyle.Primary,
-                  label: 'Open Settings',
-                  custom_id: 'btn_settings',
-                },
+                }
               ]
             },
           ]
