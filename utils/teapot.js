@@ -61,16 +61,33 @@ export function postTeapotRequest(env, data) {
     .catch(console.error);
 }
 
-// Export avatar type settings
-export const UserAvatarType = {
-  GAMERPIC: 0,
-  DISCORD: 1,
-}
+export const UserAvatarType = Object.freeze({
+  DISABLED: 0,
+  XBOX_GAMERPIC: 1,
+  DISCORD_AVATAR: 2,
+  CUSTOM: 3,
+});
 
-export const UserBannerType = {
-  LAST_PLAYED: 0,
-  DISCORD: 1,
-}
+export const UserBannerType = Object.freeze({
+  DISABLED: 0,
+  XBOX_GAME_BANNER: 1,
+  DISCORD_BANNER: 2,
+  CUSTOM: 3,
+});
+
+export const avatarTypeLabel = (avatar_type) => ({
+  [UserAvatarType.DISABLED]: "No Avatar",
+  [UserAvatarType.XBOX_GAMERPIC]: "Xbox LIVE Gamerpic",
+  [UserAvatarType.DISCORD_AVATAR]: "Discord Avatar",
+  // [UserAvatarType.CUSTOM]: "Custom Avatar",
+}[avatar_type] ?? "Unknown Avatar");
+
+export const bannerTypeLabel = (banner_type) => ({
+  [UserBannerType.DISABLED]: "No Banner",
+  [UserBannerType.XBOX_GAME_BANNER]: "Last Played Game",
+  [UserBannerType.DISCORD_BANNER]: "Discord Banner",
+  // [UserBannerType.CUSTOM]: "Custom Banner",
+}[banner_type] ?? "Unknown Banner");
 
 export class TeapotBot {
   constructor(env) {
@@ -89,13 +106,13 @@ export class TeapotBot {
       .bind(discord_user.id)
       .first();
 
-    
+
     if (!user) {
       console.warn(`[DatabaseManager]: no user present for ${discord_user.id}`);
       return false;
     }
 
-    
+
     const settings = await this.env.database
       .prepare(`
         SELECT avatar_type, banner_type, private
@@ -105,10 +122,10 @@ export class TeapotBot {
       .bind(discord_user.id)
       .first();
 
-    
+
     user.settings = {
-      avatar_type: settings?.avatar_type ?? 0,
-      banner_type: settings?.banner_type ?? 0,
+      avatar_type: settings?.avatar_type ?? UserAvatarType.XBOX_GAMERPIC,
+      banner_type: settings?.banner_type ?? UserBannerType.XBOX_GAME_BANNER,
       private: Boolean(settings?.private)
     };
 

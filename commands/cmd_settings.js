@@ -2,7 +2,7 @@ import { InteractionResponseFlags, InteractionResponseType, InteractionType, Mes
 import { ButtonStyle, ComponentType } from "discord-api-types/v10";
 import { JsonResponse } from "../utils/client";
 import { getDiscordUser, MessageComponent } from "../utils/discord";
-import { postTeapotRequest, TeapotBot, UserAvatarType, UserBannerType } from "../utils/teapot";
+import { avatarTypeLabel, bannerTypeLabel, postTeapotRequest, TeapotBot, UserAvatarType, UserBannerType } from "../utils/teapot";
 import { GetColorText } from "../utils/colors";
 
 import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
@@ -219,7 +219,7 @@ async function _cmd_settings_preference(teapot, bot_user) {
       components: [
         MessageComponent.Text(`
 **Avatar Preference**
--# **${bot_user.settings.avatar_type === UserAvatarType.GAMERPIC ? "Xbox LIVE Gamerpic" : "Discord Avatar"}**
+-# **${avatarTypeLabel(bot_user.settings.avatar_type)}**
 `)
       ],
       accessory: {
@@ -237,7 +237,7 @@ async function _cmd_settings_preference(teapot, bot_user) {
       components: [
         MessageComponent.Text(`
 **Banner Preference**
--# **${bot_user.settings.banner_type === UserBannerType.LAST_PLAYED ? "Last Played Game" : "Discord Banner"}**
+-# **${bannerTypeLabel(bot_user.settings.banner_type)}**
 `)
       ],
       accessory: {
@@ -245,7 +245,7 @@ async function _cmd_settings_preference(teapot, bot_user) {
         label: `Edit`,
         style: ButtonStyle.Secondary,
         custom_id: `btn_settings_change_banner`,
-        disabled: true
+        disabled: false
       }
     }
   ];

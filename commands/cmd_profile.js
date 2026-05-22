@@ -1,7 +1,7 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
 import { IsStaging, JsonResponse, numberWithCommas, truncateRelativeTime } from "../utils/client";
-import { getDiscordUser, MessageComponent, ClientError, getAvatarUrl, Discord, AppWebhookEventType } from "../utils/discord";
-import { postTeapotRequest, TeapotBot, UserAvatarType } from "../utils/teapot";
+import { getDiscordUser, MessageComponent, ClientError, getAvatarUrl, Discord, AppWebhookEventType, getBannerUrl } from "../utils/discord";
+import { postTeapotRequest, TeapotBot, UserAvatarType, UserBannerType } from "../utils/teapot";
 import { ButtonStyle, ComponentType } from "discord-api-types/v10";
 import { Xbox } from "../utils/xbox";
 import { Badges } from "../utils/badges";
@@ -52,35 +52,7 @@ export default async function (interaction, env, ctx) {
 
             MessageComponent.Text(`**PROFILE**`, -1),
 
-            ...(
-              _game_info &&
-                _game_info.bing_id &&
-                teapot.user.title.id !== "0xFFFE07D1"
-                ? [
-                  MessageComponent.Media(
-                    `http://download.xbox.com/content/images/${_game_info.bing_id}/banner.png`,
-                    { description: `Game banner for '${_game_info.name}'` }
-                  )
-                ]
-                : []
-            ),
-
-            {
-              type: ComponentType.Section,
-              components: [
-                MessageComponent.Text(`<@${discord_user.id}> \`${teapot.user.name}\``, 2),
-                MessageComponent.Text(`${teapot.user.online == true ? `**${teapot.user.title.name === "None Set" ? "Currently Online" : `Playing [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`}**` : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${teapot.user.title.name === "None Set" ? "" : ` on [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`}**`}`, -1),
-                ...(_profile_badges ? [MessageComponent.Text(`${_profile_badges}`, 1)] : []),
-              ],
-              accessory: {
-                type: ComponentType.Thumbnail,
-                media: {
-                  url: bot_user.settings.avatar_type === UserAvatarType.GAMERPIC
-                    ? `http://avatar.xboxlive.com/avatar/${encodeURIComponent(teapot.user.gamertag.trim())}/avatarpic-l.png`
-                    : getAvatarUrl(discord_user)
-                }
-              }
-            },
+            ..._profileComponent({ bot_user, discord_user, teapot, _game_info, _profile_badges, }),
 
             MessageComponent.Seperator(),
 
@@ -140,6 +112,108 @@ function _memberYearsOfService(teapot, bot_user) {
       disabled: true,
     },
   };
+}
+
+// get profile component
+function _profileComponent({
+  bot_user,
+  discord_user,
+  teapot,
+  _game_info,
+  _profile_badges,
+}) {
+  const profileComponents = [
+    MessageComponent.Text(
+      `<@${discord_user.id}> \`${teapot.user.name}\``,
+      2
+    ),
+
+    MessageComponent.Text(
+      `${
+        teapot.user.online === true
+          ? `**${
+              teapot.user.title.name === "None Set"
+                ? "Currently Online"
+                : `Playing [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`
+            }**`
+          : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${
+              teapot.user.title.name === "None Set"
+                ? ""
+                : ` on [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`
+            }**`
+      }`,
+      -1
+    ),
+
+    ...(_profile_badges
+      ? [MessageComponent.Text(`${_profile_badges}`, 1)]
+      : []),
+  ];
+
+  const avatarType = bot_user.settings.avatar_type;
+
+  if (avatarType === UserAvatarType.DISABLED) {
+    // return no section component
+    return [
+      ..._resolveBanner(),
+      ...profileComponents,
+    ];
+  }
+
+  const avatarUrl = ({
+    [UserAvatarType.XBOX_GAMERPIC]:
+      `http://avatar.xboxlive.com/avatar/${encodeURIComponent(teapot.user.gamertag.trim())}/avatarpic-l.png`,
+
+    [UserAvatarType.DISCORD_AVATAR]:
+      getAvatarUrl(discord_user),
+  })[avatarType];
+
+  const section = {
+    type: ComponentType.Section,
+    components: profileComponents,
+    accessory: {
+      type: ComponentType.Thumbnail,
+      media: {
+        url: avatarUrl,
+      },
+    },
+  };
+
+  return [
+    ..._resolveBanner(),
+    section,
+  ];
+
+  function _resolveBanner() {
+    const bannerType = bot_user.settings.banner_type;
+
+    if (bannerType === UserBannerType.DISABLED) {
+      return [];
+    }
+
+    const bannerUrl = ({
+      [UserBannerType.XBOX_GAME_BANNER]:
+        _game_info &&
+        _game_info.bing_id &&
+        teapot.user.title.id !== "0xFFFE07D1"
+          ? `http://download.xbox.com/content/images/${_game_info.bing_id}/banner.png`
+          : null,
+
+      [UserBannerType.DISCORD_BANNER]:
+        getBannerUrl(discord_user),
+    })[bannerType];
+
+    if (!bannerUrl) return [];
+
+    return [
+      MessageComponent.Media(bannerUrl, {
+        description:
+          bannerType === UserBannerType.XBOX_GAME_BANNER
+            ? `Game banner for '${_game_info.name}'`
+            : "Profile banner",
+      }),
+    ];
+  }
 }
 
 // Dev: returns database objects

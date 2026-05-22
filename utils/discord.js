@@ -42,16 +42,14 @@ export function getAvatarUrl(discord_user, size = 256) {
 }
 
 // TODO: move to class 'DiscordUser'
-export function getBannerUrl(user, size = 1024) {
-  if (!user?.id) return null;
+export function getBannerUrl(discord_user, size = 1024) {
+  if (!discord_user?.id) return null;
 
-  // No banner set
-  if (!user.banner) return null;
+  if (!discord_user.banner) return null;
 
-  const isGif = user.banner.startsWith("a_");
-  const ext = isGif ? "gif" : "png";
+  const extension = discord_user.banner.startsWith("a_") ? "gif" : "png";
 
-  return `https://cdn.discordapp.com/banners/${user.id}/${user.banner}.${ext}?size=${size}`;
+  return `https://cdn.discordapp.com/banners/${discord_user.id}/${discord_user.banner}.${extension}?size=${size}`;
 }
 
 export const AppWebhookEventType = Object.freeze({

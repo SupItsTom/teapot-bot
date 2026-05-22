@@ -2,7 +2,7 @@ import { InteractionResponseFlags, InteractionResponseType, InteractionType, Mes
 import { JsonResponse, numberWithCommas } from "../utils/client";
 import { ButtonStyle, ComponentType, TextInputStyle } from "discord-api-types/v10";
 import { getDiscordUser, getDisplayName, MessageComponent, ClientError } from "../utils/discord";
-import { postTeapotRequest, TeapotBot, UserBannerType } from "../utils/teapot";
+import { bannerTypeLabel, postTeapotRequest, TeapotBot, UserBannerType } from "../utils/teapot";
 import cmd_profile from "../commands/cmd_profile";
 import { TA_MadMan } from "../textadventure/ta_madman";
 
@@ -37,8 +37,21 @@ export default async function (interaction, env, ctx) {
             "type": ComponentType.RadioGroup,
             "custom_id": "mod_settings_change_banner:type",
             "options": [
-              { "value": "last_played", "label": "Last Played Game", "default": bot_user.settings.banner_type === UserBannerType.LAST_PLAYED },
-              { "value": "discord", "label": "Discord Banner", "default": bot_user.settings.banner_type === UserBannerType.DISCORD },
+              {
+                "value": "XBOX_GAME_BANNER",
+                "label": `${bannerTypeLabel(UserBannerType.XBOX_GAME_BANNER)}`,
+                "default": bot_user.settings.banner_type === UserBannerType.XBOX_GAME_BANNER
+              },
+              // {
+              //   "value": "DISCORD_BANNER",
+              //   "label": `${bannerTypeLabel(UserBannerType.DISCORD_BANNER)}`,
+              //   "default": bot_user.settings.banner_type === UserBannerType.DISCORD_BANNER
+              // },
+              {
+                "value": "DISABLED",
+                "label": `${bannerTypeLabel(UserBannerType.DISABLED)}`,
+                "default": bot_user.settings.banner_type === UserBannerType.DISABLED
+              },
             ]
           }
         }
@@ -48,9 +61,12 @@ export default async function (interaction, env, ctx) {
 }
 
 export async function mod_settings_change_banner_submitted(interaction, env, ctx) {
-  console.log(`[${InteractionType[interaction.type]}]: Got components: ${JSON.stringify(interaction.data.components)}`);
+  console.log(
+    `[${InteractionType[interaction.type]}]: Got components: ${JSON.stringify(interaction.data.components)}`
+  );
 
-  const _banner_setting_requested = interaction.data.components[0].component.value;
+  const _banner_setting_requested =
+    interaction.data.components[0].component.value;
 
   const discord_user = await getDiscordUser(interaction);
   const bot_user = await new TeapotBot(env).GetUser(discord_user);
@@ -59,23 +75,52 @@ export async function mod_settings_change_banner_submitted(interaction, env, ctx
     return mod_onboarding_logon(interaction, env, ctx);
   }
 
-  await new TeapotBot(env).UpdateSettings(discord_user, {
-    banner_type: _banner_setting_requested === "last_played" ? UserBannerType.LAST_PLAYED : UserBannerType.DISCORD
-  })
+  switch (_banner_setting_requested) {
+    case "XBOX_GAME_BANNER":
+      await new TeapotBot(env).UpdateSettings(discord_user, {
+        banner_type: UserBannerType.XBOX_GAME_BANNER,
+      });
+      break;
 
-  // fetch new data, not needed if it doesn't update the server account
+    case "DISCORD_BANNER":
+      await new TeapotBot(env).UpdateSettings(discord_user, {
+        banner_type: UserBannerType.DISCORD_BANNER,
+      });
+      break;
+
+    case "DISABLED":
+      await new TeapotBot(env).UpdateSettings(discord_user, {
+        banner_type: UserBannerType.DISABLED,
+      });
+      break;
+
+    default:
+      console.warn(
+        `[${InteractionType[interaction.type]}]: invalid banner type: ${_banner_setting_requested}`
+      );
+      break;
+  }
+
   const bot_user_refresh = await new TeapotBot(env).GetUser(discord_user);
-  const teapot_refresh = await postTeapotRequest(env, { action: "overview", email: bot_user.email });
+  const teapot_refresh = await postTeapotRequest(env, {
+    action: "overview",
+    email: bot_user.email,
+  });
 
-  // refreshes the settings component like a madman
   return new JsonResponse({
     type: InteractionResponseType.UPDATE_MESSAGE,
     data: {
       allowed_mentions: { parse: [] },
-      flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
+      flags:
+        InteractionResponseFlags.IS_COMPONENTS_V2 |
+        InteractionResponseFlags.EPHEMERAL,
       components: [
-        ...await _renderSettings(teapot_refresh, bot_user_refresh, "sel_settings_preference")
-      ]
-    }
+        ...(await _renderSettings(
+          teapot_refresh,
+          bot_user_refresh,
+          "sel_settings_preference"
+        )),
+      ],
+    },
   });
 }
