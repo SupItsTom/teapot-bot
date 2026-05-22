@@ -50,7 +50,7 @@ export default async function (interaction, env, ctx) {
           "description": "Whether to show your Gamertag, Time left, Challenges, ect.",
           "component": {
             "type": ComponentType.Checkbox,
-            "custom_id": "like_checkbox",
+            "custom_id": "mod_settings_change_privacy:details",
             "default": bot_user.settings.render_details
           }
         },
@@ -64,9 +64,7 @@ export default async function (interaction, env, ctx) {
 }
 
 export async function mod_settings_change_privacy_submitted(interaction, env, ctx) {
-  console.log(
-    `[${InteractionType[interaction.type]}]: Got components: ${JSON.stringify(interaction.data.components)}`
-  );
+  console.log(`[${InteractionType[interaction.type]}]: Got components: ${JSON.stringify(interaction.data.components)}`);
 
   const _privacy_setting_requested =
     interaction.data.components[0].component.value;
