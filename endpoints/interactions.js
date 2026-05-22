@@ -34,8 +34,7 @@ import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/
 export default async function (request, env, ctx) {
   const interaction = await request.json();
 
-  console.info(`[endpoints:interactions] incoming request for ${InteractionType[interaction.type]}`);
-  //console.log(`${JSON.stringify(interaction)}`);
+  console.log(`[app]: Incoming interaction: ${InteractionType[interaction.type]}`);
 
   const discord_user = await getDiscordUser(interaction);
 
@@ -69,14 +68,15 @@ export default async function (request, env, ctx) {
 // Purpose: Let's Discord know we are alive
 //-----------------------------------------------------------------------------
 function _handlePingRequest() {
+  console.log(`[${InteractionType[interaction.type]}]: PING!`);
   return new JsonResponse({ type: InteractionResponseType.PONG });
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: Main handler for directing commands to right place
 //-----------------------------------------------------------------------------
-function _handleApplicationCommand(interaction, env, ctx) {
-  console.log(`[endpoints:interactions][_handleApplicationCommand]: ${interaction.data.name}`)
+function _handleApplicationCommand(interaction, env, ctx) { 
+  console.log(`[${InteractionType[interaction.type]}]: ${interaction.data.name}`);
 
   const cmdName = interaction.data.name.toLowerCase();
 
@@ -97,7 +97,7 @@ function _handleApplicationCommand(interaction, env, ctx) {
 // Purpose: Handles command autocomplete results
 //-----------------------------------------------------------------------------
 function _handleApplicationCommandAutoComplete(interaction, env, ctx) {
-  console.log(`[endpoints:interactions][_handleApplicationCommandAutoComplete]: ${interaction.data.name}`)
+  console.log(`[${InteractionType[interaction.type]}]: ${interaction.data.name}`);
 
   const cmdName = interaction.data.name.toLowerCase();
 
@@ -111,7 +111,7 @@ function _handleApplicationCommandAutoComplete(interaction, env, ctx) {
 // Purpose: Handles submitted modals
 //-----------------------------------------------------------------------------
 function _handleModalSubmit(interaction, env, ctx) {
-  console.log(`[endpoints:interactions][_handleModalSubmit]: ${interaction.data.custom_id}`)
+  console.log(`[${InteractionType[interaction.type]}]: ${interaction.data.custom_id}`);
 
   const modName = interaction.data.custom_id.toLowerCase();
 
@@ -135,6 +135,8 @@ function _handleModalSubmit(interaction, env, ctx) {
 // Purpose: Handles submitted modals
 //-----------------------------------------------------------------------------
 function _handleMessageComponent(interaction, env, ctx) {
+  console.log(`[${InteractionType[interaction.type]}]: ${interaction.data.custom_id}`);
+
   const comName = interaction.data.custom_id.toLowerCase();
 
   // text adventure:

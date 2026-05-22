@@ -15,10 +15,8 @@ export class Xbox {
 
     const request = await fetch(`${host_url}`, options)
       .then(response => response.json())
-      .then(response => { console.log(response); return response; })
+      .then(response => { console.log(`[XboxService]: Compelted GET for ${host_url}`); return response; })
       .catch(err => console.error(err));
-
-    console.log(`Xbox:GetGameFromTitleID: ${_title_id.toUpperCase()} => ${request}`);
 
     if (request?.detail == "Not Found") return undefined;
     else return request;
@@ -37,10 +35,8 @@ export class Xbox {
 
     const request = await fetch(`${host_url}`, options)
       .then(response => response.json())
-      .then(response => { console.log(response); return response; })
+      .then(response => { console.log(`[XboxService]: Compelted GET for ${host_url}`); return response; })
       .catch(err => console.error(err));
-
-    console.log(`Xbox:GetMarketplaceProduct: ${product_id} => ${request}`);
 
     if (request?.detail == "Not Found") return undefined;
     else return request;
@@ -59,10 +55,8 @@ export class Xbox {
 
     const request = await fetch(`${host_url}`, options)
       .then(response => response.json())
-      .then(response => { console.log(response); return response; })
+      .then(response => { console.log(`[XboxService]: Compelted GET for ${host_url}`); return response; })
       .catch(err => console.error(err));
-
-    console.log(`Xbox:GetMarketplaceProductAddons: ${product_id} => ${request}`);
 
     if (request?.detail == "Not Found") return undefined;
     else return request;
@@ -70,7 +64,6 @@ export class Xbox {
 
   // Used for Command AutoComplete
   async GetGameTitleIdFromSearch(search_query) {
-
     let search_limit = 25
     const host_url = `https://dbox.tools/api/title_ids/?name=${search_query}&system=XBOX360&limit=${search_limit}&offset=0`;
 
@@ -83,7 +76,7 @@ export class Xbox {
 
     const request = await fetch(`${host_url}`, options)
       .then(response => response.json())
-      .then(response => { console.log(response); return response; })
+      .then(response => { console.log(`[XboxService]: Compelted GET for ${host_url}`); return response; })
       .catch(err => console.error(err));
 
     return request;

@@ -1,8 +1,8 @@
-import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
+import { InteractionResponseFlags, InteractionResponseType, InteractionType, MessageComponentTypes } from "discord-interactions";
 import { JsonResponse, numberWithCommas } from "../utils/client";
 import { ButtonStyle, ComponentType, TextInputStyle } from "discord-api-types/v10";
 import { getDiscordUser, getDisplayName, MessageComponent, ClientError } from "../utils/discord";
-import { postTeapotRequest, TeapotBot } from "../utils/teapot";
+import { postTeapotRequest, TeapotBot, UserBannerType } from "../utils/teapot";
 import cmd_profile from "../commands/cmd_profile";
 import { TA_MadMan } from "../textadventure/ta_madman";
 
@@ -37,8 +37,8 @@ export default async function (interaction, env, ctx) {
             "type": ComponentType.RadioGroup,
             "custom_id": "mod_settings_change_banner:type",
             "options": [
-              { "value": "gamerpic", "label": "Last Played Game", "default": true },
-              { "value": "discord", "label": "Discord Banner", "default": false },
+              { "value": "last_played", "label": "Last Played Game", "default": bot_user.settings.banner_type === UserBannerType.LAST_PLAYED },
+              { "value": "discord", "label": "Discord Banner", "default": bot_user.settings.banner_type === UserBannerType.DISCORD },
             ]
           }
         }
@@ -48,9 +48,9 @@ export default async function (interaction, env, ctx) {
 }
 
 export async function mod_settings_change_banner_submitted(interaction, env, ctx) {
-  const _banner_setting_requested = interaction.data.components[0].component.value;
+  console.log(`[${InteractionType[interaction.type]}]: Got components: ${JSON.stringify(interaction.data.components)}`);
 
-  await console.log(interaction.data.components[0].component.value)
+  const _banner_setting_requested = interaction.data.components[0].component.value;
 
   const discord_user = await getDiscordUser(interaction);
   const bot_user = await new TeapotBot(env).GetUser(discord_user);
@@ -59,7 +59,9 @@ export async function mod_settings_change_banner_submitted(interaction, env, ctx
     return mod_onboarding_logon(interaction, env, ctx);
   }
 
-  // todo: set new banner setting
+  await new TeapotBot(env).UpdateSettings(discord_user, {
+    banner_type: _banner_setting_requested === "last_played" ? UserBannerType.LAST_PLAYED : UserBannerType.DISCORD
+  })
 
   // fetch new data, not needed if it doesn't update the server account
   const bot_user_refresh = await new TeapotBot(env).GetUser(discord_user);

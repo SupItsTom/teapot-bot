@@ -1,4 +1,4 @@
-import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
+import { InteractionResponseFlags, InteractionResponseType, InteractionType, MessageComponentTypes } from "discord-interactions";
 import { JsonResponse, numberWithCommas } from "../utils/client";
 import { ButtonStyle, ComponentType, TextInputStyle } from "discord-api-types/v10";
 import { getDiscordUser, getDisplayName, MessageComponent, ClientError } from "../utils/discord";
@@ -56,6 +56,8 @@ export default async function (interaction, env, ctx) {
 }
 
 export async function mod_settings_change_colors_submitted(interaction, env, ctx) {
+  console.log(`[${InteractionType[interaction.type]}]: Got components: ${JSON.stringify(interaction.data.components)}`);
+
   const _engine_mw2_request = interaction.data.components[0].component.values.includes("mw2");
   const _engine_bo2_request = interaction.data.components[0].component.values.includes("bo2");
   const _engine_mw3_request = interaction.data.components[0].component.values.includes("mw3");
@@ -65,8 +67,6 @@ export async function mod_settings_change_colors_submitted(interaction, env, ctx
   const _engine_bo3_request = interaction.data.components[0].component.values.includes("bo3");
   const _engine_waw_request = interaction.data.components[0].component.values.includes("waw");
   const _engine_cod4_request = interaction.data.components[0].component.values.includes("cod4");
-
-  await console.log(interaction.data.components[0].component.value)
 
   const discord_user = await getDiscordUser(interaction);
   const bot_user = await new TeapotBot(env).GetUser(discord_user);

@@ -1,4 +1,4 @@
-import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
+import { InteractionResponseFlags, InteractionResponseType, InteractionType, MessageComponentTypes } from "discord-interactions";
 import { JsonResponse, numberWithCommas } from "../utils/client";
 import { ButtonStyle, ComponentType, TextInputStyle } from "discord-api-types/v10";
 import { getDiscordUser, getDisplayName, MessageComponent, ClientError } from "../utils/discord";
@@ -39,8 +39,8 @@ export default async function (interaction, env, ctx) {
             "type": ComponentType.RadioGroup,
             "custom_id": "mod_settings_change_privacy:type",
             "options": [
-              { "value": "public", "label": "Everyone on Discord", "description": "Your profile is visible to Server Members in commands you use.", "default": !bot_user.is_private },
-              { "value": "private", "label": "Only Me", "description": "Your profile will only be visible to you in commands you use.", "default": bot_user.is_private },
+              { "value": "public", "label": "Everyone on Discord", "description": "Your profile is visible to Server Members in commands you use.", "default": !bot_user.settings.private },
+              { "value": "private", "label": "Only Me", "description": "Your profile will only be visible to you in commands you use.", "default": bot_user.settings.private },
             ]
           }
         },
@@ -54,9 +54,9 @@ export default async function (interaction, env, ctx) {
 }
 
 export async function mod_settings_change_privacy_submitted(interaction, env, ctx) {
-  const _privacy_setting_requested = interaction.data.components[0].component.value;
+  console.log(`[${InteractionType[interaction.type]}]: Got components: ${JSON.stringify(interaction.data.components)}`);
 
-  await console.log(interaction.data.components[0].component.value)
+  const _privacy_setting_requested = interaction.data.components[0].component.value;
 
   const discord_user = await getDiscordUser(interaction);
   const bot_user = await new TeapotBot(env).GetUser(discord_user);
@@ -65,7 +65,9 @@ export async function mod_settings_change_privacy_submitted(interaction, env, ct
     return mod_onboarding_logon(interaction, env, ctx);
   }
 
-  await new TeapotBot(env).UpdatePrivacy(discord_user, _privacy_setting_requested === "private" ? true : false)
+  await new TeapotBot(env).UpdateSettings(discord_user, {
+    private: _privacy_setting_requested === "private"
+  });
 
   // fetch new data, not needed if it doesn't update the server account
   const bot_user_refresh = await new TeapotBot(env).GetUser(discord_user);

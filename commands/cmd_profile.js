@@ -1,7 +1,7 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
-import { JsonResponse, numberWithCommas, truncateRelativeTime } from "../utils/client";
+import { IsStaging, JsonResponse, numberWithCommas, truncateRelativeTime } from "../utils/client";
 import { getDiscordUser, MessageComponent, ClientError, getAvatarUrl, Discord, AppWebhookEventType } from "../utils/discord";
-import { postTeapotRequest, TeapotBot } from "../utils/teapot";
+import { postTeapotRequest, TeapotBot, UserAvatarType } from "../utils/teapot";
 import { ButtonStyle, ComponentType } from "discord-api-types/v10";
 import { Xbox } from "../utils/xbox";
 import { Badges } from "../utils/badges";
@@ -28,17 +28,22 @@ export default async function (interaction, env, ctx) {
   let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
   let _profile_badges = await new Badges(env, discord_user).GetAll();
 
-  if(interaction.guild_id === env.DISCORD_APPLICATION.GUILD_ID && !bot_user.is_private){
+  if (
+    interaction.guild_id === env.DISCORD_APPLICATION.GUILD_ID &&
+    !bot_user.settings.private
+  ) {
     await new Discord(env).SendWebhookEvent(AppWebhookEventType.USER_VAULT_LOG,
       `-# **[${discord_user.username}](discord://-/users/${discord_user.id})** has been unbanned for **${teapot_kv.time == "" ? "Not set" : `${truncateRelativeTime(teapot_kv.time)}`}**.`
-    )
+    );
   }
 
   return new JsonResponse({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
       allowed_mentions: { parse: [] },
-      flags: InteractionResponseFlags.IS_COMPONENTS_V2 | (bot_user.is_private ? InteractionResponseFlags.EPHEMERAL : null),
+      flags:
+        InteractionResponseFlags.IS_COMPONENTS_V2 |
+        (bot_user.settings.private ? InteractionResponseFlags.EPHEMERAL : 0),
 
       components: [
         {
@@ -70,7 +75,9 @@ export default async function (interaction, env, ctx) {
               accessory: {
                 type: ComponentType.Thumbnail,
                 media: {
-                  url: `http://avatar.xboxlive.com/avatar/${encodeURIComponent(teapot.user.gamertag.trim())}/avatarpic-l.png`
+                  url: bot_user.settings.avatar_type === UserAvatarType.GAMERPIC
+                    ? `http://avatar.xboxlive.com/avatar/${encodeURIComponent(teapot.user.gamertag.trim())}/avatarpic-l.png`
+                    : getAvatarUrl(discord_user)
                 }
               }
             },
@@ -90,6 +97,7 @@ export default async function (interaction, env, ctx) {
             _memberYearsOfService(teapot, bot_user)
           ]
         },
+        //...__dev_user_json(teapot, bot_user)
       ]
     }
   });
@@ -132,4 +140,19 @@ function _memberYearsOfService(teapot, bot_user) {
       disabled: true,
     },
   };
+}
+
+// Dev: returns database objects
+function __dev_user_json(teapot, bot_user) {
+  return [
+    {
+      type: MessageComponentTypes.CONTAINER,
+      components: [
+        MessageComponent.Text(`**PROFILE DEBUG**`, -1),
+        MessageComponent.Text(
+          "```json\n" + JSON.stringify(bot_user, null, 2) + "\n```"
+        ),
+      ]
+    }
+  ];
 }

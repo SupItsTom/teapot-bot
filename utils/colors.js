@@ -5,16 +5,16 @@ export async function GetColorText(hex) {
     );
 
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      console.error(`[ColorService]: Failed GET to https://www.thecolorapi.com/id?hex=${encodeURIComponent(hex)}`);
     }
+
+    console.log(`[ColorService]: Completed GET to https://www.thecolorapi.com/id?hex=${encodeURIComponent(hex)} with status: ${response.status}`);
 
     const data = await response.json();
 
-    console.log("COLORS:", data);
-
     return data.name.value;
   } catch (error) {
-    console.error("Failed to fetch color data:", error);
+    console.error(`[ColorService]: Failed GET to https://www.thecolorapi.com/id?hex=${encodeURIComponent(hex)} with error: ${error}`);
     return "Unknown Color";
   }
 }

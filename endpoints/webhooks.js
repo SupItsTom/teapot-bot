@@ -9,9 +9,9 @@ import ev_entitlement_create from "../events/ev_entitlement_create";
 // Purpose: Entry point to handle various command types
 //-----------------------------------------------------------------------------
 export default async function (request, env, ctx) {
-  const interaction = await request.json();
+  console.log(`[app]: Incoming webhook: ${WebhookType[interaction.type]}`);
 
-  console.info(`[endpoints:webhooks] incoming request for ${WebhookType[interaction.type]}`);
+  const interaction = await request.json();
 
   switch (interaction.type) {
     case WebhookType.PING: {

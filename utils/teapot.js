@@ -43,7 +43,7 @@ export function postTeapotRequest(env, data) {
     ...extra
   });
 
-  console.log(`Teapot Request: ${form.toString().replace(`&key=${env.TEAPOT_API.SECRET}`, '')}`);
+  console.log(`[TeapotService]: Sending POST for ${form.toString().replace(`&key=${env.TEAPOT_API.SECRET}`, '')}`);
 
   return fetch(env.TEAPOT_API.URL, {
     method: 'POST',
@@ -55,10 +55,21 @@ export function postTeapotRequest(env, data) {
   })
     .then(res => res.json())
     .then(res => {
-      console.log(res);
+      console.log(`[TeapotService]: Completed POST for ${form.toString().replace(`&key=${env.TEAPOT_API.SECRET}`, '')} with body: ${res}`);
       return res;
     })
     .catch(console.error);
+}
+
+// Export avatar type settings
+export const UserAvatarType = {
+  GAMERPIC: 0,
+  DISCORD: 1,
+}
+
+export const UserBannerType = {
+  LAST_PLAYED: 0,
+  DISCORD: 1,
 }
 
 export class TeapotBot {
@@ -66,52 +77,169 @@ export class TeapotBot {
     this.env = env;
   }
 
-  // Get the current users' linked email for Teapot Live
+  // Get the current users' linked email + settings
   async GetUser(discord_user) {
-    console.log(`Fetching Teapot user for Discord ID: ${discord_user.id}`);
+    // Fetch base user
+    const user = await this.env.database
+      .prepare(`
+        SELECT id, email, timestamp
+        FROM users
+        WHERE id = ?1
+      `)
+      .bind(discord_user.id)
+      .first();
+
     
-    const sql_request = this.env.database.prepare("SELECT * FROM users WHERE id = ?").bind(discord_user.id);
+    if (!user) {
+      console.warn(`[DatabaseManager]: no user present for ${discord_user.id}`);
+      return false;
+    }
 
-    const { results } = await sql_request.all();
-    console.log(`Teapot User Data: ${JSON.stringify(results)}`);
+    
+    const settings = await this.env.database
+      .prepare(`
+        SELECT avatar_type, banner_type, private
+        FROM user_settings
+        WHERE id = ?1
+      `)
+      .bind(discord_user.id)
+      .first();
 
-    if(results[0] != undefined) return results[0];
-    else return false;
+    
+    user.settings = {
+      avatar_type: settings?.avatar_type ?? 0,
+      banner_type: settings?.banner_type ?? 0,
+      private: Boolean(settings?.private)
+    };
 
+    console.log(`[DatabaseManager]: GetUser returned ${JSON.stringify(user)}`);
+
+    return user;
   }
 
   // Register the current users' email for future use
-  async RegisterUser(discord_user, email, settings ){
-    console.log(`Registering Teapot user for Discord ID: ${discord_user.id} with email: ${email} (private: ${settings?.is_private})`);
-    
-    const sql_request = await this.env.database.prepare("REPLACE INTO users (id, email, timestamp, is_private) VALUES (?1, ?2, ?3, ?4)")
-    .bind(discord_user.id, email, new Date().toISOString(), settings?.is_private).run();
+  async RegisterUser(discord_user, email, settings = {}) {
+    const userResult = await this.env.database
+      .prepare(`
+        REPLACE INTO users (
+          id,
+          email,
+          timestamp
+        )
+        VALUES (?1, ?2, ?3)
+      `)
+      .bind(
+        discord_user.id,
+        email,
+        new Date().toISOString()
+      )
+      .run();
 
-    return sql_request;
+    // Create/update settings
+    // const settingsResult = await this.env.database
+    //   .prepare(`
+    //     REPLACE INTO user_settings (
+    //       id,
+    //       avatar_type,
+    //       banner_type,
+    //       private
+    //     )
+    //     VALUES (?1, ?2, ?3, ?4)
+    //   `)
+    //   .bind(
+    //     discord_user.id,
+    //     settings.avatar_type ?? 0,
+    //     settings.banner_type ?? 0,
+    //     settings.private ?? false
+    //   )
+    //   .run();
+
+    console.log(`[DatabaseManager]: RegisterUser completed for: ${discord_user.id}, took: ${userResult.meta.duration}ms (by: ${userResult.meta.served_by}, colo: ${userResult.meta.served_by_colo}, region: ${userResult.meta.served_by_region})`);
+
+    return {
+      user: userResult,
+      //settings: settingsResult
+    };
   }
 
   // Update the users' profile privacy boolean
-  async UpdatePrivacy(discord_user, is_private){
-    console.log(`Updating privacy for Discord ID: ${discord_user.id}, private: ${is_private}`);
-    
-    const sql_request = this.env.database.prepare("UPDATE users SET is_private = ?1 WHERE id = ?2")
-    .bind(is_private, discord_user.id).run();
+  async UpdateSettings(discord_user, settings = {}) {
 
-    return sql_request;
+    await this.env.database
+      .prepare(`
+      INSERT INTO user_settings (id, private, avatar_type, banner_type)
+      VALUES (?1, 0, 0, 0)
+      ON CONFLICT(id) DO NOTHING
+    `)
+      .bind(discord_user.id)
+      .run();
+
+    const fields = [];
+    const values = [];
+
+    if (settings.private !== undefined) {
+      fields.push("private = ?1");
+      values.push(settings.private ? 1 : 0);
+    }
+
+    if (settings.avatar_type !== undefined) {
+      fields.push(`avatar_type = ?${values.length + 1}`);
+      values.push(settings.avatar_type);
+    }
+
+    if (settings.banner_type !== undefined) {
+      fields.push(`banner_type = ?${values.length + 1}`);
+      values.push(settings.banner_type);
+    }
+
+    if (fields.length === 0) {
+      return { skipped: true };
+    }
+
+    const query = `
+    UPDATE user_settings
+    SET ${fields.join(", ")}
+    WHERE id = ?${values.length + 1}
+  `;
+
+    const result = await this.env.database
+      .prepare(query)
+      .bind(...values, discord_user.id)
+      .run();
+
+    console.log(`[DatabaseManager]: UpdateSettings completed for: ${discord_user.id}, took: ${result.meta.duration}ms (by: ${result.meta.served_by}, colo: ${result.meta.served_by_colo}, region: ${result.meta.served_by_region})`);
+
+    return result;
   }
 
   // Remove the current users' records
-  async UnregisterUser(discord_user){
-    console.log(`Unregistering Console for Discord ID: ${discord_user.id}`);
-    
-    const sql_request = this.env.database.prepare("UPDATE users SET email = NULL WHERE id = ?1")
-    .bind(discord_user.id).run();
+  async UnregisterUser(discord_user) {
+    const userResult = await this.env.database
+      .prepare(`
+        DELETE FROM users
+        WHERE id = ?1
+      `)
+      .bind(discord_user.id)
+      .run();
 
-    return sql_request;
+    const settingsResult = await this.env.database
+      .prepare(`
+        DELETE FROM user_settings
+        WHERE id = ?1
+      `)
+      .bind(discord_user.id)
+      .run();
+
+    console.log(`[DatabaseManager]: UnregisterUser completed for: ${discord_user.id}, took: ${result.meta.duration}ms (by: ${result.meta.served_by}, colo: ${result.meta.served_by_colo}, region: ${result.meta.served_by_region})`);
+
+    return {
+      user: userResult,
+      settings: settingsResult
+    };
   }
 
   // Check to see if critical services are available
-  AreMonitorsOnline(){
+  AreMonitorsOnline() {
 
     /* TODO - CHECK IF CRITICAL THIRD-PARTY SERVICES ARE UP:
     * Return boolean if unreachable

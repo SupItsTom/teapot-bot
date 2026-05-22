@@ -1,4 +1,4 @@
-import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
+import { InteractionResponseFlags, InteractionResponseType, InteractionType, MessageComponentTypes } from "discord-interactions";
 import { JsonResponse, numberWithCommas } from "../utils/client";
 import { ButtonStyle, ComponentType, TextInputStyle } from "discord-api-types/v10";
 import { getDiscordUser, getDisplayName, MessageComponent, ClientError } from "../utils/discord";
@@ -50,6 +50,8 @@ export default async function (interaction, env, ctx) {
 }
 
 export async function mod_settings_change_username_submitted(interaction, env, ctx) {
+  console.log(`[${InteractionType[interaction.type]}]: Got components: ${JSON.stringify(interaction.data.components)}`);
+
   const _username_requested = interaction.data.components[0].component.value;
 
   const discord_user = await getDiscordUser(interaction);

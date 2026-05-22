@@ -70,13 +70,6 @@ export class Badges {
     const isPremium = teapot.user.timeleft.premium == true ? `${ProfileCardBadges.BADGE_PREMIUM} ` : ``;
     const isClanMember = this.discord_user.primary_guild && this.discord_user.primary_guild.identity_enabled && this.discord_user.primary_guild.identity_guild_id == "1004811174044508271" ? `${ProfileCardBadges.BADGE_CLAN_MEMBER} ` : ``;
 
-    // return the formatted string of badges the user has:
-    if (badges[this.discord_user.id]) {
-      console.log(`Badges:GetAll: Badges claimed by user ${this.discord_user.id}:`);
-      badges[this.discord_user.id].forEach(badge => console.log(` - ${badge}`));
-    }
-    else console.log(`Badges:GetAll: No claimed badges for user ${this.discord_user.id}:`);
-
     if( this.env.DISCORD_APPLICATION.CLIENT_ID !== "1447678850493321288") return `\`ⓘ Badges disabled\``;
 
     return `${isSystem}${isDeveloper}${isTester}${isSuperiority}${isMoxah}${isSlut}${isBricker}${isClanMember}${isLifetime}${isPremium}`;

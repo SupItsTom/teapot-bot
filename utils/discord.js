@@ -26,14 +26,32 @@ export function getDisplayName(discordUser) {
 }
 
 // TODO: move to class 'DiscordUser'
-export function getAvatarUrl(discordUser) {
-  if (!discordUser.avatar) {
-    const defaultAvatarNumber = discordUser.discriminator % 5;
-    return `https://cdn.discordapp.com/embed/avatars/${defaultAvatarNumber}.png`;
+export function getAvatarUrl(discord_user, size = 256) {
+  if (!discord_user?.id) return null;
+
+  if (discord_user.avatar) {
+    const extension = discord_user.avatar.startsWith("a_") ? "gif" : "png";
+
+    return `https://cdn.discordapp.com/avatars/${discord_user.id}/${discord_user.avatar}.${extension}?size=${size}`;
   }
-  else {
-    return `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`;
-  }
+
+  // use the modulo'd default profile pic if none is available
+  const defaultIndex = Number(BigInt(discord_user.id) >> 22n) % 6;
+
+  return `https://cdn.discordapp.com/embed/avatars/${defaultIndex}.png`;
+}
+
+// TODO: move to class 'DiscordUser'
+export function getBannerUrl(user, size = 1024) {
+  if (!user?.id) return null;
+
+  // No banner set
+  if (!user.banner) return null;
+
+  const isGif = user.banner.startsWith("a_");
+  const ext = isGif ? "gif" : "png";
+
+  return `https://cdn.discordapp.com/banners/${user.id}/${user.banner}.${ext}?size=${size}`;
 }
 
 export const AppWebhookEventType = Object.freeze({

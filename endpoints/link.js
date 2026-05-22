@@ -6,6 +6,8 @@ import { getDisplayName } from "../utils/discord";
 // Purpose: Entry point to handle various command types
 //-----------------------------------------------------------------------------
 export default async function (request, env, ctx) {
+  console.log(`[app]: Incoming link request`);
+
   try {
     const url = new URL(request.url);
     const code = url.searchParams.get("code");
