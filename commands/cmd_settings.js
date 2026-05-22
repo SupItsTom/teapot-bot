@@ -89,8 +89,7 @@ export async function _renderSettings(teapot, bot_user, selected) {
   ];
 }
 
-// done so far!
-function _cmd_settings_general(teapot, bot_user) {
+async function _cmd_settings_general(teapot, bot_user) {
   return [
     // USERNAME SETTING
     MessageComponent.Seperator(),
@@ -135,7 +134,7 @@ function _cmd_settings_general(teapot, bot_user) {
       components: [
         MessageComponent.Text(`
 **Profile Privacy**
--# **${bot_user.settings.private ? "Only visible to you" : "Others can see your profile"}**
+-# **${bot_user.settings.private ? "Only visible to you" : `Others can see your profile${bot_user.settings.render_details ? " and details" : " without details"}`}**
 `)
       ],
       accessory: {
@@ -155,7 +154,6 @@ function _cmd_settings_general(teapot, bot_user) {
   ];
 }
 
-// todo when i wake up
 async function _cmd_settings_preference(teapot, bot_user) {
   return [
     // NOTIFICATION SETTING

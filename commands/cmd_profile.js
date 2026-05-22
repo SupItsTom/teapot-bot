@@ -30,7 +30,8 @@ export default async function (interaction, env, ctx) {
 
   if (
     interaction.guild_id === env.DISCORD_APPLICATION.GUILD_ID &&
-    !bot_user.settings.private
+    !bot_user.settings.private &&
+    bot_user.settings.render_details
   ) {
     await new Discord(env).SendWebhookEvent(AppWebhookEventType.USER_VAULT_LOG,
       `-# **[${discord_user.username}](discord://-/users/${discord_user.id})** has been unbanned for **${teapot_kv.time == "" ? "Not set" : `${truncateRelativeTime(teapot_kv.time)}`}**.`
@@ -54,22 +55,37 @@ export default async function (interaction, env, ctx) {
 
             ..._profileComponent({ bot_user, discord_user, teapot, _game_info, _profile_badges, }),
 
-            MessageComponent.Seperator(),
+            ...(bot_user.settings.render_details || bot_user.settings.private
+              ? [
+                MessageComponent.Seperator(),
 
-            MessageComponent.Text(`
+                MessageComponent.Text(`
 -# **ABOUT ME**
 **Gamertag:** ${teapot.user.gamertag == "" ? "Not Signed In" : `${teapot.user.gamertag}`}
 **Challenges:** ${numberWithCommas(teapot.user.xke_count)}
 **Time Left:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? " (Premium)" : ""}` : `${teapot.user.timeleft.banked.days}d ${teapot.user.timeleft.banked.timeleft}`}
 **Keyvault Time:** ${teapot_kv.time == "" ? "Not set" : `${truncateRelativeTime(teapot_kv.time)}`}
 `),
+              ]
+              : []),
 
             MessageComponent.Seperator(),
 
             _memberYearsOfService(teapot, bot_user)
           ]
         },
-        //...__dev_user_json(teapot, bot_user)
+        ...(env.CF_VERSION_METADATA.id === ''
+          ? [
+            {
+              type: MessageComponentTypes.CONTAINER,
+              components: [
+                MessageComponent.Text(`**PROFILE DEBUG**`, -1),
+                MessageComponent.Text(
+                  "```json\n" + JSON.stringify(bot_user, null, 2) + "\n```"
+                ),
+              ]
+            }
+          ]: []),
       ]
     }
   });
@@ -129,18 +145,15 @@ function _profileComponent({
     ),
 
     MessageComponent.Text(
-      `${
-        teapot.user.online === true
-          ? `**${
-              teapot.user.title.name === "None Set"
-                ? "Currently Online"
-                : `Playing [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`
-            }**`
-          : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${
-              teapot.user.title.name === "None Set"
-                ? ""
-                : ` on [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`
-            }**`
+      `${teapot.user.online === true
+        ? `**${teapot.user.title.name === "None Set"
+          ? "Currently Online"
+          : `Playing [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`
+        }**`
+        : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${teapot.user.title.name === "None Set"
+          ? ""
+          : ` on [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`
+        }**`
       }`,
       -1
     ),
@@ -194,8 +207,8 @@ function _profileComponent({
     const bannerUrl = ({
       [UserBannerType.XBOX_GAME_BANNER]:
         _game_info &&
-        _game_info.bing_id &&
-        teapot.user.title.id !== "0xFFFE07D1"
+          _game_info.bing_id &&
+          teapot.user.title.id !== "0xFFFE07D1"
           ? `http://download.xbox.com/content/images/${_game_info.bing_id}/banner.png`
           : null,
 

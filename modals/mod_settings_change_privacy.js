@@ -24,7 +24,7 @@ export default async function (interaction, env, ctx) {
 
   const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
 
-  await console.log(bot_user)
+  //await console.log(bot_user)
 
   return new JsonResponse({
     type: InteractionResponseType.MODAL,
@@ -45,6 +45,16 @@ export default async function (interaction, env, ctx) {
           }
         },
         {
+          "type": ComponentType.Label,
+          "label": "Show connection details?",
+          "description": "Whether to show your Gamertag, Time left, Challenges, ect.",
+          "component": {
+            "type": ComponentType.Checkbox,
+            "custom_id": "like_checkbox",
+            "default": bot_user.settings.render_details
+          }
+        },
+        {
           "type": ComponentType.TextDisplay,
           "content": "-# Reguardless of your privacy setting, we will never disclose potentially sensitive information, such as your email or console CPU Key."
         }
@@ -54,9 +64,15 @@ export default async function (interaction, env, ctx) {
 }
 
 export async function mod_settings_change_privacy_submitted(interaction, env, ctx) {
-  console.log(`[${InteractionType[interaction.type]}]: Got components: ${JSON.stringify(interaction.data.components)}`);
+  console.log(
+    `[${InteractionType[interaction.type]}]: Got components: ${JSON.stringify(interaction.data.components)}`
+  );
 
-  const _privacy_setting_requested = interaction.data.components[0].component.value;
+  const _privacy_setting_requested =
+    interaction.data.components[0].component.value;
+
+  const _details_setting_requested =
+    interaction.data.components[1].component.value;
 
   const discord_user = await getDiscordUser(interaction);
   const bot_user = await new TeapotBot(env).GetUser(discord_user);
@@ -66,22 +82,30 @@ export async function mod_settings_change_privacy_submitted(interaction, env, ct
   }
 
   await new TeapotBot(env).UpdateSettings(discord_user, {
-    private: _privacy_setting_requested === "private"
+    private: _privacy_setting_requested === "private",
+    render_details: _details_setting_requested === "true" || _details_setting_requested === true,
   });
 
-  // fetch new data, not needed if it doesn't update the server account
   const bot_user_refresh = await new TeapotBot(env).GetUser(discord_user);
-  const teapot_refresh = await postTeapotRequest(env, { action: "overview", email: bot_user.email });
+  const teapot_refresh = await postTeapotRequest(env, {
+    action: "overview",
+    email: bot_user.email,
+  });
 
-  // refreshes the settings component like a madman
   return new JsonResponse({
     type: InteractionResponseType.UPDATE_MESSAGE,
     data: {
       allowed_mentions: { parse: [] },
-      flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
+      flags:
+        InteractionResponseFlags.IS_COMPONENTS_V2 |
+        InteractionResponseFlags.EPHEMERAL,
       components: [
-        ...await _renderSettings(teapot_refresh, bot_user_refresh, "sel_settings_general")
-      ]
-    }
+        ...await _renderSettings(
+          teapot_refresh,
+          bot_user_refresh,
+          "sel_settings_general"
+        ),
+      ],
+    },
   });
 }

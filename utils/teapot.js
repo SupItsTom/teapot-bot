@@ -2,14 +2,6 @@ import { BetterStack } from "./uptime";
 
 /**
  * Sends a POST request to the Teapot API with the provided data.
- *
- * @param {Object} env - The environment configuration object.
- * @param {Object} data - The data to be sent in the request.
- * @param {string} data.action - The main action to be performed by the API.
- * @param {string} [data.email] - The email address associated with the request (optional).
- * @param {string} [data.subaction] - The subaction to be performed, e.g., "changename" (optional).
- * @param {string} [data.newname] - The new name to be used if the subaction is "changename" (optional).
- * @returns {Promise<Object>} A promise that resolves to the JSON response from the Teapot API.
  */
 export function postTeapotRequest(env, data) {
   const base = {
@@ -25,7 +17,7 @@ export function postTeapotRequest(env, data) {
   if (data?.subaction === "changename") {
     extra = {
       subaction: data.subaction,
-      newname: data.newname
+      newname: data.newname,
     };
   }
 
@@ -34,28 +26,36 @@ export function postTeapotRequest(env, data) {
 
     extra = {
       subaction: data.subaction,
-      ...options
+      ...options,
     };
   }
 
   const form = new URLSearchParams({
     ...base,
-    ...extra
+    ...extra,
   });
 
-  console.log(`[TeapotService]: Sending POST for ${form.toString().replace(`&key=${env.TEAPOT_API.SECRET}`, '')}`);
+  console.log(
+    `[TeapotService]: Sending POST for ${form
+      .toString()
+      .replace(`&key=${env.TEAPOT_API.SECRET}`, "")}`
+  );
 
   return fetch(env.TEAPOT_API.URL, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'User-Agent': 'DiscordBot (https://supitstom.net, 1.0)'
+      "Content-Type": "application/x-www-form-urlencoded",
+      "User-Agent": "DiscordBot (https://supitstom.net, 1.0)",
     },
-    body: form
+    body: form,
   })
-    .then(res => res.json())
-    .then(res => {
-      console.log(`[TeapotService]: Completed POST for ${form.toString().replace(`&key=${env.TEAPOT_API.SECRET}`, '')} with body: ${res}`);
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(
+        `[TeapotService]: Completed POST for ${form
+          .toString()
+          .replace(`&key=${env.TEAPOT_API.SECRET}`, "")} with body: ${res}`
+      );
       return res;
     })
     .catch(console.error);
@@ -79,14 +79,12 @@ export const avatarTypeLabel = (avatar_type) => ({
   [UserAvatarType.DISABLED]: "No Avatar",
   [UserAvatarType.XBOX_GAMERPIC]: "Xbox LIVE Gamerpic",
   [UserAvatarType.DISCORD_AVATAR]: "Discord Avatar",
-  // [UserAvatarType.CUSTOM]: "Custom Avatar",
 }[avatar_type] ?? "Unknown Avatar");
 
 export const bannerTypeLabel = (banner_type) => ({
   [UserBannerType.DISABLED]: "No Banner",
   [UserBannerType.XBOX_GAME_BANNER]: "Last Played Game",
   [UserBannerType.DISCORD_BANNER]: "Discord Banner",
-  // [UserBannerType.CUSTOM]: "Custom Banner",
 }[banner_type] ?? "Unknown Banner");
 
 export class TeapotBot {
@@ -94,9 +92,8 @@ export class TeapotBot {
     this.env = env;
   }
 
-  // Get the current users' linked email + settings
+  // Get user + settings
   async GetUser(discord_user) {
-    // Fetch base user
     const user = await this.env.database
       .prepare(`
         SELECT id, email, timestamp
@@ -106,27 +103,34 @@ export class TeapotBot {
       .bind(discord_user.id)
       .first();
 
-
     if (!user) {
       console.warn(`[DatabaseManager]: no user present for ${discord_user.id}`);
       return false;
     }
 
-
     const settings = await this.env.database
       .prepare(`
-        SELECT avatar_type, banner_type, private
+        SELECT avatar_type, banner_type, private, render_details
         FROM user_settings
         WHERE id = ?1
       `)
       .bind(discord_user.id)
       .first();
 
-
     user.settings = {
-      avatar_type: settings?.avatar_type ?? UserAvatarType.XBOX_GAMERPIC,
-      banner_type: settings?.banner_type ?? UserBannerType.XBOX_GAME_BANNER,
-      private: Boolean(settings?.private)
+      avatar_type:
+        settings?.avatar_type ?? UserAvatarType.XBOX_GAMERPIC,
+
+      banner_type:
+        settings?.banner_type ?? UserBannerType.XBOX_GAME_BANNER,
+
+      private: Boolean(settings?.private),
+
+      // NEW BOOLEAN FIELD
+      render_details:
+        settings?.render_details !== undefined
+          ? Boolean(settings.render_details)
+          : true,
     };
 
     console.log(`[DatabaseManager]: GetUser returned ${JSON.stringify(user)}`);
@@ -134,7 +138,7 @@ export class TeapotBot {
     return user;
   }
 
-  // Register the current users' email for future use
+  // Register user
   async RegisterUser(discord_user, email, settings = {}) {
     const userResult = await this.env.database
       .prepare(`
@@ -145,49 +149,24 @@ export class TeapotBot {
         )
         VALUES (?1, ?2, ?3)
       `)
-      .bind(
-        discord_user.id,
-        email,
-        new Date().toISOString()
-      )
+      .bind(discord_user.id, email, new Date().toISOString())
       .run();
 
-    // Create/update settings
-    // const settingsResult = await this.env.database
-    //   .prepare(`
-    //     REPLACE INTO user_settings (
-    //       id,
-    //       avatar_type,
-    //       banner_type,
-    //       private
-    //     )
-    //     VALUES (?1, ?2, ?3, ?4)
-    //   `)
-    //   .bind(
-    //     discord_user.id,
-    //     settings.avatar_type ?? 0,
-    //     settings.banner_type ?? 0,
-    //     settings.private ?? false
-    //   )
-    //   .run();
-
-    console.log(`[DatabaseManager]: RegisterUser completed for: ${discord_user.id}, took: ${userResult.meta.duration}ms (by: ${userResult.meta.served_by}, colo: ${userResult.meta.served_by_colo}, region: ${userResult.meta.served_by_region})`);
+    console.log(`[DatabaseManager]: RegisterUser completed for: ${discord_user.id}, took: ${userResult.meta.duration}ms`);
 
     return {
       user: userResult,
-      //settings: settingsResult
     };
   }
 
-  // Update the users' profile privacy boolean
+  // Update settings
   async UpdateSettings(discord_user, settings = {}) {
-
     await this.env.database
       .prepare(`
-      INSERT INTO user_settings (id, private, avatar_type, banner_type)
-      VALUES (?1, 0, 0, 0)
-      ON CONFLICT(id) DO NOTHING
-    `)
+        INSERT INTO user_settings (id, private, avatar_type, banner_type, render_details)
+        VALUES (?1, 0, 0, 0, 1)
+        ON CONFLICT(id) DO NOTHING
+      `)
       .bind(discord_user.id)
       .run();
 
@@ -209,27 +188,32 @@ export class TeapotBot {
       values.push(settings.banner_type);
     }
 
+    if (settings.render_details !== undefined) {
+      fields.push(`render_details = ?${values.length + 1}`);
+      values.push(settings.render_details ? 1 : 0);
+    }
+
     if (fields.length === 0) {
       return { skipped: true };
     }
 
     const query = `
-    UPDATE user_settings
-    SET ${fields.join(", ")}
-    WHERE id = ?${values.length + 1}
-  `;
+      UPDATE user_settings
+      SET ${fields.join(", ")}
+      WHERE id = ?${values.length + 1}
+    `;
 
     const result = await this.env.database
       .prepare(query)
       .bind(...values, discord_user.id)
       .run();
 
-    console.log(`[DatabaseManager]: UpdateSettings completed for: ${discord_user.id}, took: ${result.meta.duration}ms (by: ${result.meta.served_by}, colo: ${result.meta.served_by_colo}, region: ${result.meta.served_by_region})`);
+    console.log(`[DatabaseManager]: UpdateSettings completed for: ${discord_user.id}, took: ${result.meta.duration}ms`);
 
     return result;
   }
 
-  // Remove the current users' records
+  // Unregister user
   async UnregisterUser(discord_user) {
     const userResult = await this.env.database
       .prepare(`
@@ -247,21 +231,15 @@ export class TeapotBot {
       .bind(discord_user.id)
       .run();
 
-    console.log(`[DatabaseManager]: UnregisterUser completed for: ${discord_user.id}, took: ${result.meta.duration}ms (by: ${result.meta.served_by}, colo: ${result.meta.served_by_colo}, region: ${result.meta.served_by_region})`);
+    console.log(`[DatabaseManager]: UnregisterUser completed for: ${discord_user.id}`);
 
     return {
       user: userResult,
-      settings: settingsResult
+      settings: settingsResult,
     };
   }
 
-  // Check to see if critical services are available
   AreMonitorsOnline() {
-
-    /* TODO - CHECK IF CRITICAL THIRD-PARTY SERVICES ARE UP:
-    * Return boolean if unreachable
-    */
-
     return true;
   }
 }
