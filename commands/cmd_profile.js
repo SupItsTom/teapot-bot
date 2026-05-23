@@ -131,7 +131,7 @@ function _memberYearsOfService(teapot, bot_user) {
 }
 
 // get profile component
-function _profileComponent({
+export function _profileComponent({
   bot_user,
   discord_user,
   teapot,

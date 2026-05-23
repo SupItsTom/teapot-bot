@@ -5,6 +5,7 @@ import { getDiscordUser, MessageComponent, ClientError, getAvatarUrl } from "../
 import { postTeapotRequest, TeapotBot, UserAvatarType } from "../utils/teapot";
 import { Xbox } from "../utils/xbox";
 import { Badges } from "../utils/badges";
+import { _profileComponent } from "../commands/cmd_profile";
 
 /**
  * # Sign-in Modal (onboarding)
@@ -147,22 +148,7 @@ export async function mod_onboarding_logon_submitted(interaction, env, ctx) {
           components: [
             MessageComponent.Text("**CONNECTION SUCCESSFUL**", -1),
 
-            {
-              type: ComponentType.Section,
-              components: [
-                MessageComponent.Text(`<@${discord_user.id}> \`${teapot.user.name}\``, 2),
-                MessageComponent.Text(`${teapot.user.online == true ? `**${teapot.user.title.name === "None Set" ? "Currently Online" : `Playing [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`}**` : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${teapot.user.title.name === "None Set" ? "" : ` on [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`}**`}`, -1),
-                ...(_profile_badges ? [MessageComponent.Text(`${_profile_badges}`, 1)] : []),
-              ],
-              accessory: {
-                type: ComponentType.Thumbnail,
-                media: {
-                  url: bot_user.settings.avatar_type === UserAvatarType.GAMERPIC
-                    ? `http://avatar.xboxlive.com/avatar/${encodeURIComponent(teapot.user.gamertag.trim())}/avatarpic-l.png`
-                    : getAvatarUrl(discord_user)
-                }
-              }
-            },
+            ..._profileComponent({ bot_user, discord_user, teapot, _game_info, _profile_badges, }),
 
             MessageComponent.Seperator(),
 
