@@ -17,8 +17,12 @@ export class BetterStack {
 
     const request = await fetch(`${host_url}`, options)
       .then(response => response.json())
-      .then(response => { console.log(response); return response; })
+      .then(response => { console.log(`[UptimeService]: Compelted GET to ${host_url}`); return response; })
       .catch(err => console.error(err));
+
+    if (!request.ok) {
+      console.error(`[UptimeService]: Failed GET to ${host_url}`);
+    }
 
     return request;
   }

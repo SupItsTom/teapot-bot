@@ -140,13 +140,6 @@ function _getButtonForStatus(monitor) {
       break;
   }
 
-  console.log(`cmd_stats: ${JSON.stringify({
-    type: MessageComponentTypes.BUTTON,
-    style,
-    label,
-    custom_id: id,
-  })}`)
-
   return {
     type: MessageComponentTypes.BUTTON,
     style,
