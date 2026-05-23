@@ -36,7 +36,7 @@ export function postTeapotRequest(env, data) {
   });
 
   console.log(
-    `[TeapotService]: Sending POST for ${form
+    `[TeapotService]: Sending POST to ${form
       .toString()
       .replace(`&key=${env.TEAPOT_API.SECRET}`, "")}`
   );
@@ -52,7 +52,7 @@ export function postTeapotRequest(env, data) {
     .then((res) => res.json())
     .then((res) => {
       console.log(
-        `[TeapotService]: Completed POST for ${form
+        `[TeapotService]: Completed POST to ${form
           .toString()
           .replace(`&key=${env.TEAPOT_API.SECRET}`, "")} with body: ${res}`
       );
