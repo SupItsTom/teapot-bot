@@ -164,7 +164,7 @@ export class TeapotBot {
     await this.env.database
       .prepare(`
         INSERT INTO user_settings (id, private, avatar_type, banner_type, render_details)
-        VALUES (?1, 0, 0, 0, 1)
+        VALUES (?1, 0, 1, 1, 1)
         ON CONFLICT(id) DO NOTHING
       `)
       .bind(discord_user.id)
