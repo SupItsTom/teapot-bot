@@ -15,7 +15,7 @@ export class Xbox {
 
     const request = await fetch(`${host_url}`, options)
       .then(response => response.json())
-      .then(response => { console.log(`[XboxService]: Compelted GET to ${host_url}`); return response; })
+      .then(response => { console.log(`[XboxService]: Completed GET to ${host_url}`); return response; })
       .catch(err => console.error(err));
 
     if (request?.detail == "Not Found") return undefined;
@@ -35,7 +35,7 @@ export class Xbox {
 
     const request = await fetch(`${host_url}`, options)
       .then(response => response.json())
-      .then(response => { console.log(`[XboxService]: Compelted GET to ${host_url}`); return response; })
+      .then(response => { console.log(`[XboxService]: Completed GET to ${host_url}`); return response; })
       .catch(err => console.error(err));
 
     if (request?.detail == "Not Found") return undefined;
@@ -55,7 +55,7 @@ export class Xbox {
 
     const request = await fetch(`${host_url}`, options)
       .then(response => response.json())
-      .then(response => { console.log(`[XboxService]: Compelted GET to ${host_url}`); return response; })
+      .then(response => { console.log(`[XboxService]: Completed GET to ${host_url}`); return response; })
       .catch(err => console.error(err));
 
     if (request?.detail == "Not Found") return undefined;
@@ -76,7 +76,7 @@ export class Xbox {
 
     const request = await fetch(`${host_url}`, options)
       .then(response => response.json())
-      .then(response => { console.log(`[XboxService]: Compelted GET to ${host_url}`); return response; })
+      .then(response => { console.log(`[XboxService]: Completed GET to ${host_url}`); return response; })
       .catch(err => console.error(err));
 
     return request;
