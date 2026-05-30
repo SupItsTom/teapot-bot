@@ -60,7 +60,7 @@ export default async function (interaction, env, ctx) {
                 MessageComponent.Seperator(),
 
                 MessageComponent.Text(`
--# **ABOUT ME**
+-# **DETAILS**
 **Gamertag:** ${teapot.user.gamertag == "" ? "Not Signed In" : `${teapot.user.gamertag}`}
 **Challenges:** ${numberWithCommas(teapot.user.xke_count)}
 **Time Left:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? " (Premium)" : ""}` : `${teapot.user.timeleft.banked.days}d ${teapot.user.timeleft.banked.timeleft}`}
