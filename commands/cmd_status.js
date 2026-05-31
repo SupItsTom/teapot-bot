@@ -61,7 +61,7 @@ export default async function (interaction, env, ctx) {
 
             ..._uptime_info.data.map((monitor) => {
 
-              console.log(`cmd_stats: ${monitor.attributes.pronounceable_name}(${monitor.id}) => ${monitor.attributes.status} as of ${monitor.attributes.last_checked_at}`);
+              console.log(`[CMD_${interaction.data.name.toUpperCase()}]: Monitor: ${monitor.id} => ${monitor.attributes.pronounceable_name} (${monitor.attributes.status} since: ${monitor.attributes.last_checked_at})`);
 
               return {
                 type: MessageComponentTypes.SECTION,
