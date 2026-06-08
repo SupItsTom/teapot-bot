@@ -24,7 +24,6 @@ import mod_settings_change_avatar, { mod_settings_change_avatar_submitted } from
 import mod_settings_change_banner, { mod_settings_change_banner_submitted } from "../modals/mod_settings_change_banner";
 import mod_settings_toggle_notifications, { mod_settings_toggle_notifications_submitted } from "../modals/mod_settings_toggle_notifications";
 import mod_settings_toggle_cheats, { mod_settings_toggle_cheats_submitted } from "../modals/mod_settings_toggle_cheats";
-import mod_settings_change_colors, { mod_settings_change_colors_submitted } from "../modals/mod_settings_change_colors";
 import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
 
 
@@ -125,7 +124,6 @@ function _handleModalSubmit(interaction, env, ctx) {
     case "mod_settings_change_banner": return mod_settings_change_banner_submitted(interaction, env, ctx);
     case "mod_settings_toggle_notifications": return mod_settings_toggle_notifications_submitted(interaction, env, ctx);
     case "mod_settings_toggle_cheats": return mod_settings_toggle_cheats_submitted(interaction, env, ctx);
-    case "mod_settings_change_colors": return mod_settings_change_colors_submitted(interaction, env, ctx);
     case "mod_onboarding_logon": return mod_onboarding_logon_submitted(interaction, env, ctx);
     default: return new ClientError("Modal Not Found", `The modal \`${modName}\` is not available in this build.`).ShowUser();
   }
@@ -158,7 +156,6 @@ function _handleMessageComponent(interaction, env, ctx) {
     case "btn_settings_change_banner": return mod_settings_change_banner(interaction, env, ctx);
     case "btn_settings_toggle_notifications": return mod_settings_toggle_notifications(interaction, env, ctx);
     case "btn_settings_toggle_cheats": return mod_settings_toggle_cheats(interaction, env, ctx);
-    case "btn_settings_change_colors": return mod_settings_change_colors(interaction, env, ctx);
 
     // classics - kept for compatibility
     case "btn_adventure_open_door": return stupidTextAdventureEndGame(interaction, env, ctx);

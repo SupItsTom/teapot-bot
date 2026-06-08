@@ -192,24 +192,6 @@ async function _cmd_settings_preference(teapot, bot_user) {
         disabled: false
       }
     },
-    // COLOR SETTING
-    MessageComponent.Seperator(),
-    {
-      type: ComponentType.Section,
-      components: [
-        MessageComponent.Text(`
-**Color Scheme**
--# **[${await GetColorText(teapot.user.colors.dashbg.substring(2))}](https://www.thecolorapi.com/id?format=svg&hex=${teapot.user.colors.dashbg.substring(2)}&w=1280&h=720) - \`#${teapot.user.colors.dashbg.substring(2)}\`**
-`)
-      ],
-      accessory: {
-        type: MessageComponentTypes.BUTTON,
-        label: `Edit`,
-        style: ButtonStyle.Secondary,
-        custom_id: `btn_settings_change_colors`,
-        disabled: true
-      }
-    },
     // AVATAR SETTING
     MessageComponent.Seperator(),
     {
