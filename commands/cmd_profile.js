@@ -101,14 +101,14 @@ function _memberYearsOfService(teapot, bot_user) {
   if (teapot.user.date_registered_unix === 920950991) {
     return MessageComponent.Text(`
 -# **MEMBER SINCE**
--# <:TeapotLive:1517619860971192530> Legacy Account **•** <:TeapotBot:1517619859532288131> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
+-# <:TeapotLive:1517630995988480020> Legacy Account **•** <:TeapotBot:1517630993899589802> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
 `);
   }
 
   if (years <= 0) {
     return MessageComponent.Text(`
 -# **MEMBER SINCE**
--# <:TeapotLive:1517619860971192530> <t:${teapot.user.date_registered_unix}:D> **•** <:TeapotBot:1517619859532288131> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
+-# <:TeapotLive:1517630995988480020> <t:${teapot.user.date_registered_unix}:D> **•** <:TeapotBot:1517630993899589802> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
 `);
   }
 
@@ -117,7 +117,7 @@ function _memberYearsOfService(teapot, bot_user) {
     components: [
       MessageComponent.Text(`
 -# **MEMBER SINCE**
--# <:TeapotLive:1517619860971192530> <t:${teapot.user.date_registered_unix}:D> **•** <:TeapotBot:1517619859532288131> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
+-# <:TeapotLive:1517630995988480020> <t:${teapot.user.date_registered_unix}:D> **•** <:TeapotBot:1517630993899589802> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
 `)
     ],
     accessory: {

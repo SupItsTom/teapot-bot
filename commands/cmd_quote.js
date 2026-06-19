@@ -37,7 +37,7 @@ export async function cmd_quote_skidpaste(interaction, env, ctx){
           components: [
             MessageComponent.Text(`**A WILD QUOTE APPEARS...**`, -1),
             MessageComponent.Text(`>>> ${skidpaste.quote}`, 3),
-            MessageComponent.Text(`<:TeapotLive:1517619860971192530> ${skidpaste.name !== "Unnamed" ? `**${skidpaste.name}**` : "**SkidPaste User**"} • <t:${skidpaste.date}:R>`, 0),
+            MessageComponent.Text(`<:TeapotLive:1517630995988480020> ${skidpaste.name !== "Unnamed" ? `**${skidpaste.name}**` : "**SkidPaste User**"} • <t:${skidpaste.date}:R>`, 0),
           ]
         }
       ]
