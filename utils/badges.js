@@ -4,16 +4,16 @@ import { IsStaging } from "./client";
 
 
 export const ProfileCardBadges = {
-  BADGE_SYSTEM: `[<:System:1447729866190487716>](https://supitstom.net/teapot-bot/badges/#system)`,
-  BADGE_DEVELOPER: `[<:Developer:1447729859261632634>](https://supitstom.net/teapot-bot/badges/#developer)`,//
-  BADGE_LIFETIME: `[<:Lifetime:1447729860549283841>](https://supitstom.net/teapot-bot/badges/#lifetime)`,//
-  BADGE_MOXAH: `[<:Moxah:1447729862017155293>](https://supitstom.net/teapot-bot/badges/#moxah)`,//
-  BADGE_PH: `[<:Contributor:1447729857952743506>](https://supitstom.net/teapot-bot/badges/#slut)`,//
-  BADGE_KALI: `[<:TopBricker:1447729855050551447>](https://supitstom.net/teapot-bot/badges/#bricker)`,//
-  BADGE_SUPERIORITY: `[<:Superiority:1447729865100099634>](https://supitstom.net/teapot-bot/badges/#superiority)`,//
-  BADGE_PREMIUM: `[<:Premium:1447729863568920588>](https://supitstom.net/teapot-bot/badges/#premium)`,//
-  BADGE_TESTER: `[<:Tester:1447729867486396597>](https://supitstom.net/teapot-bot/badges/#tester)`,//
-  BADGE_CLAN_MEMBER: `[<:ClanMember:1447729856610701373>](https://supitstom.net/teapot-bot/badges/#clan-member)`,//
+  BADGE_SYSTEM: `[<:System:1517313708723015821>](https://supitstom.net/teapot-bot/badges/#system)`,
+  BADGE_DEVELOPER: `[<:Developer:1517312091898249327>](https://supitstom.net/teapot-bot/badges/#developer)`,//
+  BADGE_LIFETIME: `[<:Lifetime:1517313408465113138>](https://supitstom.net/teapot-bot/badges/#lifetime)`,//
+  BADGE_MOXAH: `[<:Moxah:1517312094704238612>](https://supitstom.net/teapot-bot/badges/#moxah)`,//
+  BADGE_PH: `[<:Contributor:1517312090644287568>](https://supitstom.net/teapot-bot/badges/#slut)`,//
+  BADGE_KALI: `[<:Bricker:1517312087842357399>](https://supitstom.net/teapot-bot/badges/#bricker)`,//
+  BADGE_SUPERIORITY: `[<:Superiority:1517312097606832159>](https://supitstom.net/teapot-bot/badges/#superiority)`,//
+  BADGE_PREMIUM: `[<:Premium:1517312096193216653>](https://supitstom.net/teapot-bot/badges/#premium)`,//
+  BADGE_TESTER: `[<:Tester:1517312780162830446>](https://supitstom.net/teapot-bot/badges/#tester)`,//
+  BADGE_CLAN_MEMBER: `[<:ClanMember:1517320922648936610>](https://supitstom.net/teapot-bot/badges/#clan-member)`,//
 }
 
 export class Badges {
