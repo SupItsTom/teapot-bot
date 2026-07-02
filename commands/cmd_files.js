@@ -51,7 +51,7 @@ async function _defer_file_upload(interaction, env){
         type: MessageComponentTypes.CONTAINER,
         components: [
 
-          MessageComponent.Text(`**XBLS: STANDARD EDITION**`, -1),
+          MessageComponent.Text(`**XBLS — STANDARD EDITION**`, -1),
           MessageComponent.Text("Client for RGH, JTAG & Retail consoles.", 0),
           MessageComponent.File("attachment://xbls.zip"),
         ]
@@ -60,7 +60,7 @@ async function _defer_file_upload(interaction, env){
         type: MessageComponentTypes.CONTAINER,
         components: [
 
-          MessageComponent.Text(`**XBLS: CORE EDITION**`, -1),
+          MessageComponent.Text(`**XBLS — CORE EDITION**`, -1),
           MessageComponent.Text("The free alternative to the standard edition.", 0),
           MessageComponent.File("attachment://xbls-core.zip"),
         ]
@@ -69,7 +69,7 @@ async function _defer_file_upload(interaction, env){
         type: MessageComponentTypes.CONTAINER,
         components: [
 
-          MessageComponent.Text(`**XBLS: XDK EDITION**`, -1),
+          MessageComponent.Text(`**XBLS — XDK EDITION**`, -1),
           MessageComponent.Text("Client for Xbox 360 Development Kits.", 0),
           MessageComponent.File("attachment://xbls-devkit.zip"),
         ]
