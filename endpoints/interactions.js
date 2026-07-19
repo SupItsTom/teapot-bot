@@ -25,6 +25,7 @@ import mod_settings_change_banner, { mod_settings_change_banner_submitted } from
 import mod_settings_toggle_notifications, { mod_settings_toggle_notifications_submitted } from "../modals/mod_settings_toggle_notifications";
 import mod_settings_toggle_cheats, { mod_settings_toggle_cheats_submitted } from "../modals/mod_settings_toggle_cheats";
 import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
+import mod_lobby_create, { mod_lobby_create_submitted } from "../modals/mod_lobby_create";
 
 
 //-----------------------------------------------------------------------------
@@ -87,6 +88,7 @@ function _handleApplicationCommand(interaction, env, ctx) {
     case "profile": return cmd_profile(interaction, env, ctx);
     case "settings": return cmd_settings(interaction, env, ctx);
     case "store": return cmd_store(interaction, env, ctx);
+    case "lfg": return mod_lobby_create(interaction, env, ctx);
 
     default: return new ClientError("Command Not Found", `The command \`${cmdName}\` is not available in this build.`).ShowUser();
   }
@@ -125,6 +127,7 @@ function _handleModalSubmit(interaction, env, ctx) {
     case "mod_settings_toggle_notifications": return mod_settings_toggle_notifications_submitted(interaction, env, ctx);
     case "mod_settings_toggle_cheats": return mod_settings_toggle_cheats_submitted(interaction, env, ctx);
     case "mod_onboarding_logon": return mod_onboarding_logon_submitted(interaction, env, ctx);
+    case "mod_lobby_create": return mod_lobby_create_submitted(interaction, env, ctx);
     default: return new ClientError("Modal Not Found", `The modal \`${modName}\` is not available in this build.`).ShowUser();
   }
 }

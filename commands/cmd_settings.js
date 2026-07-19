@@ -145,6 +145,24 @@ async function _cmd_settings_general(teapot, bot_user) {
         disabled: false
       }
     },
+    // CREATE LOBBY EVENT
+//     MessageComponent.Seperator(),
+//     {
+//       type: ComponentType.Section,
+//       components: [
+//         MessageComponent.Text(`
+// **[DEV] Create Lobby**
+// -# **Spawn a new lobby instance**
+// `)
+//       ],
+//       accessory: {
+//         type: MessageComponentTypes.BUTTON,
+//         label: `btn_lobby_create_dev`,
+//         style: ButtonStyle.Primary,
+//         custom_id: `btn_lobby_create_dev`,
+//         disabled: false
+//       }
+//     },
     // ACTIVE CONSOLE SETTING
     MessageComponent.Seperator(),
         MessageComponent.Text(`

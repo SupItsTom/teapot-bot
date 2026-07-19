@@ -145,5 +145,12 @@
         "required": true
       }
     ]
+  },
+  {
+    "type": 1,
+    "name": "lfg",
+    "description": "Create a looking-for-group event",
+    "integration_types": [ 0, 1 ],
+    "contexts": [ 0, 1, 2 ]
   }
 ]

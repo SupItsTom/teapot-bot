@@ -54,7 +54,7 @@ export function getBannerUrl(discord_user, size = 1024) {
 
 export const AppWebhookEventType = Object.freeze({
   USER_VAULT_LOG: "USER_VAULT_LOG",
-  // USER_VAULT_LOG: "USER_VAULT_STATUS",
+  USER_LOBBY_CREATE: "USER_LOBBY_CREATE",
 });
 
 export class Discord {
@@ -64,9 +64,8 @@ export class Discord {
     this.webhooks = Object.freeze({
       [AppWebhookEventType.USER_VAULT_LOG]:
         env.DISCORD_APPLICATION.WEBHOOKS.USER_VAULT_LOG,
-
-      // [AppWebhookEventType.USER_VAULT_LOG]:
-      //   env.DISCORD_APPLICATION.WEBHOOKS.USER_VAULT_LOG,
+      [AppWebhookEventType.USER_LOBBY_CREATE]:
+        env.DISCORD_APPLICATION.WEBHOOKS.USER_LOBBY_CREATE,
     });
   }
 
@@ -96,6 +95,189 @@ export class Discord {
     }
 
     return true;
+  }
+
+
+  async CreateGuildScheduledEvent({
+    guildId,
+    name,
+    description = null,
+    startTime = new Date(Date.now() + 10000).toISOString(),
+    endTime = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    entityType = 3,
+    location = "Sex Dungeon",
+    channelId = null
+  }) {
+    const url = `https://discord.com/api/v10/guilds/${guildId}/scheduled-events`;
+
+    const body = {
+      name,
+      scheduled_start_time: startTime,
+      scheduled_end_time: endTime,
+      entity_type: entityType,
+      privacy_level: 2
+    };
+
+    if (description) {
+      body.description = description;
+    }
+
+    if (entityType === 3) {
+      body.entity_metadata = {
+        location
+      };
+    }
+
+    if (entityType === 1 || entityType === 2) {
+      body.channel_id = channelId;
+    }
+
+    console.log("[Discord:CreateGuildScheduledEvent] Request:");
+    console.log(JSON.stringify({
+      method: "POST",
+      url,
+      body
+    }, null, 2));
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bot ${this.env.DISCORD_APPLICATION.TOKEN}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
+
+    const responseText = await response.text();
+
+    console.log("[Discord:CreateGuildScheduledEvent] Response:");
+    console.log(JSON.stringify({
+      status: response.status,
+      body: responseText
+    }, null, 2));
+
+    if (!response.ok) {
+      throw new Error(
+        `[Discord:CreateGuildScheduledEvent]: ${response.status} - ${responseText}`
+      );
+    }
+
+    return JSON.parse(responseText);
+  }
+
+
+  async GetGuildScheduledEvents(guildId) {
+    const url =
+      `https://discord.com/api/v10/guilds/${guildId}/scheduled-events?with_user_count=false`;
+
+    console.log("[Discord:GetGuildScheduledEvents] Request:");
+    console.log(JSON.stringify({
+      method: "GET",
+      url
+    }, null, 2));
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bot ${this.env.DISCORD_APPLICATION.TOKEN}`
+      }
+    });
+
+    const responseText = await response.text();
+
+    console.log("[Discord:GetGuildScheduledEvents] Response:");
+    console.log(JSON.stringify({
+      status: response.status,
+      body: responseText
+    }, null, 2));
+
+    if (!response.ok) {
+      throw new Error(
+        `[Discord:GetGuildScheduledEvents]: ${response.status} - ${responseText}`
+      );
+    }
+
+    return JSON.parse(responseText);
+  }
+
+
+  async DeleteGuildScheduledEvent(guildId, eventId) {
+    const url =
+      `https://discord.com/api/v10/guilds/${guildId}/scheduled-events/${eventId}`;
+
+    console.log("[Discord:DeleteGuildScheduledEvent] Request:");
+    console.log(JSON.stringify({
+      method: "DELETE",
+      url
+    }, null, 2));
+
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bot ${this.env.DISCORD_APPLICATION.TOKEN}`
+      }
+    });
+
+    const responseText = await response.text();
+
+    console.log("[Discord:DeleteGuildScheduledEvent] Response:");
+    console.log(JSON.stringify({
+      status: response.status,
+      body: responseText || "(empty)"
+    }, null, 2));
+
+    if (!response.ok) {
+      throw new Error(
+        `[Discord:DeleteGuildScheduledEvent]: ${response.status} - ${responseText}`
+      );
+    }
+
+    return true;
+  }
+
+
+  async RemoveExistingLobbyEvent(guildId, gamertag) {
+    console.log("[Discord:RemoveExistingLobbyEvent]");
+    console.log(JSON.stringify({
+      guildId,
+      gamertag
+    }, null, 2));
+
+    const events = await this.GetGuildScheduledEvents(guildId);
+
+    console.log("[Discord] Existing events:");
+    console.log(JSON.stringify(
+      events.map(event => ({
+        id: event.id,
+        name: event.name,
+        location: event.entity_metadata?.location
+      })),
+      null,
+      2
+    ));
+
+    const existingEvents = events.filter(event =>
+      event.entity_metadata?.location?.includes(gamertag)
+    );
+
+    console.log("[Discord] Matching lobby events:");
+    console.log(JSON.stringify(
+      existingEvents.map(event => ({
+        id: event.id,
+        name: event.name
+      })),
+      null,
+      2
+    ));
+
+    for (const event of existingEvents) {
+      await this.DeleteGuildScheduledEvent(
+        guildId,
+        event.id
+      );
+    }
+
+    return existingEvents.length > 0;
   }
 }
 
