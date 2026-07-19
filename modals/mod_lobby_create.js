@@ -112,8 +112,7 @@ export async function mod_lobby_create_submitted(interaction, env, ctx) {
             {
               type: MessageComponentTypes.SECTION,
               components: [
-                MessageComponent.Text(`Lobby Created!`, 3),
-                MessageComponent.Text(`Default Description.`, -1),
+                MessageComponent.Text(`Lobby Created!`, 2),
               ],
               accessory: {
                 type: MessageComponentTypes.BUTTON,
