@@ -21,12 +21,11 @@ export default async function (interaction, env, ctx) {
 
   const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
 
-  let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
+  if (!teapot.user.online ||
+      teapot.user.title.name === "None Set"
+  ) return new ClientError("Failed to create lobby", "You need to be playing a game first!").ShowUser();
 
-  // check we is online first - if not, display that
-  //
-  //
-  ///////////////////////////////////////////////////
+  let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
 
   return new JsonResponse({
     type: InteractionResponseType.MODAL,
@@ -47,7 +46,7 @@ export default async function (interaction, env, ctx) {
         {
           type: ComponentType.TextDisplay,
           content:
-            `-# Looks good? Click submit to create your lobby!\n-# If not, please allow upto 4 minutes for your information to be updated.`
+            `-# Looks good? Click **Submit** to create your lobby!\n-# If not, please allow upto 4 minutes for your information to be updated.`
         }
       ]
     }
@@ -68,6 +67,11 @@ export async function mod_lobby_create_submitted(interaction, env, ctx) {
   }
 
   const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
+
+  if (!teapot.user.online ||
+      teapot.user.title.name === "None Set"
+  ) return new ClientError("Failed to create lobby", "You need to be playing a game first!").ShowUser();
+  
   let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
 
   // CREATE LOBBY EVENT FOR ACTIVE SERVER HERE
