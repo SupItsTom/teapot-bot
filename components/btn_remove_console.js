@@ -12,7 +12,10 @@ export default async function (interaction, env, ctx) {
   const bot_user = await new TeapotBot(env).GetUser(discord_user);
 
   if (!bot_user.email) {
-    return new ClientError("Unlink Failed", "You have no consoles linked to your account.");
+    return new ClientError({
+      title: "No Linked Console",
+      message: `You cannot modify this console as it's not linked to your account.`,
+    }).ShowModal();
   }
 
   console.log(`User '${discord_user.id} is requesting their active console to be unlinked`);

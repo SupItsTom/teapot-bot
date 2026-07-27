@@ -15,12 +15,14 @@ export default async function (interaction, env, ctx) {
   let subCmdName = interaction.data.options[0].name;
   let tokenInput = interaction.data.options[0].options[0].value;
 
-  
-
   switch (subCmdName) {
     case "check": return _checkToken({env, interaction, ctx}, tokenInput);
     case "redeem": return _applyToken({env, interaction, ctx}, tokenInput);
-    default: return new ClientError("Command Not Found", `The sub-command \`${subCmdName}\` is not available in this build.`).ShowUser();
+    default: return new ClientError({
+      title: "Command Not Found",
+      message: `The sub-command \`${subCmdName}\` is not available in this build.`,
+      json: interaction.data
+    }).ShowUser();
   }
 }
 
@@ -34,7 +36,11 @@ async function _checkToken(request, tokenInput) {
     return mod_onboarding_logon(request.interaction, request.env, request.ctx);
   }
 
-  if (!_tokenData.token.valid || _tokenData.token.redeemed) return new ClientError("Token Invalid", "Sorry, looks like this code isn't valid.").ShowUser();
+  if (!_tokenData.token.valid || _tokenData.token.redeemed) return new ClientError({
+      title: "Token Invalid",
+      message: `Looks like this code isn't valid.`,
+      json: _tokenData
+    }).ShowUser();
 
   return new JsonResponse({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -72,7 +78,11 @@ async function _applyToken(request, tokenInput) {
 
   const _tokenData = await postTeapotRequest(request.env, { action: "redeem", email: `${bot_user.email}`, token: `${tokenInput}` });
   
-  if (_tokenData.token.status != 1) return new ClientError("Token Invalid", "Sorry, looks like this code isn't valid.").ShowUser();
+  if (_tokenData.token.status != 1) return new ClientError({
+      title: "Token Invalid",
+      message: `Looks like this code isn't valid.`,
+      json: _tokenData
+    }).ShowUser();
 
   return new JsonResponse({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

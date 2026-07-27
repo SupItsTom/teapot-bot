@@ -12,7 +12,10 @@ export default async function (interaction, env, ctx) {
   const bot_user = await new TeapotBot(env).GetUser(discord_user);
 
   if (!bot_user.email) {
-    return new ClientError("Privacy Change Failed", "You have no consoles linked to your account.");
+    return new ClientError({
+      title: "No Linked Console",
+      message: `You cannot modify this console as it's not linked to your account.`,
+    }).ShowModal();
   }
 
   let is_private = interaction.data.values[0] === 'private' ? true : false;

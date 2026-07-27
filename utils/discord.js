@@ -1,6 +1,6 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
 import { ATXHeader, JsonResponse } from "../utils/client";
-import { ButtonStyle } from "discord-api-types/v10";
+import { ButtonStyle, ComponentType } from "discord-api-types/v10";
 
 // TODO: move to class 'DiscordUser'
 export function getDiscordUser(interaction) {
@@ -358,9 +358,41 @@ export class MessageComponent {
 }
 
 export class ClientError {
-  constructor(title, message) {
-    this.title = title;
-    this.message = message;
+  constructor(error) {
+    this.title = error.title;
+    this.message = error.message;
+    this.dev_json = JSON.stringify(error.json, null, 2);
+  }
+
+  ShowModal() {
+    return new JsonResponse({
+      type: InteractionResponseType.MODAL,
+      data: {
+        title: `An error occurred`,
+        custom_id: "mod_errorui",
+        components: [
+          ...(this.title ? [{
+            type: ComponentType.TextDisplay,
+            content: `-# **DETAILS**\n${this.title}`
+          }] : []),
+
+          ...(this.message ? [{
+            type: ComponentType.TextDisplay,
+            content: `-# **DESCRIPTION**\n${this.message}`
+          }] : []),
+
+          // ...(this.dev_json ? [{
+          //   type: ComponentType.TextDisplay,
+          //   content: `-# **ERROR DEBUG**\n\`\`\`json\n${this.dev_json}\`\`\``
+          // }] : []),
+
+          {
+            type: ComponentType.TextDisplay,
+            content: `-# *Click **Submit** to send a bug report, or **Cancel** to dismiss.*`
+          }
+        ]
+      }
+    });
   }
 
   ShowUser() {
@@ -390,7 +422,7 @@ export class ClientError {
                 }
               },
               MessageComponent.Seperator(),
-              MessageComponent.Text(`If error persists, contact [SupItsTom](discord://-/users/820362947146153994) on Discord and attach a screenshot.`, ATXHeader.Tiny),
+              MessageComponent.Text(`If error persists, contact [SupItsTom](discord://-/users/95522978183258112) on Discord and attach a screenshot.`, ATXHeader.Tiny),
             ],
           },
         ]

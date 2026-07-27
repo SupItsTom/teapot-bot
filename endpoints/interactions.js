@@ -39,7 +39,10 @@ export default async function (request, env, ctx) {
   const discord_user = await getDiscordUser(interaction);
 
   if (global_blacklist.includes(discord_user.id)) {
-    return new ClientError(`Unauthorized`, "This Discord User is not authorized to use this application.").ShowUser()
+    return new ClientError({
+      title: "Not Authorized",
+      message: `You are not authorized to use this feature or service.`,
+    }).ShowModal();
   }
 
   switch (interaction.type) {
@@ -75,7 +78,7 @@ function _handlePingRequest() {
 //-----------------------------------------------------------------------------
 // Purpose: Main handler for directing commands to right place
 //-----------------------------------------------------------------------------
-function _handleApplicationCommand(interaction, env, ctx) { 
+function _handleApplicationCommand(interaction, env, ctx) {
   console.log(`[${InteractionType[interaction.type]}]: ${interaction.data.name}`);
 
   const cmdName = interaction.data.name.toLowerCase();
@@ -85,12 +88,16 @@ function _handleApplicationCommand(interaction, env, ctx) {
     case "quote": return cmd_quote(interaction, env, ctx);
     case "status": return cmd_status(interaction, env, ctx);
     case "token": return cmd_token(interaction, env, ctx);
-    case "profile": return cmd_profile(interaction, env, ctx);
+    //case "profile": return cmd_profile(interaction, env, ctx);
     case "settings": return cmd_settings(interaction, env, ctx);
     case "store": return cmd_store(interaction, env, ctx);
     case "lfg": return mod_lobby_create(interaction, env, ctx);
 
-    default: return new ClientError("Command Not Found", `The command \`${cmdName}\` is not available in this build.`).ShowUser();
+    default: return new ClientError({
+      title: "Command Not Found",
+      message: `The command \`${cmdName}\` is not available in this build.`,
+      json: interaction.data
+    }).ShowModal();
   }
 }
 
@@ -104,7 +111,8 @@ function _handleApplicationCommandAutoComplete(interaction, env, ctx) {
 
   switch (cmdName) {
     case "store": return new AutoComplete(interaction).StoreGetTitleIds(interaction.data.options[0].value);
-    default: return new ClientError("AutoComplete Error", `AutoComplete failed to populate fields for \`${cmdName}\`.`).ShowUser();
+
+    default: return new dropRequest(204)// 204 - The request completed successfully but returned no content.
   }
 }
 
@@ -128,7 +136,12 @@ function _handleModalSubmit(interaction, env, ctx) {
     case "mod_settings_toggle_cheats": return mod_settings_toggle_cheats_submitted(interaction, env, ctx);
     case "mod_onboarding_logon": return mod_onboarding_logon_submitted(interaction, env, ctx);
     case "mod_lobby_create": return mod_lobby_create_submitted(interaction, env, ctx);
-    default: return new ClientError("Modal Not Found", `The modal \`${modName}\` is not available in this build.`).ShowUser();
+
+    default: return new ClientError({
+      title: "Modal Not Found",
+      message: `The modal \`${modName}\` is not available in this build.`,
+      json: interaction.data
+    }).ShowModal();
   }
 }
 
@@ -153,7 +166,7 @@ function _handleMessageComponent(interaction, env, ctx) {
     case "sel_settings": return cmd_settings(interaction, env, ctx);
     // Buttons
     case "btn_settings_change_username": return mod_settings_change_username(interaction, env, ctx);
-    case "btn_settings_change_email": return new ClientError("Coming Soon™", "You cannot currently change your XBLS account email. This feature is coming soon.").ShowUser();
+    //case "btn_settings_change_email": return new ClientError("Coming Soon™", "You cannot currently change your XBLS account email. This feature is coming soon.").ShowUser();
     case "btn_settings_change_privacy": return mod_settings_change_privacy(interaction, env, ctx);
     case "btn_settings_change_avatar": return mod_settings_change_avatar(interaction, env, ctx);
     case "btn_settings_change_banner": return mod_settings_change_banner(interaction, env, ctx);
@@ -164,6 +177,10 @@ function _handleMessageComponent(interaction, env, ctx) {
     case "btn_adventure_open_door": return stupidTextAdventureEndGame(interaction, env, ctx);
     case "btn_profile": return cmd_profile(interaction, env, ctx);
 
-    default: return new ClientError("Component Not Found", `The component \`${comName}\` is not available in this build.`).ShowUser();
+    default: return new ClientError({
+      title: "Component Not Found",
+      message: `The component \`${comName}\` is not available in this build.`,
+      json: interaction.data
+    }).ShowModal();
   }
 }

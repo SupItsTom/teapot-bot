@@ -15,7 +15,11 @@ export default async function (interaction, env, ctx) {
   let _game_info = await new Xbox().GetGameFromTitleID(titleId);
 
   if (!_game_info) {
-    return new ClientError("Title Not Found", `Unable to resolve this title's game information.`).ShowUser();
+    return new ClientError({
+      title: "Title Not Found",
+      message: `Unable to resolve this title's game information.`,
+      json: interaction.data
+    }).ShowModal();
   }
 
   if (!_game_info.bing_id) {
