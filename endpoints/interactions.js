@@ -88,7 +88,7 @@ function _handleApplicationCommand(interaction, env, ctx) {
     case "quote": return cmd_quote(interaction, env, ctx);
     case "status": return cmd_status(interaction, env, ctx);
     case "token": return cmd_token(interaction, env, ctx);
-    //case "profile": return cmd_profile(interaction, env, ctx);
+    case "profile": return cmd_profile(interaction, env, ctx);
     case "settings": return cmd_settings(interaction, env, ctx);
     case "store": return cmd_store(interaction, env, ctx);
     case "lfg": return mod_lobby_create(interaction, env, ctx);
