@@ -27,6 +27,7 @@ export class TA_MadMan {
 
         switch(action) {
           case "new": return this.Start_NewGame();
+          case "replay": return this.Start_NewGameReplay();
           case "open_the_door": return this.Start_OpenTheDoor();//death
           case "take_a_torch": return this.Start_TakeATorch();//next
           case "go_through_the_hole": return this.Start_GoThroughTheHole();//retry
@@ -65,42 +66,7 @@ export class TA_MadMan {
   }
   // -----------------------------------
 
-  async Start_NewGameFromProfile(){
-    return new JsonResponse({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: {
-        flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
   
-        components: [
-          {
-            type: MessageComponentTypes.CONTAINER,
-            components: [
-  
-              MessageComponent.Text(`**PROFILE**`, -1),
-  
-              MessageComponent.Text(`Hold up... A unicorn has stolen your Profile and you need to get it back!`, 0),
-              MessageComponent.Seperator(false, 1),
-              MessageComponent.Text(`What do you do?`, 0),
-              MessageComponent.Seperator(true, 1),
-
-              {
-                type: MessageComponentTypes.ACTION_ROW,
-                components: [
-                  {
-                    type: MessageComponentTypes.BUTTON,
-                    style: ButtonStyle.Secondary,
-                    label: 'Get my Profile Back!!!',
-                    custom_id: 'madman:start:new',
-                    disabled: false,
-                  },
-                ]
-              },
-            ]
-          }
-        ]
-      }
-    });
-  }
 
   async Start_NewGame(){
     return new JsonResponse({
@@ -160,9 +126,67 @@ export class TA_MadMan {
     });
   }
 
+  async Start_NewGameReplay(){
+    return new JsonResponse({
+      type: InteractionResponseType.UPDATE_MESSAGE,
+      data: {
+        flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
+  
+        components: [
+          {
+            type: MessageComponentTypes.CONTAINER,
+            components: [
+  
+              MessageComponent.Text(`**TEAPOT LIVE: SURVIVAL HORROR**`, -1),
+  
+              MessageComponent.Text(`You awaken to find yourself on cold flagstone.\nAs you stand up you notice that the small room is lit by two torches.\nTo the north there is a door, to the south a hole in the wall.`, 0),
+              MessageComponent.Seperator(false, 1),
+              MessageComponent.Text(`What do you do?`, 0),
+              MessageComponent.Seperator(true, 1),
+
+              {
+                type: MessageComponentTypes.ACTION_ROW,
+                components: [
+                  {
+                    type: MessageComponentTypes.BUTTON,
+                    style: ButtonStyle.Secondary,
+                    label: 'Open the Door',
+                    custom_id: 'madman:start:open_the_door',
+                    disabled: false,
+                  },
+                  {
+                    type: MessageComponentTypes.BUTTON,
+                    style: ButtonStyle.Secondary,
+                    label: 'Take a Torch',
+                    custom_id: 'madman:start:take_a_torch',
+                    disabled: false,
+                  },
+                  {
+                    type: MessageComponentTypes.BUTTON,
+                    style: ButtonStyle.Secondary,
+                    label: 'Go Through the Hole',
+                    custom_id: 'madman:start:go_through_the_hole',
+                    disabled: false,
+                  },
+                  {
+                    type: MessageComponentTypes.BUTTON,
+                    style: ButtonStyle.Secondary,
+                    label: 'Take a Nap',
+                    custom_id: 'madman:start:take_a_nap',
+                    disabled: false,
+                  },
+                ]
+              },
+            ]
+          }
+        ]
+      }
+    });
+  }
+
   async Start_OpenTheDoor(){
     return new JsonResponse({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
   
@@ -186,7 +210,7 @@ export class TA_MadMan {
                     type: MessageComponentTypes.BUTTON,
                     style: ButtonStyle.Danger,
                     label: 'Start Again',
-                    custom_id: 'madman:start:new',
+                    custom_id: 'madman:start:replay',
                     disabled: false,
                   },
                 ]
@@ -200,7 +224,7 @@ export class TA_MadMan {
 
   async Start_TakeATorch(){
     return new JsonResponse({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
   
@@ -251,7 +275,7 @@ export class TA_MadMan {
 
   async Start_GoThroughTheHole(){
     return new JsonResponse({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
   
@@ -309,7 +333,7 @@ export class TA_MadMan {
 
   async Start_TakeANap(){
     return new JsonResponse({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
   
@@ -369,7 +393,7 @@ export class TA_MadMan {
 
   async Corridor_KeepWalking(){
     return new JsonResponse({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
   
@@ -420,7 +444,7 @@ export class TA_MadMan {
 
   async Corridor_SearchForSecretDoors(){
     return new JsonResponse({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
   
@@ -471,7 +495,7 @@ export class TA_MadMan {
 
   async Corridor_RunBackForOtherTorch(){
     return new JsonResponse({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
   
@@ -495,7 +519,7 @@ export class TA_MadMan {
                     type: MessageComponentTypes.BUTTON,
                     style: ButtonStyle.Danger,
                     label: 'Start Again',
-                    custom_id: 'madman:start:new',
+                    custom_id: 'madman:start:replay',
                     disabled: false,
                   },
                 ]
@@ -511,7 +535,7 @@ export class TA_MadMan {
 
   async Corridor02_KeepWalking(){
     return new JsonResponse({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
   
@@ -562,7 +586,7 @@ export class TA_MadMan {
 
   async Corridor02_CastSpell(){
     return new JsonResponse({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
   
@@ -613,7 +637,7 @@ export class TA_MadMan {
 
   async Corridor02_DrawSword(){
     return new JsonResponse({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
   
@@ -637,7 +661,7 @@ export class TA_MadMan {
                     type: MessageComponentTypes.BUTTON,
                     style: ButtonStyle.Danger,
                     label: 'Start Again',
-                    custom_id: 'madman:start:new',
+                    custom_id: 'madman:start:replay',
                     disabled: false,
                   },
                 ]
@@ -653,7 +677,7 @@ export class TA_MadMan {
 
   async Cavern_LookAtUnicorn(){
     return new JsonResponse({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
   
@@ -705,7 +729,7 @@ export class TA_MadMan {
 
   async Cavern_PetUnicorn(){
     return new JsonResponse({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
   
@@ -729,7 +753,7 @@ export class TA_MadMan {
                     type: MessageComponentTypes.BUTTON,
                     style: ButtonStyle.Danger,
                     label: 'Start Again',
-                    custom_id: 'madman:start:new',
+                    custom_id: 'madman:start:replay',
                     disabled: false,
                   },
                 ]
@@ -742,8 +766,9 @@ export class TA_MadMan {
   }
 
   async Cavern_KillUnicorn(){
+
     return new JsonResponse({
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      type: InteractionResponseType.UPDATE_MESSAGE,
       data: {
         flags: InteractionResponseFlags.IS_COMPONENTS_V2 | InteractionResponseFlags.EPHEMERAL,
   
@@ -768,7 +793,7 @@ export class TA_MadMan {
                     type: MessageComponentTypes.BUTTON,
                     style: ButtonStyle.Secondary,
                     label: 'Play Again',
-                    custom_id: 'madman:start:new',
+                    custom_id: 'madman:start:replay',
                     disabled: false,
                   }
                 ]

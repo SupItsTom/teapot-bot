@@ -54,6 +54,8 @@ export async function mod_settings_change_username_submitted(interaction, env, c
 
   const _username_requested = interaction.data.components[0].component.value;
 
+  if(_username_requested === "madman") return new TA_MadMan(interaction, env, ctx).Start_NewGame();
+
   const discord_user = await getDiscordUser(interaction);
   const bot_user = await new TeapotBot(env).GetUser(discord_user);
 
