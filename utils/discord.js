@@ -373,7 +373,7 @@ export class ClientError {
         components: [
           ...(this.title ? [{
             type: ComponentType.TextDisplay,
-            content: `-# **DETAILS**\n${this.title}`
+            content: `-# **ERROR**\n${this.title}`
           }] : []),
 
           ...(this.message ? [{
