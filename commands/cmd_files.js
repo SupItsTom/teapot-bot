@@ -41,6 +41,8 @@ async function _defer_file_upload(interaction, env){
 
   const payload = new FormData();
 
+  const teapot = await postTeapotRequest(env, { action: "config", column: "guestmode" });
+
   payload.append("payload_json", JSON.stringify({
     type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
     allowed_mentions: { parse: [] },
@@ -52,19 +54,19 @@ async function _defer_file_upload(interaction, env){
         components: [
 
           MessageComponent.Text(`**XBLS — STANDARD EDITION**`, -1),
-          MessageComponent.Text("Client for RGH, JTAG & Retail consoles.", 0),
+          MessageComponent.Text(`Client for RGH, JTAG & Retail consoles.${teapot.ret?.[0]?.guestmode === "1" ? " **Currently in Freemode**!" : ""}`, 0),
           MessageComponent.File("attachment://xbls.zip"),
         ]
       },
-      {
-        type: MessageComponentTypes.CONTAINER,
-        components: [
+      // {
+      //   type: MessageComponentTypes.CONTAINER,
+      //   components: [
 
-          MessageComponent.Text(`**XBLS — CORE EDITION**`, -1),
-          MessageComponent.Text("The free alternative to the standard edition.", 0),
-          MessageComponent.File("attachment://xbls-core.zip"),
-        ]
-      },
+      //     MessageComponent.Text(`**XBLS — CORE EDITION**`, -1),
+      //     MessageComponent.Text("The free alternative to the standard edition.", 0),
+      //     MessageComponent.File("attachment://xbls-core.zip"),
+      //   ]
+      // },
       {
         type: MessageComponentTypes.CONTAINER,
         components: [
