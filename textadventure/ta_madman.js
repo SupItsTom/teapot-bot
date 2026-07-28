@@ -787,7 +787,8 @@ export class TA_MadMan {
               MessageComponent.Text(`You jump in the air and hit the dankest 360 noscope trickshot on the Unicorn.`, 0),
               MessageComponent.Media('https://web-assets.cdn.supitstom.net/victory-royale.png'),
               MessageComponent.Seperator(false, 1),
-              MessageComponent.Text(`Thank you for playing! A new badge has been added to your profile!`, 0),
+              MessageComponent.Text(`Thank you for playing!`, 0),
+              MessageComponent.Text(`A new badge has been added to your profile!`, 0),
               MessageComponent.Seperator(true, 1),
 
               {
