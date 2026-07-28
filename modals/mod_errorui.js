@@ -7,13 +7,6 @@ import { Xbox } from "../utils/xbox";
 import { Badges } from "../utils/badges";
 import { _profileComponent } from "../commands/cmd_profile";
 
-/**
- * # ERRORUI Modal
- * 
- */
-export default async function (interaction, env, ctx) {
-  
-}
 
 /**
  * # Modal Submit
