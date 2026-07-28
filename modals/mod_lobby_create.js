@@ -7,6 +7,8 @@ import { Xbox } from "../utils/xbox";
 import { Badges } from "../utils/badges";
 import { _profileComponent } from "../commands/cmd_profile";
 
+import mod_onboarding_logon from "./mod_onboarding_logon";
+
 /**
  * # Create Lobby Modal
  * Modal to spawn a lobby server event
@@ -22,11 +24,11 @@ export default async function (interaction, env, ctx) {
   const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
 
   if (!teapot.user.online ||
-      teapot.user.title.name === "None Set"
+    teapot.user.title.name === "None Set"
   ) return new ClientError({
-      title: "Cannot Create Lobby",
-      message: `You must be online and playing a game to start a lobby.`,
-    }).ShowModal();
+    title: "Cannot Create Lobby",
+    message: `You must be online and playing a game to start a lobby.`,
+  }).ShowModal();
 
   let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
 
@@ -72,12 +74,12 @@ export async function mod_lobby_create_submitted(interaction, env, ctx) {
   const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
 
   if (!teapot.user.online ||
-      teapot.user.title.name === "None Set"
+    teapot.user.title.name === "None Set"
   ) return new ClientError({
-      title: "Cannot Create Lobby",
-      message: `You must be online and playing a game to start a lobby.`,
-    }).ShowUser();// not sure if it's possilble to open a modal after a previous modal
-  
+    title: "Cannot Create Lobby",
+    message: `You must be online and playing a game to start a lobby.`,
+  }).ShowUser();// not sure if it's possilble to open a modal after a previous modal
+
   let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
 
   // CREATE LOBBY EVENT FOR ACTIVE SERVER HERE
