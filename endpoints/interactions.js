@@ -26,6 +26,7 @@ import mod_settings_toggle_notifications, { mod_settings_toggle_notifications_su
 import mod_settings_toggle_cheats, { mod_settings_toggle_cheats_submitted } from "../modals/mod_settings_toggle_cheats";
 import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
 import mod_lobby_create, { mod_lobby_create_submitted } from "../modals/mod_lobby_create";
+import { mod_errorui_submitted } from "../modals/mod_errorui";
 
 
 //-----------------------------------------------------------------------------
@@ -136,6 +137,8 @@ function _handleModalSubmit(interaction, env, ctx) {
     case "mod_settings_toggle_cheats": return mod_settings_toggle_cheats_submitted(interaction, env, ctx);
     case "mod_onboarding_logon": return mod_onboarding_logon_submitted(interaction, env, ctx);
     case "mod_lobby_create": return mod_lobby_create_submitted(interaction, env, ctx);
+
+    case "mod_errorui": return mod_errorui_submitted(interaction, env, ctx);
 
     default: return new ClientError({
       title: "Modal Not Found",
