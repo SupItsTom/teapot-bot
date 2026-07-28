@@ -1,8 +1,9 @@
 import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
 import { JsonResponse } from "../utils/client";
-import { ClientError, MessageComponent } from "../utils/discord";
-import { postTeapotRequest } from "../utils/teapot";
+import { ClientError, getDiscordUser, MessageComponent } from "../utils/discord";
+import { postTeapotRequest, TeapotBot } from "../utils/teapot";
 import { ButtonStyle } from "discord-api-types/v10";
+import { UserFlags } from "../utils/flags";
 
 /**
  * # Madman Text Adventure Command
@@ -766,6 +767,10 @@ export class TA_MadMan {
   }
 
   async Cavern_KillUnicorn(){
+    const discord_user = await getDiscordUser(this.interaction)
+
+    // award badge
+    await new TeapotBot(this.env).AddFlag(discord_user, UserFlags.BADGE_UNICORN)
 
     return new JsonResponse({
       type: InteractionResponseType.UPDATE_MESSAGE,
@@ -782,7 +787,7 @@ export class TA_MadMan {
               MessageComponent.Text(`You jump in the air and hit the dankest 360 noscope trickshot on the Unicorn.`, 0),
               MessageComponent.Media('https://web-assets.cdn.supitstom.net/victory-royale.png'),
               MessageComponent.Seperator(false, 1),
-              MessageComponent.Text(`Thank you for playing!`, 0),
+              MessageComponent.Text(`Thank you for playing! A new badge has been added to your profile!`, 0),
               MessageComponent.Seperator(true, 1),
 
               {
