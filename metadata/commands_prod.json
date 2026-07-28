@@ -149,7 +149,13 @@
   {
     "type": 1,
     "name": "lfg",
-    "description": "Create a looking-for-group event",
+    "name_localizations": {
+      "pt-BR": "lfg"
+    },
+    "description": "Create a Looking for Group post",
+    "description_localizations": {
+      "pt-BR": "Crie uma postagem Procurando por Grupo"
+    },
     "integration_types": [ 0, 1 ],
     "contexts": [ 0, 1, 2 ]
   }
