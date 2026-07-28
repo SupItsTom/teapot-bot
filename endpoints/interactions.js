@@ -27,6 +27,7 @@ import mod_settings_toggle_cheats, { mod_settings_toggle_cheats_submitted } from
 import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
 import mod_lobby_create, { mod_lobby_create_submitted } from "../modals/mod_lobby_create";
 import { mod_errorui_submitted } from "../modals/mod_errorui";
+import { UserFlags } from "../utils/flags";
 
 
 //-----------------------------------------------------------------------------
@@ -39,7 +40,7 @@ export default async function (request, env, ctx) {
 
   const discord_user = await getDiscordUser(interaction);
 
-  if (global_blacklist.includes(discord_user.id)) {
+  if (await new TeapotBot(this.env).HasFlag(discord_user, UserFlags.BLACKLISTED)) {
     return new ClientError({
       title: "Not Authorized",
       message: `You are not authorized to use this feature or service.`,
