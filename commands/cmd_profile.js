@@ -31,10 +31,11 @@ export default async function (interaction, env, ctx) {
   if (
     interaction.guild_id === env.DISCORD_APPLICATION.GUILD_ID &&
     !bot_user.settings.private &&
-    bot_user.settings.render_details
+    bot_user.settings.render_details &&
+    teapot_kv.time != ""
   ) {
     await new Discord(env).SendWebhookEvent(AppWebhookEventType.USER_VAULT_LOG,
-      `-# **[${discord_user.username}](discord://-/users/${discord_user.id})** has been unbanned for **${teapot_kv.time == "" ? "Not set" : `${truncateRelativeTime(teapot_kv.time)}`}**.`
+      `-# **[${discord_user.username}](discord://-/users/${discord_user.id})** has been unbanned for **${truncateRelativeTime(teapot_kv.time)}**.`
     );
   }
 
