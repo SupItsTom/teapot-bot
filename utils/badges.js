@@ -21,7 +21,7 @@ export const ProfileCardBadges = {
 // rendered on profile in order here
 const DatabaseBadgeMap = Object.freeze([
   {
-    flag: UserFlags.BADGE_DEVELOPER,
+    flag: UserFlags.STAFF,
     badge: ProfileCardBadges.BADGE_DEVELOPER,
   },
   {
