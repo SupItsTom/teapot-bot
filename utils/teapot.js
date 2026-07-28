@@ -1,4 +1,4 @@
-import { getActiveFlags, UserFlags } from "./flags";
+import { getActiveFlags, hasFlag, UserFlags } from "./flags";
 import { BetterStack } from "./uptime";
 
 /**

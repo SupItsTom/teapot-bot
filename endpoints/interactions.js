@@ -40,7 +40,7 @@ export default async function (request, env, ctx) {
 
   const discord_user = await getDiscordUser(interaction);
 
-  if (await new TeapotBot(this.env).HasFlag(discord_user, UserFlags.BLACKLISTED)) {
+  if (await new TeapotBot(env).HasFlag(discord_user, UserFlags.BLACKLISTED)) {
     return new ClientError({
       title: "Not Authorized",
       message: `You are not authorized to use this feature or service.`,
