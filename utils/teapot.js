@@ -272,7 +272,7 @@ export class TeapotBot {
       .run();
 
     console.log(
-      `[DatabaseManager]: Added flag ${flag} to ${discord_user.id}`
+      `[DatabaseManager]: Added flag ${getActiveFlags(flag)} to ${discord_user.id}`
     );
 
     return result;
@@ -294,7 +294,7 @@ export class TeapotBot {
       .run();
 
     console.log(
-      `[DatabaseManager]: Removed flag ${flag} from ${discord_user.id}`
+      `[DatabaseManager]: Removed flag ${getActiveFlags(flag)} from ${discord_user.id}`
     );
 
     return result;
@@ -316,7 +316,7 @@ export class TeapotBot {
       .run();
 
     console.log(
-      `[DatabaseManager]: Toggled flag ${flag} for ${discord_user.id}`
+      `[DatabaseManager]: Toggled flag ${getActiveFlags(flag)} for ${discord_user.id}`
     );
 
     return result;
