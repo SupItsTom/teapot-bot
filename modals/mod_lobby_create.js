@@ -26,7 +26,7 @@ export default async function (interaction, env, ctx) {
   ) return new ClientError({
       title: "Cannot Create Lobby",
       message: `You must be online and playing a game to start a lobby.`,
-    }).ShowUser();
+    }).ShowModal();
 
   let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
 
@@ -76,7 +76,7 @@ export async function mod_lobby_create_submitted(interaction, env, ctx) {
   ) return new ClientError({
       title: "Cannot Create Lobby",
       message: `You must be online and playing a game to start a lobby.`,
-    }).ShowUser();
+    }).ShowUser();// not sure if it's possilble to open a modal after a previous modal
   
   let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
 
