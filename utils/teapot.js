@@ -1,3 +1,4 @@
+import { getActiveFlags, UserFlags } from "./flags";
 import { BetterStack } from "./uptime";
 
 /**
@@ -96,7 +97,7 @@ export class TeapotBot {
   async GetUser(discord_user) {
     const user = await this.env.database
       .prepare(`
-        SELECT id, email, timestamp
+        SELECT id, email, timestamp, flags
         FROM users
         WHERE id = ?1
       `)
@@ -107,6 +108,10 @@ export class TeapotBot {
       console.warn(`[DatabaseManager]: no user present for ${discord_user.id}`);
       return false;
     }
+
+    user.flags = user.flags ?? UserFlags.NONE;
+
+    user.flags_internal = getActiveFlags(user.flags);
 
     const settings = await this.env.database
       .prepare(`
@@ -145,9 +150,10 @@ export class TeapotBot {
         REPLACE INTO users (
           id,
           email,
-          timestamp
+          timestamp,
+          flags
         )
-        VALUES (?1, ?2, ?3)
+        VALUES (?1, ?2, ?3, 0)
       `)
       .bind(discord_user.id, email, new Date().toISOString())
       .run();
@@ -237,6 +243,83 @@ export class TeapotBot {
       user: userResult,
       settings: settingsResult,
     };
+  }
+
+  // Check if user has flag
+  async HasFlag(discord_user, flag) {
+    const user = await this.GetUser(discord_user);
+
+    if (!user) {
+      return false;
+    }
+
+    return hasFlag(user.flags ?? 0, flag);
+  }
+
+
+  // Add flag
+  async AddFlag(discord_user, flag) {
+    const result = await this.env.database
+      .prepare(`
+            UPDATE users
+            SET flags = flags | ?1
+            WHERE id = ?2
+        `)
+      .bind(
+        flag,
+        discord_user.id
+      )
+      .run();
+
+    console.log(
+      `[DatabaseManager]: Added flag ${flag} to ${discord_user.id}`
+    );
+
+    return result;
+  }
+
+
+  // Remove flag
+  async RemoveFlag(discord_user, flag) {
+    const result = await this.env.database
+      .prepare(`
+            UPDATE users
+            SET flags = flags & ~?1
+            WHERE id = ?2
+        `)
+      .bind(
+        flag,
+        discord_user.id
+      )
+      .run();
+
+    console.log(
+      `[DatabaseManager]: Removed flag ${flag} from ${discord_user.id}`
+    );
+
+    return result;
+  }
+
+
+  // Toggle flag
+  async ToggleFlag(discord_user, flag) {
+    const result = await this.env.database
+      .prepare(`
+            UPDATE users
+            SET flags = flags ^ ?1
+            WHERE id = ?2
+        `)
+      .bind(
+        flag,
+        discord_user.id
+      )
+      .run();
+
+    console.log(
+      `[DatabaseManager]: Toggled flag ${flag} for ${discord_user.id}`
+    );
+
+    return result;
   }
 
   AreMonitorsOnline() {

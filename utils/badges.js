@@ -1,20 +1,43 @@
 import { postTeapotRequest, TeapotBot } from "./teapot";
-import { badges } from "../metadata/badges.json";
+import { UserFlags, hasFlag } from "./flags";
 import { IsStaging } from "./client";
-
 
 export const ProfileCardBadges = {
   BADGE_SYSTEM: `[<:System:1517631050702913697>](https://supitstom.net/teapot-bot/badges/#system)`,
-  BADGE_DEVELOPER: `[<:Developer:1517633915085656204>](https://supitstom.net/teapot-bot/badges/#developer)`,//
-  BADGE_LIFETIME: `[<:Lifetime:1517631037243396239>](https://supitstom.net/teapot-bot/badges/#lifetime)`,//
-  BADGE_MOXAH: `[<:Moxah:1517631039030300834>](https://supitstom.net/teapot-bot/badges/#moxah)`,//
-  BADGE_PH: `[<:Contributor:1517631032629919855>](https://supitstom.net/teapot-bot/badges/#slut)`,//
-  BADGE_KALI: `[<:Bricker:1517631027156095066>](https://supitstom.net/teapot-bot/badges/#bricker)`,//
-  BADGE_SUPERIORITY: `[<:Superiority:1517631048945504396>](https://supitstom.net/teapot-bot/badges/#superiority)`,//
-  BADGE_PREMIUM: `[<:Premium:1517631046852546610>](https://supitstom.net/teapot-bot/badges/#premium)`,//
-  BADGE_TESTER: `[<:Tester:1517633913734955090>](https://supitstom.net/teapot-bot/badges/#tester)`,//
-  BADGE_CLAN_MEMBER: `[<:ClanMember:1517631029320355932>](https://supitstom.net/teapot-bot/badges/#clan-member)`,//
-}
+  BADGE_DEVELOPER: `[<:Developer:1517633915085656204>](https://supitstom.net/teapot-bot/badges/#developer)`,
+  BADGE_LIFETIME: `[<:Lifetime:1517631037243396239>](https://supitstom.net/teapot-bot/badges/#lifetime)`,
+  BADGE_MOXAH: `[<:Moxah:1517631039030300834>](https://supitstom.net/teapot-bot/badges/#moxah)`,
+  BADGE_PH: `[<:Contributor:1517631032629919855>](https://supitstom.net/teapot-bot/badges/#slut)`,
+  BADGE_KALI: `[<:Bricker:1517631027156095066>](https://supitstom.net/teapot-bot/badges/#bricker)`,
+  BADGE_SUPERIORITY: `[<:Superiority:1517631048945504396>](https://supitstom.net/teapot-bot/badges/#superiority)`,
+  BADGE_PREMIUM: `[<:Premium:1517631046852546610>](https://supitstom.net/teapot-bot/badges/#premium)`,
+  BADGE_TESTER: `[<:Tester:1517633913734955090>](https://supitstom.net/teapot-bot/badges/#tester)`,
+  BADGE_CLAN_MEMBER: `[<:ClanMember:1517631029320355932>](https://supitstom.net/teapot-bot/badges/#clan-member)`,
+
+  // New
+  BADGE_UNICORN: `[<:Unicorn:1531795665217126523>](https://supitstom.net/teapot-bot/badges/#unicorn)`,
+};
+
+// rendered on profile in order here
+const DatabaseBadgeMap = Object.freeze([
+  {
+    flag: UserFlags.BADGE_DEVELOPER,
+    badge: ProfileCardBadges.BADGE_DEVELOPER,
+  },
+  {
+    flag: UserFlags.BUG_HUNTER,
+    badge: ProfileCardBadges.BADGE_TESTER,
+  },
+  {
+    flag: UserFlags.BADGE_SUPERIORITY,
+    badge: ProfileCardBadges.BADGE_SUPERIORITY,
+  },
+  {
+    flag: UserFlags.BADGE_UNICORN,
+    badge: ProfileCardBadges.BADGE_UNICORN,
+  },
+  
+]);
 
 export class Badges {
   constructor(env, discord_user) {
@@ -24,54 +47,62 @@ export class Badges {
 
   async GetAll() {
     const bot_user = await new TeapotBot(this.env).GetUser(this.discord_user);
-    const teapot = await postTeapotRequest(this.env, { action: "overview", email: `${bot_user.email}` });
 
+    const teapot = await postTeapotRequest(this.env, {
+      action: "overview",
+      email: bot_user.email,
+    });
 
-    // shit hacky way to fix undefined users in badge metadata
-    let isSystem = ``;
-    let isDeveloper = ``;
-    let isSuperiority = ``;
-    let isMoxah = ``;
-    let isSlut = ``;
-    let isBricker = ``;
-    let isTester = ``;
+    // Database-backed badges
+    const databaseBadges = DatabaseBadgeMap
+      .filter(({ flag }) => hasFlag(bot_user.flags ?? 0, flag))
+      .map(({ badge }) => badge)
+      .join(" ");
 
-    // IF: user does exist in metadata
-    if (badges[this.discord_user.id] != undefined) {
-      isSystem = badges[this.discord_user.id].includes("system") == true ? `${ProfileCardBadges.BADGE_SYSTEM} ` : ``;
-      isDeveloper = badges[this.discord_user.id].includes("developer") == true ? `${ProfileCardBadges.BADGE_DEVELOPER} ` : ``;
+    // Dynamic badges
+    const isLifetime = teapot.user.timeleft.lifetime
+      ? ProfileCardBadges.BADGE_LIFETIME
+      : "";
 
-      // static user groups
-      isSuperiority = badges[this.discord_user.id].includes("superiority") == true ? `${ProfileCardBadges.BADGE_SUPERIORITY} ` : ``;
-      isMoxah = badges[this.discord_user.id].includes("moxah") == true ? `${ProfileCardBadges.BADGE_MOXAH} ` : ``;
-      isSlut = badges[this.discord_user.id].includes("slut") == true ? `${ProfileCardBadges.BADGE_PH} ` : ``;
-      isBricker = badges[this.discord_user.id].includes("brick") == true ? `${ProfileCardBadges.BADGE_KALI} ` : ``;
-      isTester = badges[this.discord_user.id].includes("tester") == true ? `${ProfileCardBadges.BADGE_TESTER} ` : ``;
-    }
+    const isPremium = teapot.user.timeleft.premium
+      ? ProfileCardBadges.BADGE_PREMIUM
+      : "";
 
-    // non-static
+    const isClanMember =
+      this.discord_user.primary_guild &&
+        this.discord_user.primary_guild.identity_enabled &&
+        this.discord_user.primary_guild.identity_guild_id ===
+        "1004811174044508271"
+        ? ProfileCardBadges.BADGE_CLAN_MEMBER
+        : "";
 
     /*
-    * TODO:
-    *
-    * isSystem    =>  User is a child webhook of the App
-    *             =>  User is the App itself
-    * 
-    * isStaff     =>  User is a member of the Team which owns the App (portal->team)
-    *                 User has Staff roles in Support server (server)
-    * 
-    * isDeveloper =>  User has DEVELOPER flag in team roster (portal->team)
-    *                 User is a whitelisted Repo contributor (github)
-    * 
-    * isAppTester =>  User is a whitelisted App tester (portal)
-    * 
-    */
-    const isLifetime = teapot.user.timeleft.lifetime == true ? `${ProfileCardBadges.BADGE_LIFETIME} ` : ``;
-    const isPremium = teapot.user.timeleft.premium == true ? `${ProfileCardBadges.BADGE_PREMIUM} ` : ``;
-    const isClanMember = this.discord_user.primary_guild && this.discord_user.primary_guild.identity_enabled && this.discord_user.primary_guild.identity_guild_id == "1004811174044508271" ? `${ProfileCardBadges.BADGE_CLAN_MEMBER} ` : ``;
+     * Future badges:
+     *
+     * BADGE_SYSTEM
+     *   - Child webhook of the App
+     *   - The App itself
+     *
+     * BADGE_STAFF
+     *   - Discord Team member
+     *   - Support server staff
+     *
+     * BADGE_APP_TESTER
+     *   - Discord application tester
+     */
 
-    if( this.env.DISCORD_APPLICATION.CLIENT_ID !== "1447678850493321288") return `\`ⓘ Badges disabled\``;
+    // if (this.env.DISCORD_APPLICATION.CLIENT_ID !== "1447678850493321288") {
+    //   return "`ⓘ Badges disabled`";
+    // }
 
-    return `${isSystem}${isDeveloper}${isTester}${isSuperiority}${isMoxah}${isSlut}${isBricker}${isClanMember}${isLifetime}${isPremium}`;
+    return [
+      databaseBadges,
+      isClanMember,
+      isLifetime,
+      isPremium,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .trim();
   }
 }
