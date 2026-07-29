@@ -4,6 +4,7 @@ import { ClientError, getDiscordUser } from "../utils/discord";
 import { TeapotBot } from "../utils/teapot";
 import { AutoComplete } from "../utils/autocomplete";
 import { TA_MadMan } from "../textadventure/ta_madman";
+import { UserFlags } from "../utils/flags";
 
 import cmd_files from "../commands/cmd_files";
 import cmd_quote from "../commands/cmd_quote";
@@ -15,8 +16,6 @@ import cmd_store from "../commands/cmd_store";
 
 import btn_remove_console from "../components/btn_remove_console";
 
-import { global_blacklist } from "../metadata/blacklist.json";
-
 import mod_settings_change_username, { mod_settings_change_username_submitted } from "../modals/mod_settings_change_username";
 import mod_settings_change_privacy, { mod_settings_change_privacy_submitted } from "../modals/mod_settings_change_privacy";
 import mod_settings_remove_console, { mod_settings_remove_console_submitted } from "../modals/mod_settings_remove_console";
@@ -27,7 +26,6 @@ import mod_settings_toggle_cheats, { mod_settings_toggle_cheats_submitted } from
 import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
 import mod_lobby_create, { mod_lobby_create_submitted } from "../modals/mod_lobby_create";
 import { mod_errorui_submitted } from "../modals/mod_errorui";
-import { UserFlags } from "../utils/flags";
 
 
 //-----------------------------------------------------------------------------

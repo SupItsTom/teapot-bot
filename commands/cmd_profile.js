@@ -5,7 +5,6 @@ import { postTeapotRequest, TeapotBot, UserAvatarType, UserBannerType } from "..
 import { ButtonStyle, ComponentType } from "discord-api-types/v10";
 import { Xbox } from "../utils/xbox";
 import { Badges } from "../utils/badges";
-import { Flairs } from "../utils/flairs";
 
 import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
 
