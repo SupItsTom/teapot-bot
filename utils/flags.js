@@ -7,7 +7,7 @@ export const UserFlags = Object.freeze({
     BLACKLISTED: 1 << 2,
     QUARANTINED: 1 << 3,
 
-    // Bits 16-30: Badges and decorationDEVELOPER: 1 << 16,
+    // Bits 16-30: Badges and decoration,
     BADGE_SUPERIORITY: 1 << 16,
     BADGE_UNICORN: 1 << 17,
 });
