@@ -4,6 +4,7 @@ import { JsonResponse } from "../utils/client";
 import { getDiscordUser, MessageComponent } from "../utils/discord";
 import { avatarTypeLabel, bannerTypeLabel, postTeapotRequest, TeapotBot, UserAvatarType, UserBannerType } from "../utils/teapot";
 import { GetColorText } from "../utils/colors";
+import { hasFlag, UserFlags } from "../utils/flags";
 
 import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
 
@@ -50,6 +51,9 @@ export async function _renderSettings(teapot, bot_user, selected) {
     case "sel_settings_preference":
       settingsPage = await _cmd_settings_preference(teapot, bot_user);
       break;
+    case "sel_settings_staff":
+      settingsPage = await _cmd_settings_staff(teapot, bot_user);
+      break;
   }
 
   return [
@@ -77,7 +81,14 @@ export async function _renderSettings(teapot, bot_user, selected) {
                   label: "Preference Settings",
                   value: "sel_settings_preference",
                   default: selected === "sel_settings_preference"
-                }
+                },
+                ...(hasFlag(bot_user.flags, UserFlags.STAFF)
+                  ? [{
+                    label: "Admin Tools",
+                    value: "sel_settings_staff",
+                    default: selected === "sel_settings_staff"
+                  }]
+                  : [])
               ]
             }
           ]
@@ -145,27 +156,9 @@ async function _cmd_settings_general(teapot, bot_user) {
         disabled: false
       }
     },
-    // CREATE LOBBY EVENT
-//     MessageComponent.Seperator(),
-//     {
-//       type: ComponentType.Section,
-//       components: [
-//         MessageComponent.Text(`
-// **[DEV] Create Lobby**
-// -# **Spawn a new lobby instance**
-// `)
-//       ],
-//       accessory: {
-//         type: MessageComponentTypes.BUTTON,
-//         label: `btn_lobby_create_dev`,
-//         style: ButtonStyle.Primary,
-//         custom_id: `btn_lobby_create_dev`,
-//         disabled: false
-//       }
-//     },
     // ACTIVE CONSOLE SETTING
     MessageComponent.Seperator(),
-        MessageComponent.Text(`
+    MessageComponent.Text(`
 **Linked Console**
 -# **\`${teapot.user.cpukey}\`**
 `)
@@ -246,5 +239,52 @@ async function _cmd_settings_preference(teapot, bot_user) {
         disabled: false
       }
     }
+  ];
+}
+
+async function _cmd_settings_staff(teapot, bot_user) {
+  return [
+    // USER MANAGEMENT
+    MessageComponent.Seperator(),
+    MessageComponent.Text(`
+**User Management**
+-# **Manage another user's flags and badges**
+`),
+    {
+      type: ComponentType.ActionRow,
+      components: [
+        {
+          type: ComponentType.UserSelect,
+          custom_id: `sel_settings_toggle_flags_staff`,
+          placeholder: `Select a user to manage`,
+          // default_values: [
+          //   {
+          //     id: bot_user.id,
+          //     type: "user"
+          //   }
+          // ],
+          min_values: 1,
+          max_values: 1
+        },
+      ]
+    },
+    // CREATE LOBBY EVENT
+    MessageComponent.Seperator(),
+    {
+      type: ComponentType.Section,
+      components: [
+        MessageComponent.Text(`
+**Placeholder**
+-# **Placeholder description**
+`)
+      ],
+      accessory: {
+        type: MessageComponentTypes.BUTTON,
+        label: `Edit`,
+        style: ButtonStyle.Secondary,
+        custom_id: `btn_default`,
+        disabled: true
+      }
+    },
   ];
 }

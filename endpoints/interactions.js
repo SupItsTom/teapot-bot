@@ -26,6 +26,7 @@ import mod_settings_toggle_cheats, { mod_settings_toggle_cheats_submitted } from
 import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
 import mod_lobby_create, { mod_lobby_create_submitted } from "../modals/mod_lobby_create";
 import { mod_errorui_submitted } from "../modals/mod_errorui";
+import mod_settings_toggle_flags_staff, { mod_settings_toggle_flags_staff_submitted } from "../modals/mod_settings_toggle_flags_staff";
 
 
 //-----------------------------------------------------------------------------
@@ -38,12 +39,14 @@ export default async function (request, env, ctx) {
 
   const discord_user = await getDiscordUser(interaction);
 
+  // CRITIAL PERMISSION CHECKPOINT !!!
   if (await new TeapotBot(env).HasFlag(discord_user, UserFlags.BLACKLISTED)) {
     return new ClientError({
       title: "Not Authorized",
       message: `You are not authorized to use this feature or service.`,
     }).ShowModal();
   }
+  // =====================================
 
   switch (interaction.type) {
     case InteractionType.PING: {
@@ -122,7 +125,9 @@ function _handleApplicationCommandAutoComplete(interaction, env, ctx) {
 function _handleModalSubmit(interaction, env, ctx) {
   console.log(`[${InteractionType[interaction.type]}]: ${interaction.data.custom_id}`);
 
-  const modName = interaction.data.custom_id.toLowerCase();
+  const modName = interaction.data.custom_id
+    .split(":")[0]
+    .toLowerCase();
 
   switch (modName) {
     case "mod_signin": return mod_signin_submitted(interaction, env, ctx);
@@ -136,6 +141,7 @@ function _handleModalSubmit(interaction, env, ctx) {
     case "mod_settings_toggle_cheats": return mod_settings_toggle_cheats_submitted(interaction, env, ctx);
     case "mod_onboarding_logon": return mod_onboarding_logon_submitted(interaction, env, ctx);
     case "mod_lobby_create": return mod_lobby_create_submitted(interaction, env, ctx);
+    case "mod_settings_toggle_flags_staff": return mod_settings_toggle_flags_staff_submitted(interaction, env, ctx);
 
     case "mod_errorui": return mod_errorui_submitted(interaction, env, ctx);
 
@@ -153,19 +159,22 @@ function _handleModalSubmit(interaction, env, ctx) {
 function _handleMessageComponent(interaction, env, ctx) {
   console.log(`[${InteractionType[interaction.type]}]: ${interaction.data.custom_id}`);
 
-  const comName = interaction.data.custom_id.toLowerCase();
-
-  // text adventure:
-  const taCmdParts = comName.split(':');
+  // text adventure - TODO: this is yet to be integrated into comName:
+  const taCmdParts = interaction.data.custom_id.split(':');
   const taParent = taCmdParts.shift();
   switch (taParent) {
     case "madman": return new TA_MadMan(interaction, env, ctx).HandleAction(taCmdParts);
   }
 
+  const comName = interaction.data.custom_id
+    .split(":")[0]
+    .toLowerCase();
+
   // new component system
   switch (comName) {
     // Selecton Menus
     case "sel_settings": return cmd_settings(interaction, env, ctx);
+    case "sel_settings_toggle_flags_staff": return mod_settings_toggle_flags_staff(interaction, env, ctx);
     // Buttons
     case "btn_settings_change_username": return mod_settings_change_username(interaction, env, ctx);
     //case "btn_settings_change_email": return new ClientError("Coming Soon™", "You cannot currently change your XBLS account email. This feature is coming soon.").ShowUser();
