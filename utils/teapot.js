@@ -256,7 +256,6 @@ export class TeapotBot {
     return hasFlag(user.flags ?? 0, flag);
   }
 
-
   // Add flag
   async AddFlag(discord_user, flag) {
     const result = await this.env.database
@@ -320,6 +319,26 @@ export class TeapotBot {
     );
 
     return result;
+  }
+
+  // get users with flag
+  async GetUsersByFlags(flags = UserFlags.NONE) {
+    // default getall
+    if (flags === UserFlags.NONE) {
+      return this.env.database
+        .prepare("SELECT id FROM users")
+        .all();
+    }
+
+    // get x flag
+    return this.env.database
+      .prepare(`
+            SELECT id
+            FROM users
+            WHERE (flags & ?1) != 0
+        `)
+      .bind(flags)
+      .all();
   }
 
   AreMonitorsOnline() {
