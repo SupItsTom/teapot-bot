@@ -28,8 +28,7 @@ async function _defer_file_upload(interaction, env){
 
   // check files are doing ok :D
   if (!_files_teapot_standard_zip.ok || !_files_teapot_core_zip.ok || !_files_teapot_xdk_zip.ok) {
-    await new ClientError("Network Error", "Failed to retrieve file data.")
-    return;
+    return new ClientError("Network Error", "Failed to retrieve one or more files.").ShowModal();
   }
 
   // parse file buffers
