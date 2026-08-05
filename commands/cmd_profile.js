@@ -7,6 +7,7 @@ import { Xbox } from "../utils/xbox";
 import { Badges } from "../utils/badges";
 
 import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
+import { hasFlag, UserFlags } from "../utils/flags";
 
 /**
  * # Profile Command
@@ -165,7 +166,7 @@ export function _profileComponent({
 
   const avatarType = bot_user.settings.avatar_type;
 
-  if (avatarType === UserAvatarType.DISABLED) {
+  if (avatarType === UserAvatarType.DISABLED || hasFlag(bot_user.flags, UserFlags.QUARANTINED)) {
     // return no section component
     return [
       ..._resolveBanner(),
@@ -200,7 +201,7 @@ export function _profileComponent({
   function _resolveBanner() {
     const bannerType = bot_user.settings.banner_type;
 
-    if (bannerType === UserBannerType.DISABLED) {
+    if (bannerType === UserBannerType.DISABLED || hasFlag(bot_user.flags, UserFlags.QUARANTINED)) {
       return [];
     }
 
