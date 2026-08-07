@@ -53,7 +53,7 @@ async function _defer_file_upload(interaction, env){
         components: [
 
           MessageComponent.Text(`**XBLS — STANDARD EDITION**`, -1),
-          MessageComponent.Text(`Client for RGH, JTAG & Retail consoles.${teapot.ret?.[0]?.guestmode === "1" ? " **Currently in Freemode**!" : ""}`, 0),
+          MessageComponent.Text(`Client for RGH, JTAG & Retail consoles.${teapot.ret?.[0]?.guestmode === "1" ? "\n**Currently in Freemode**!" : ""}`, 0),
           MessageComponent.File("attachment://xbls.zip"),
         ]
       },
