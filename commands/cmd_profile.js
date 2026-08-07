@@ -56,7 +56,7 @@ export default async function (interaction, env, ctx) {
 
             ..._profileComponent({ bot_user, discord_user, teapot, _game_info, _profile_badges, }),
 
-            ...(bot_user.settings.render_details || bot_user.settings.private
+            ...(bot_user.settings.render_details
               ? [
                 MessageComponent.Seperator(),
 
