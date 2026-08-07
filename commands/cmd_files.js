@@ -20,21 +20,21 @@ export default async function (interaction, env, ctx) {
 }
 
 async function _defer_file_upload(interaction, env){
-  const [_files_teapot_standard_zip, _files_teapot_core_zip, _files_teapot_xdk_zip] = await Promise.all([
+  const [_files_teapot_standard_zip, /*_files_teapot_core_zip,*/ _files_teapot_xdk_zip] = await Promise.all([
     fetch("https://xboxstealth.net/DL/XBLStealth.zip"),
-    fetch("https://xboxstealth.net/DL/XBLStealth-Lite.zip"),
+    //fetch("https://xboxstealth.net/DL/XBLStealth-Lite.zip"),
     fetch("https://xboxstealth.net/DL/XBLStealth-XDK.zip")
   ]);
 
   // check files are doing ok :D
-  if (!_files_teapot_standard_zip.ok || !_files_teapot_core_zip.ok || !_files_teapot_xdk_zip.ok) {
+  if (!_files_teapot_standard_zip.ok /*|| !_files_teapot_core_zip.ok*/ || !_files_teapot_xdk_zip.ok) {
     return new ClientError("Network Error", "Failed to retrieve one or more files.").ShowModal();
   }
 
   // parse file buffers
-  const [_files_teapot_standard_buffer, _files_teapot_core_buffer, _files_teapot_xdk_buffer] = await Promise.all([
+  const [_files_teapot_standard_buffer, /*_files_teapot_core_buffer,*/ _files_teapot_xdk_buffer] = await Promise.all([
     _files_teapot_standard_zip.arrayBuffer(),
-    _files_teapot_core_zip.arrayBuffer(),
+    //_files_teapot_core_zip.arrayBuffer(),
     _files_teapot_xdk_zip.arrayBuffer()
   ]);
 
@@ -60,7 +60,6 @@ async function _defer_file_upload(interaction, env){
       // {
       //   type: MessageComponentTypes.CONTAINER,
       //   components: [
-
       //     MessageComponent.Text(`**XBLS — CORE EDITION**`, -1),
       //     MessageComponent.Text("The free alternative to the standard edition.", 0),
       //     MessageComponent.File("attachment://xbls-core.zip"),
@@ -79,7 +78,7 @@ async function _defer_file_upload(interaction, env){
   }));
 
   payload.append("files[0]", new Blob([_files_teapot_standard_buffer]), "xbls.zip");
-  payload.append("files[1]", new Blob([_files_teapot_core_buffer]), "xbls-core.zip");
+  //payload.append("files[1]", new Blob([_files_teapot_core_buffer]), "xbls-core.zip");
   payload.append("files[2]", new Blob([_files_teapot_xdk_buffer]), "xbls-devkit.zip");
 
   // follow up
