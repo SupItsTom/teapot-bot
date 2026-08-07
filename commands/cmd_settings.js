@@ -269,22 +269,22 @@ async function _cmd_settings_staff(teapot, bot_user) {
       ]
     },
     // CREATE LOBBY EVENT
-    MessageComponent.Seperator(),
-    {
-      type: ComponentType.Section,
-      components: [
-        MessageComponent.Text(`
-**Placeholder**
--# **Placeholder description**
-`)
-      ],
-      accessory: {
-        type: MessageComponentTypes.BUTTON,
-        label: `Edit`,
-        style: ButtonStyle.Secondary,
-        custom_id: `btn_default`,
-        disabled: true
-      }
-    },
+//     MessageComponent.Seperator(),
+//     {
+//       type: ComponentType.Section,
+//       components: [
+//         MessageComponent.Text(`
+// **Placeholder**
+// -# **Placeholder description**
+// `)
+//       ],
+//       accessory: {
+//         type: MessageComponentTypes.BUTTON,
+//         label: `Edit`,
+//         style: ButtonStyle.Secondary,
+//         custom_id: `btn_default`,
+//         disabled: true
+//       }
+//     },
   ];
 }
