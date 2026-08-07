@@ -84,7 +84,7 @@ export async function _renderSettings(teapot, bot_user, selected) {
                 },
                 ...(hasFlag(bot_user.flags, UserFlags.STAFF)
                   ? [{
-                    label: "Admin Tools",
+                    label: "Admin Settings",
                     value: "sel_settings_staff",
                     default: selected === "sel_settings_staff"
                   }]
