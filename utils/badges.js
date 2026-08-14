@@ -5,17 +5,16 @@ import { IsStaging } from "./client";
 export const ProfileCardBadges = {
   BADGE_SYSTEM: `[<:System:1517631050702913697>](https://supitstom.net/teapot-bot/badges/#system)`,
   BADGE_DEVELOPER: `[<:Developer:1517633915085656204>](https://supitstom.net/teapot-bot/badges/#developer)`,
-  BADGE_LIFETIME: `[<:Lifetime:1517631037243396239>](https://supitstom.net/teapot-bot/badges/#lifetime)`,
-  BADGE_MOXAH: `[<:Moxah:1517631039030300834>](https://supitstom.net/teapot-bot/badges/#moxah)`,
-  BADGE_PH: `[<:Contributor:1517631032629919855>](https://supitstom.net/teapot-bot/badges/#slut)`,
-  BADGE_KALI: `[<:Bricker:1517631027156095066>](https://supitstom.net/teapot-bot/badges/#bricker)`,
+  BADGE_TESTER: `[<:Tester:1537915042614222888>](https://supitstom.net/teapot-bot/badges/#tester)`,
+  //BADGE_CONTRIBUTOR: `[<:Contributor:1517631032629919855>](https://supitstom.net/teapot-bot/badges/#contributor)`, // merged with BADGE_TESTER
   BADGE_SUPERIORITY: `[<:Superiority:1517631048945504396>](https://supitstom.net/teapot-bot/badges/#superiority)`,
-  BADGE_PREMIUM: `[<:Premium:1517631046852546610>](https://supitstom.net/teapot-bot/badges/#premium)`,
-  BADGE_TESTER: `[<:Tester:1517633913734955090>](https://supitstom.net/teapot-bot/badges/#tester)`,
+  //BADGE_MOXAH: `[<:Moxah:1517631039030300834>](https://supitstom.net/teapot-bot/badges/#moxah)`, // currently not flaggable
+  //BADGE_KALI: `[<:Bricker:1517631027156095066>](https://supitstom.net/teapot-bot/badges/#bricker)`, // currently not flaggable
   BADGE_CLAN_MEMBER: `[<:ClanMember:1517631029320355932>](https://supitstom.net/teapot-bot/badges/#clan-member)`,
+  BADGE_PREMIUM: `[<:Premium:1517631046852546610>](https://supitstom.net/teapot-bot/badges/#premium)`,
+  BADGE_UNICORN: `[<:Unicorn:1537915044988194876>](https://supitstom.net/teapot-bot/badges/#unicorn)`,
 
-  // New
-  BADGE_UNICORN: `[<:Unicorn:1531795665217126523>](https://supitstom.net/teapot-bot/badges/#unicorn)`,
+  BADGE_LIFETIME: `[<:Lifetime:1517631037243396239>](https://supitstom.net/teapot-bot/badges/#lifetime)`,
 };
 
 // rendered on profile in order here
@@ -75,21 +74,6 @@ export class Badges {
         "1004811174044508271"
         ? ProfileCardBadges.BADGE_CLAN_MEMBER
         : "";
-
-    /*
-     * Future badges:
-     *
-     * BADGE_SYSTEM
-     *   - Child webhook of the App
-     *   - The App itself
-     *
-     * BADGE_STAFF
-     *   - Discord Team member
-     *   - Support server staff
-     *
-     * BADGE_APP_TESTER
-     *   - Discord application tester
-     */
 
     // if (this.env.DISCORD_APPLICATION.CLIENT_ID !== "1447678850493321288") {
     //   return "`ⓘ Badges disabled`";
