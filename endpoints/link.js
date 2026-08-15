@@ -227,7 +227,7 @@ async function _updateRoleConnection(
       success: true,
       title: "Connected Successfully",
       description:
-        "Your Teapot account is now connected to Discord.",
+        "Your Teapot account is now connected to Discord",
       tip:
         "You can close this window and go back to Discord.",
       discordUser: discordUser.user,
