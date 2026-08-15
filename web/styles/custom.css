@@ -504,7 +504,19 @@ a.reference-link span {
 
 /* Hide the account connection on small screens */
 @media screen and (max-width: 500px) {
-	.oauth-page .oauth-card .oauth-connection {
+	html:has(.oauth-page),
+	body:has(.oauth-page) {
+		height: 100%;
+		overflow: hidden;
+	}
+
+	.oauth-page {
+		height: 100dvh;
+		min-height: 100dvh;
+		overflow: hidden;
+	}
+
+	.oauth-connection {
 		display: none !important;
 	}
 }
