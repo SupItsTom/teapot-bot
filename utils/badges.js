@@ -12,7 +12,7 @@ export const ProfileCardBadges = {
   //BADGE_KALI: `[<:Bricker:1517631027156095066>](https://supitstom.net/teapot-bot/badges/#bricker)`, // currently not flaggable
   BADGE_CLAN_MEMBER: `[<:ClanMember:1517631029320355932>](https://supitstom.net/teapot-bot/badges/#clan-member)`,
   BADGE_PREMIUM: `[<:Premium:1517631046852546610>](https://supitstom.net/teapot-bot/badges/#premium)`,
-  BADGE_UNICORN: `[<:Unicorn:1537915044988194876>](https://supitstom.net/teapot-bot/badges/#unicorn)`,
+  BADGE_UNICORN: `[<:Unicorn:1540410949322932234>](https://supitstom.net/teapot-bot/badges/#unicorn)`,
 
   BADGE_LIFETIME: `[<:Lifetime:1517631037243396239>](https://supitstom.net/teapot-bot/badges/#lifetime)`,
 };
