@@ -4,7 +4,7 @@ import { IsStaging } from "./client";
 
 export const ProfileCardBadges = {
   BADGE_SYSTEM: `[<:System:1517631050702913697>](https://supitstom.net/teapot-bot/badges/#system)`,
-  BADGE_DEVELOPER: `[<:Developer:1517633915085656204>](https://supitstom.net/teapot-bot/badges/#developer)`,
+  BADGE_DEVELOPER: `[<:Developer:1540432696910815233>](https://supitstom.net/teapot-bot/badges/#developer)`,
   BADGE_TESTER: `[<:Tester:1537915042614222888>](https://supitstom.net/teapot-bot/badges/#tester)`,
   //BADGE_CONTRIBUTOR: `[<:Contributor:1517631032629919855>](https://supitstom.net/teapot-bot/badges/#contributor)`, // merged with BADGE_TESTER
   BADGE_SUPERIORITY: `[<:Superiority:1517631048945504396>](https://supitstom.net/teapot-bot/badges/#superiority)`,
