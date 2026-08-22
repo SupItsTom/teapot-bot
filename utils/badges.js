@@ -4,16 +4,12 @@ import { IsStaging } from "./client";
 
 export const ProfileCardBadges = {
   BADGE_SYSTEM: `[<:System:1517631050702913697>](https://supitstom.net/teapot-bot/badges/#system)`,
-  BADGE_DEVELOPER: `[<:Developer:1540432696910815233>](https://supitstom.net/teapot-bot/badges/#developer)`,
-  BADGE_TESTER: `[<:Tester:1537915042614222888>](https://supitstom.net/teapot-bot/badges/#tester)`,
-  //BADGE_CONTRIBUTOR: `[<:Contributor:1517631032629919855>](https://supitstom.net/teapot-bot/badges/#contributor)`, // merged with BADGE_TESTER
+  BADGE_DEVELOPER: `[<:Developer:1540754547960582164>](https://supitstom.net/teapot-bot/badges/#developer)`,
+  BADGE_BUG_HUNTER: `[<:BugHunter:1540754544219131944>](https://supitstom.net/teapot-bot/badges/#bug-hunter)`,
   BADGE_SUPERIORITY: `[<:Superiority:1517631048945504396>](https://supitstom.net/teapot-bot/badges/#superiority)`,
-  //BADGE_MOXAH: `[<:Moxah:1517631039030300834>](https://supitstom.net/teapot-bot/badges/#moxah)`, // currently not flaggable
-  //BADGE_KALI: `[<:Bricker:1517631027156095066>](https://supitstom.net/teapot-bot/badges/#bricker)`, // currently not flaggable
   BADGE_CLAN_MEMBER: `[<:ClanMember:1517631029320355932>](https://supitstom.net/teapot-bot/badges/#clan-member)`,
   BADGE_PREMIUM: `[<:Premium:1517631046852546610>](https://supitstom.net/teapot-bot/badges/#premium)`,
   BADGE_UNICORN: `[<:Unicorn:1540410949322932234>](https://supitstom.net/teapot-bot/badges/#unicorn)`,
-
   BADGE_LIFETIME: `[<:Lifetime:1517631037243396239>](https://supitstom.net/teapot-bot/badges/#lifetime)`,
 };
 
@@ -25,7 +21,7 @@ const DatabaseBadgeMap = Object.freeze([
   },
   {
     flag: UserFlags.BUG_HUNTER,
-    badge: ProfileCardBadges.BADGE_TESTER,
+    badge: ProfileCardBadges.BADGE_BUG_HUNTER,
   },
   {
     flag: UserFlags.BADGE_SUPERIORITY,
