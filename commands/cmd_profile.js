@@ -229,18 +229,3 @@ export function _profileComponent({
     ];
   }
 }
-
-// Dev: returns database objects
-function __dev_user_json(teapot, bot_user) {
-  return [
-    {
-      type: MessageComponentTypes.CONTAINER,
-      components: [
-        MessageComponent.Text(`**PROFILE DEBUG**`, -1),
-        MessageComponent.Text(
-          "```json\n" + JSON.stringify(bot_user, null, 2) + "\n```"
-        ),
-      ]
-    }
-  ];
-}
