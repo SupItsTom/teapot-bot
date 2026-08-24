@@ -1,45 +1,64 @@
-import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
-import { dropRequest, JsonResponse } from "../utils/client";
-import { MessageComponent } from "../utils/discord";
-import { postTeapotRequest } from "../utils/teapot";
+import { dropRequest } from "../utils/client";
 
 /**
  * # APPLICATION_AUTHORIZED Event
- * Webhook recieved when the app is added to a server or user account.
- * 
+ * Webhook received when the app is added to a server or user account.
+ *
  * https://discord.com/developers/docs/events/webhook-events#application-authorized
  */
-export default async function (interaction, env, ctx) {  
-  const event_data = interaction.event.data;
-  const event_user = interaction.event.data.user;
+export default async function (interaction, env, ctx) {
+  const { scopes, user } = interaction.event.data;
 
-  console.log(`[events:authorized] event_user: '${event_user.id}'`)
+  console.log(`[events:authorized] event_user: '${user.id}'`);
+  console.log(`[events:authorized] scopes: ${scopes.join(", ")}`);
 
-  switch(event_data.scopes.includes){
-    case "indetify": return OAUTH_IDENTIFY(interaction, env, ctx);
-    case "role_connections.write": return OAUTH_ROLE_CONNECTIONS_WRITE(interaction, env, ctx);
-    default: return new dropRequest(304)
+  const tasks = [];
+
+  if (scopes.includes("identify")) {
+    tasks.push(OAUTH_IDENTIFY(interaction, env, ctx));
   }
+
+  if (scopes.includes("role_connections.write")) {
+    tasks.push(OAUTH_ROLE_CONNECTIONS_WRITE(interaction, env, ctx));
+  }
+
+  await Promise.all(tasks);
+
+  return new dropRequest(304);
 }
 
 /*****************************************************************************
-**          							   Local Functions				                        **
+**                         Local Functions
 *****************************************************************************/
 
-function OAUTH_IDENTIFY(interaction, env, ctx){
-  /* TODO - TRANSPARENCY REPORT:
-   * Message event_user about actions the bot has taken on their behalf 
-   * Eg: Checked their account email
-  */
+async function OAUTH_IDENTIFY(interaction, env, ctx) {
+  /*
+   * TODO - TRANSPARENCY REPORT:
+   *
+   * Message event user about actions the app has taken
+   * on their behalf.
+   *
+   * Example:
+   * - Checked their account email
+   */
 
-  return new dropRequest(304);
+  const user = interaction.event.data.user;
+
+  console.log(`[events:authorized:OAUTH_IDENTIFY] identify scope granted to '${user.id}'`);
 }
 
-function OAUTH_ROLE_CONNECTIONS_WRITE(interaction, env, ctx){
-  /* TODO - TRANSPARENCY REPORT:
-  * Message event_user about actions the bot has taken on their behalf 
-  * Eg: Updated role connection metadata for the application
-  */
+async function OAUTH_ROLE_CONNECTIONS_WRITE(interaction, env, ctx) {
+  /*
+   * TODO - TRANSPARENCY REPORT:
+   *
+   * Message event user about actions the app has taken
+   * on their behalf.
+   *
+   * Example:
+   * - Updated role connection metadata for the application
+   */
 
-  return new dropRequest(304);
+  const user = interaction.event.data.user;
+
+  console.log(`[events:authorized:OAUTH_ROLE_CONNECTIONS_WRITE] role_connections.write scope granted to '${user.id}'`);
 }
