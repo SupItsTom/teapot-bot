@@ -186,7 +186,7 @@ async function _updateRoleConnection(
   };
 
   console.info(
-    `[endpoints:link] Updating role connection for ${teapot.user.name}`
+    `[endpoints:link] Writing role connection for ${teapot.user.name} => ${JSON.stringify(metadata)}`
   );
 
   const res = await fetch(
