@@ -25,7 +25,7 @@ export default async function (interaction, env, ctx) {
   const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
   const teapot_kv = await postTeapotRequest(env, { action: "kvstatus", email: `${bot_user.email}` });
 
-  let _game_info = await new Xbox().GetGameFromTitleID("0x345007DC");
+  let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
   let _profile_badges = await new Badges(env, discord_user).GetAll();
 
   if (
