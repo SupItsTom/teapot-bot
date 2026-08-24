@@ -115,7 +115,7 @@ function _handleApplicationCommandAutoComplete(interaction, env, ctx) {
   switch (cmdName) {
     case "store": return new AutoComplete(interaction).StoreGetTitleIds(interaction.data.options[0].value);
 
-    default: return new dropRequest(204)// 204 - The request completed successfully but returned no content.
+    default: return new dropRequest(204);// 204 - The request completed successfully but returned no content.
   }
 }
 

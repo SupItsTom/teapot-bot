@@ -9,9 +9,9 @@ import ev_entitlement_create from "../events/ev_entitlement_create";
 // Purpose: Entry point to handle various command types
 //-----------------------------------------------------------------------------
 export default async function (request, env, ctx) {
-  console.log(`[app]: Incoming webhook: ${WebhookType[interaction.type]}`);
-
   const interaction = await request.json();
+
+  console.log(`[app]: Incoming webhook: ${WebhookType[interaction.type]}`);
 
   switch (interaction.type) {
     case WebhookType.PING: {
@@ -21,7 +21,7 @@ export default async function (request, env, ctx) {
       return _handleEvent(interaction, env, ctx);
     }
     default: {
-      return dropRequest(400);
+      return new dropRequest(400);
     }
   }
 }
@@ -30,7 +30,7 @@ export default async function (request, env, ctx) {
 // Purpose: Let's Discord know we are alive
 //-----------------------------------------------------------------------------
 function _handlePingRequest() {
-  return text({ status: 200 });
+  return new dropRequest(200);
 }
 
 //-----------------------------------------------------------------------------
@@ -43,6 +43,6 @@ function _handleEvent(interaction, env, ctx) {
     case WebhookEventType.APPLICATION_AUTHORIZED: return ev_authorized(interaction, env, ctx);
     case "APPLICATION_DEAUTHORIZED": return ev_deauthorized(interaction, env, ctx);
     case WebhookEventType.ENTITLEMENT_CREATE: return ev_entitlement_create(interaction, env, ctx);
-    default: return error(500, `Unhandled event type: ${eventType}`);
+    default: return new dropRequest(500);
   }
 }
