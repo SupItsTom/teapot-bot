@@ -788,18 +788,21 @@ export class TA_MadMan {
               MessageComponent.Media('https://web-assets.cdn.supitstom.net/victory-royale.png'),
               MessageComponent.Seperator(false, 1),
               MessageComponent.Text(`Thank you for playing!`, 0),
-              MessageComponent.Text(`A new badge has been added to your profile!`, 0),
+              MessageComponent.Text(`You have unlocked a new badge for your profile!`, 0),
               MessageComponent.Seperator(true, 1),
 
               {
                 type: MessageComponentTypes.ACTION_ROW,
                 components: [
-                  
                   {
                     type: MessageComponentTypes.BUTTON,
-                    style: ButtonStyle.Secondary,
-                    label: 'Play Again',
-                    custom_id: 'madman:start:replay',
+                    style: ButtonStyle.Success,
+                    label: 'Claim Badge',
+                    emoji: {
+                      name: `${this.env.DISCORD_EMOJI.BADGE_UNICORN.match(/^<:([^:]+):(\d+)>$/)[1]}`,
+                      id: `${this.env.DISCORD_EMOJI.BADGE_UNICORN.match(/^<:([^:]+):(\d+)>$/)[2]}`,
+                    },
+                    custom_id: 'btn_profile',
                     disabled: false,
                   }
                 ]
