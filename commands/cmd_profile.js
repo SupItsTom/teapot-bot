@@ -1,231 +1,215 @@
-import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from "discord-interactions";
-import { IsStaging, JsonResponse, numberWithCommas, truncateRelativeTime } from "../utils/client";
-import { getDiscordUser, MessageComponent, ClientError, getAvatarUrl, Discord, AppWebhookEventType, getBannerUrl } from "../utils/discord";
-import { postTeapotRequest, TeapotBot, UserAvatarType, UserBannerType } from "../utils/teapot";
-import { ButtonStyle, ComponentType } from "discord-api-types/v10";
-import { Xbox } from "../utils/xbox";
-import { Badges } from "../utils/badges";
+import { InteractionResponseFlags, InteractionResponseType, MessageComponentTypes } from 'discord-interactions';
+import { IsStaging, JsonResponse, numberWithCommas, truncateRelativeTime } from '../utils/client';
+import { getDiscordUser, MessageComponent, ClientError, getAvatarUrl, Discord, AppWebhookEventType, getBannerUrl } from '../utils/discord';
+import { postTeapotRequest, TeapotBot, UserAvatarType, UserBannerType } from '../utils/teapot';
+import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
+import { Xbox } from '../utils/xbox';
+import { Badges } from '../utils/badges';
 
-import mod_onboarding_logon, { mod_onboarding_logon_submitted } from "../modals/mod_onboarding_logon";
-import { hasFlag, UserFlags } from "../utils/flags";
+import mod_onboarding_logon, { mod_onboarding_logon_submitted } from '../modals/mod_onboarding_logon';
+import { hasFlag, UserFlags } from '../utils/flags';
 
 /**
  * # Profile Command
  * Fetch and display the user's profile information
  */
 export default async function (interaction, env, ctx) {
+	const discord_user = await getDiscordUser(interaction);
+	const bot_user = await new TeapotBot(env).GetUser(discord_user);
 
-  const discord_user = await getDiscordUser(interaction);
-  const bot_user = await new TeapotBot(env).GetUser(discord_user);
+	if (!bot_user.email) {
+		return mod_onboarding_logon(interaction, env, ctx);
+	}
 
-  if (!bot_user.email) {
-    return mod_onboarding_logon(interaction, env, ctx);
-  }
+	const teapot = await postTeapotRequest(env, { action: 'overview', email: `${bot_user.email}` });
+	const teapot_kv = await postTeapotRequest(env, { action: 'kvstatus', email: `${bot_user.email}` });
 
-  const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
-  const teapot_kv = await postTeapotRequest(env, { action: "kvstatus", email: `${bot_user.email}` });
+	let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
+	let _profile_badges = await new Badges(env, discord_user).GetAll();
 
-  let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
-  let _profile_badges = await new Badges(env, discord_user).GetAll();
+	if (
+		interaction.guild_id === env.DISCORD_APPLICATION.GUILD_ID &&
+		!bot_user.settings.private &&
+		bot_user.settings.render_details &&
+		teapot_kv.time != ''
+	) {
+		await new Discord(env).SendWebhookEvent(
+			AppWebhookEventType.USER_VAULT_LOG,
+			`-# **[${discord_user.username}](discord://-/users/${discord_user.id})** has been unbanned for **${truncateRelativeTime(teapot_kv.time)}**.`,
+		);
+	}
 
-  if (
-    interaction.guild_id === env.DISCORD_APPLICATION.GUILD_ID &&
-    !bot_user.settings.private &&
-    bot_user.settings.render_details &&
-    teapot_kv.time != ""
-  ) {
-    await new Discord(env).SendWebhookEvent(AppWebhookEventType.USER_VAULT_LOG,
-      `-# **[${discord_user.username}](discord://-/users/${discord_user.id})** has been unbanned for **${truncateRelativeTime(teapot_kv.time)}**.`
-    );
-  }
+	return new JsonResponse({
+		type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+		data: {
+			allowed_mentions: { parse: [] },
+			flags: InteractionResponseFlags.IS_COMPONENTS_V2 | (bot_user.settings.private ? InteractionResponseFlags.EPHEMERAL : 0),
 
-  return new JsonResponse({
-    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-    data: {
-      allowed_mentions: { parse: [] },
-      flags:
-        InteractionResponseFlags.IS_COMPONENTS_V2 |
-        (bot_user.settings.private ? InteractionResponseFlags.EPHEMERAL : 0),
+			components: [
+				{
+					type: MessageComponentTypes.CONTAINER,
+					components: [
+						MessageComponent.Text(
+							`**${
+								hasFlag(bot_user.flags, UserFlags.BUG_HUNTER) && env.CLIENT.EXPERIMENTS_ENABLED == true
+									? ` ${env.DISCORD_EMOJI.FLAIR_EXPERIMENTAL} PROFILE — EXPERIMENTS ENABLED`
+									: 'PROFILE'
+							}**`,
+							-1,
+						),
 
-      components: [
-        {
-          type: MessageComponentTypes.CONTAINER,
-          components: [
+						..._profileComponent({ bot_user, discord_user, teapot, _game_info, _profile_badges }),
 
-            MessageComponent.Text(`**PROFILE**`, -1),
+						...(bot_user.settings.render_details
+							? [
+									MessageComponent.Seperator(),
 
-            ..._profileComponent({ bot_user, discord_user, teapot, _game_info, _profile_badges, }),
-
-            ...(bot_user.settings.render_details
-              ? [
-                MessageComponent.Seperator(),
-
-                MessageComponent.Text(`
+									MessageComponent.Text(`
 -# **DETAILS**
-**Gamertag:** ${teapot.user.gamertag == "" ? "Not Signed In" : `${teapot.user.gamertag}`}
+**Gamertag:** ${teapot.user.gamertag == '' ? 'Not Signed In' : `${teapot.user.gamertag}`}
 **Challenges:** ${numberWithCommas(teapot.user.xke_count)}
-**Time Left:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? " (Premium)" : ""}` : `${teapot.user.timeleft.banked.days}d ${teapot.user.timeleft.banked.timeleft}`}
-**Keyvault Time:** ${teapot_kv.time == "" ? "Not set" : `${truncateRelativeTime(teapot_kv.time)}`}
+**Time Left:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? ' (Premium)' : ''}` : `${teapot.user.timeleft.banked.days}d ${teapot.user.timeleft.banked.timeleft}`}
+**Keyvault Time:** ${teapot_kv.time == '' ? 'Not set' : `${truncateRelativeTime(teapot_kv.time)}`}
 `),
-              ]
-              : []),
+								]
+							: []),
+
+//             ...(hasFlag(bot_user.flags, UserFlags.BUG_HUNTER) && env.CLIENT.EXPERIMENTS_ENABLED == true
+//             ?  [
+// MessageComponent.Seperator(),
+// MessageComponent.Text(`**Friends:** 0 • **Followers: 0**`)
+//             ] : []),
 
             MessageComponent.Seperator(),
 
-            _memberYearsOfService(env, teapot, bot_user)
-          ]
-        },
-        ...(env.CLIENT.ENABLE_PROFILE_DEBUG
-          ? [
-            {
-              type: MessageComponentTypes.CONTAINER,
-              components: [
-                MessageComponent.Text(`**PROFILE DEBUG**`, -1),
-                MessageComponent.Text(
-                  "```json\n" + JSON.stringify(bot_user, null, 2) + "\n```"
-                ),
-              ]
-            }
-          ]: []),
-      ]
-    }
-  });
+						_memberYearsOfService(env, teapot, bot_user),
+					],
+				},
+				...(env.CLIENT.ENABLE_PROFILE_DEBUG
+					? [
+							{
+								type: MessageComponentTypes.CONTAINER,
+								components: [
+									MessageComponent.Text(`**PROFILE DEBUG**`, -1),
+									MessageComponent.Text('```json\n' + JSON.stringify(bot_user, null, 2) + '\n```'),
+								],
+							},
+						]
+					: []),
+			],
+		},
+	});
 }
 
 // Return Member Since component, with tenure if available for user
 function _memberYearsOfService(env, teapot, bot_user) {
-  const years = Math.floor(
-    (Date.now() / 1000 - teapot.user.date_registered_unix) /
-    (60 * 60 * 24 * 365.25)
-  );
+	const years = Math.floor((Date.now() / 1000 - teapot.user.date_registered_unix) / (60 * 60 * 24 * 365.25));
 
-  if (teapot.user.date_registered_unix === 920950991) {
-    return MessageComponent.Text(`
+	if (teapot.user.date_registered_unix === 920950991) {
+		return MessageComponent.Text(`
 -# **MEMBER SINCE**
 -# ${env.DISCORD_EMOJI.PLATFORM_TEAPOT} Legacy Account **•** ${env.DISCORD_EMOJI.PLATFORM_TEAPOT_BOT} <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
 `);
-  }
+	}
 
-  if (years <= 0) {
-    return MessageComponent.Text(`
+	if (years <= 0) {
+		return MessageComponent.Text(`
 -# **MEMBER SINCE**
 -# ${env.DISCORD_EMOJI.PLATFORM_TEAPOT} <t:${teapot.user.date_registered_unix}:D> **•** ${env.DISCORD_EMOJI.PLATFORM_TEAPOT_BOT} <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
 `);
-  }
+	}
 
-  return {
-    type: ComponentType.Section,
-    components: [
-      MessageComponent.Text(`
+	return {
+		type: ComponentType.Section,
+		components: [
+			MessageComponent.Text(`
 -# **MEMBER SINCE**
 -# ${env.DISCORD_EMOJI.PLATFORM_TEAPOT} <t:${teapot.user.date_registered_unix}:D> **•** ${env.DISCORD_EMOJI.PLATFORM_TEAPOT_BOT} <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
-`)
-    ],
-    accessory: {
-      type: MessageComponentTypes.BUTTON,
-      label: `${years} Year${years !== 1 ? "s" : ""} of Service`,
-      style: ButtonStyle.Secondary,
-      custom_id: `btn_readonly-${bot_user.id}-tenure`,
-      disabled: true,
-    },
-  };
+`),
+		],
+		accessory: {
+			type: MessageComponentTypes.BUTTON,
+			label: `${years} Year${years !== 1 ? 's' : ''} of Service`,
+			style: ButtonStyle.Secondary,
+			custom_id: `btn_readonly-${bot_user.id}-tenure`,
+			disabled: true,
+		},
+	};
 }
 
 // get profile component
-export function _profileComponent({
-  bot_user,
-  discord_user,
-  teapot,
-  _game_info,
-  _profile_badges,
-}) {
-  const profileComponents = [
-    MessageComponent.Text(
-      `<@${discord_user.id}> \`${teapot.user.name}\``,
-      2
-    ),
+export function _profileComponent({ bot_user, discord_user, teapot, _game_info, _profile_badges }) {
+	const profileComponents = [
+		MessageComponent.Text(`<@${discord_user.id}> \`${teapot.user.name}\``, 2),
 
-    MessageComponent.Text(
-      `${teapot.user.online === true
-        ? `**${teapot.user.title.name === "None Set" || _game_info == undefined
-          ? "Currently Online"
-          : `Playing [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`
-        }**`
-        : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${teapot.user.title.name === "None Set"  || _game_info == undefined
-          ? ""
-          : ` on [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`
-        }**`
-      }`,
-      -1
-    ),
+		MessageComponent.Text(
+			`${
+				teapot.user.online === true
+					? `**${
+							teapot.user.title.name === 'None Set' || _game_info == undefined
+								? 'Currently Online'
+								: `Playing [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`
+						}**`
+					: `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${
+							teapot.user.title.name === 'None Set' || _game_info == undefined
+								? ''
+								: ` on [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`
+						}**`
+			}`,
+			-1,
+		),
 
-    ...(_profile_badges
-      ? [MessageComponent.Text(`${_profile_badges}`, 1)]
-      : []),
-  ];
+		...(_profile_badges ? [MessageComponent.Text(`${_profile_badges}`, 1)] : []),
+	];
 
-  const avatarType = bot_user.settings.avatar_type;
+	const avatarType = bot_user.settings.avatar_type;
 
-  if (avatarType === UserAvatarType.DISABLED || hasFlag(bot_user.flags, UserFlags.QUARANTINED)) {
-    // return no section component
-    return [
-      ..._resolveBanner(),
-      ...profileComponents,
-    ];
-  }
+	if (avatarType === UserAvatarType.DISABLED || hasFlag(bot_user.flags, UserFlags.QUARANTINED)) {
+		// return no section component
+		return [..._resolveBanner(), ...profileComponents];
+	}
 
-  const avatarUrl = ({
-    [UserAvatarType.XBOX_GAMERPIC]:
-      `http://avatar.xboxlive.com/avatar/${encodeURIComponent(teapot.user.gamertag.trim())}/avatarpic-l.png`,
+	const avatarUrl = {
+		[UserAvatarType.XBOX_GAMERPIC]: `http://avatar.xboxlive.com/avatar/${encodeURIComponent(teapot.user.gamertag.trim())}/avatarpic-l.png`,
 
-    [UserAvatarType.DISCORD_AVATAR]:
-      getAvatarUrl(discord_user),
-  })[avatarType];
+		[UserAvatarType.DISCORD_AVATAR]: getAvatarUrl(discord_user),
+	}[avatarType];
 
-  const section = {
-    type: ComponentType.Section,
-    components: profileComponents,
-    accessory: {
-      type: ComponentType.Thumbnail,
-      media: {
-        url: avatarUrl,
-      },
-    },
-  };
+	const section = {
+		type: ComponentType.Section,
+		components: profileComponents,
+		accessory: {
+			type: ComponentType.Thumbnail,
+			media: {
+				url: avatarUrl,
+			},
+		},
+	};
 
-  return [
-    ..._resolveBanner(),
-    section,
-  ];
+	return [..._resolveBanner(), section];
 
-  function _resolveBanner() {
-    const bannerType = bot_user.settings.banner_type;
+	function _resolveBanner() {
+		const bannerType = bot_user.settings.banner_type;
 
-    if (bannerType === UserBannerType.DISABLED || hasFlag(bot_user.flags, UserFlags.QUARANTINED)) {
-      return [];
-    }
+		if (bannerType === UserBannerType.DISABLED || hasFlag(bot_user.flags, UserFlags.QUARANTINED)) {
+			return [];
+		}
 
-    const bannerUrl = ({
-      [UserBannerType.XBOX_GAME_BANNER]:
-        _game_info &&
-          _game_info.bing_id &&
-          teapot.user.title.id !== "0xFFFE07D1"
-          ? `http://download.xbox.com/content/images/${_game_info.bing_id}/banner.png`
-          : null,
+		const bannerUrl = {
+			[UserBannerType.XBOX_GAME_BANNER]:
+				_game_info && _game_info.bing_id && teapot.user.title.id !== '0xFFFE07D1'
+					? `http://download.xbox.com/content/images/${_game_info.bing_id}/banner.png`
+					: null,
 
-      [UserBannerType.DISCORD_BANNER]:
-        getBannerUrl(discord_user),
-    })[bannerType];
+			[UserBannerType.DISCORD_BANNER]: getBannerUrl(discord_user),
+		}[bannerType];
 
-    if (!bannerUrl) return [];
+		if (!bannerUrl) return [];
 
-    return [
-      MessageComponent.Media(bannerUrl, {
-        description:
-          bannerType === UserBannerType.XBOX_GAME_BANNER
-            ? `Game banner for '${_game_info.name}'`
-            : "Profile banner",
-      }),
-    ];
-  }
+		return [
+			MessageComponent.Media(bannerUrl, {
+				description: bannerType === UserBannerType.XBOX_GAME_BANNER ? `Game banner for '${_game_info.name}'` : 'Profile banner',
+			}),
+		];
+	}
 }

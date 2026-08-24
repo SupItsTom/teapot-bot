@@ -3,7 +3,7 @@
 		"id": "95522978183258112",
 		"email": "testuser@teapot.bot.supitstom.net",
 		"timestamp": "2015-01-01T00:00:00.000Z",
-		"flags": 1,
+		"flags": 2,
 		"flags_internal": [],
 		"settings": { "avatar_type": 1, "banner_type": 0, "private": false, "render_details": true }
 	},
