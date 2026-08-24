@@ -25,7 +25,7 @@ export default async function (interaction, env, ctx) {
   const teapot = await postTeapotRequest(env, { action: "overview", email: `${bot_user.email}` });
   const teapot_kv = await postTeapotRequest(env, { action: "kvstatus", email: `${bot_user.email}` });
 
-  let _game_info = await new Xbox().GetGameFromTitleID(teapot.user.title.id);
+  let _game_info = await new Xbox().GetGameFromTitleID("0x345007DC");
   let _profile_badges = await new Badges(env, discord_user).GetAll();
 
   if (
@@ -147,11 +147,11 @@ export function _profileComponent({
 
     MessageComponent.Text(
       `${teapot.user.online === true
-        ? `**${teapot.user.title.name === "None Set"
+        ? `**${teapot.user.title.name === "None Set" || _game_info == undefined
           ? "Currently Online"
           : `Playing [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`
         }**`
-        : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${teapot.user.title.name === "None Set"
+        : `**Last Seen <t:${teapot.user.date_lastseen_unix}:R>${teapot.user.title.name === "None Set"  || _game_info == undefined
           ? ""
           : ` on [${_game_info.name}](https://dbox.tools/marketplace/products/${_game_info.bing_id})`
         }**`
