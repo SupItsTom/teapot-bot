@@ -1,152 +1,168 @@
-import { getActiveFlags, hasFlag, UserFlags } from "./flags";
-import { BetterStack } from "./uptime";
+import { getActiveFlags, hasFlag, UserFlags } from './flags';
+import { BetterStack } from './uptime';
+
+import teapot_user_dev from '../metadata/teapot_user_dev.json';
+import { ClientError } from './discord';
 
 /**
  * Sends a POST request to the Teapot API with the provided data.
  */
 export function postTeapotRequest(env, data) {
-  const base = {
-    action: data?.action,
-    ...(data?.email ? { email: data.email } : {}),
-    ...(data?.token ? { token: data.token } : {}),
-    ...(data?.column ? { column: data.column } : {}),
-    key: env.TEAPOT_API.SECRET,
-  };
+	if (env.CLIENT.USE_MOCK_TEAPOT_USER == true) {
+		switch (data.action) {
+			case 'overview':
+				return teapot_user_dev.overview;
+			case 'kvstatus':
+				return teapot_user_dev.kvstatus;
+			default:
+				return console.warn(`[TeapotService]: Cannot perform action "${data.action}" while "USE_MOCK_TEAPOT_USER" is enabled`)
+		}
+	}
 
-  let extra = {};
+	const base = {
+		action: data?.action,
+		...(data?.email ? { email: data.email } : {}),
+		...(data?.token ? { token: data.token } : {}),
+		...(data?.column ? { column: data.column } : {}),
+		key: env.TEAPOT_API.SECRET,
+	};
 
-  if (data?.subaction === "changename") {
-    extra = {
-      subaction: data.subaction,
-      newname: data.newname,
-    };
-  }
+	let extra = {};
 
-  if (data?.subaction === "setoptions") {
-    const { action, email, token, subaction, ...options } = data;
+	if (data?.subaction === 'changename') {
+		extra = {
+			subaction: data.subaction,
+			newname: data.newname,
+		};
+	}
 
-    extra = {
-      subaction: data.subaction,
-      ...options,
-    };
-  }
+	if (data?.subaction === 'setoptions') {
+		const { action, email, token, subaction, ...options } = data;
 
-  const form = new URLSearchParams({
-    ...base,
-    ...extra,
-  });
+		extra = {
+			subaction: data.subaction,
+			...options,
+		};
+	}
 
-  console.log(
-    `[TeapotService]: Sending POST to ${form
-      .toString()
-      .replace(`&key=${env.TEAPOT_API.SECRET}`, "")}`
-  );
+	const form = new URLSearchParams({
+		...base,
+		...extra,
+	});
 
-  return fetch(env.TEAPOT_API.URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "User-Agent": "DiscordBot (https://supitstom.net, 1.0)",
-    },
-    body: form,
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      console.log(
-        `[TeapotService]: Completed POST to ${form
-          .toString()
-          .replace(`&key=${env.TEAPOT_API.SECRET}`, "")}`
-      );
-      return res;
-    })
-    .catch(console.error);
+	console.log(`[TeapotService]: Sending POST to ${form.toString().replace(`&key=${env.TEAPOT_API.SECRET}`, '')}`);
+
+	return fetch(env.TEAPOT_API.URL, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			'User-Agent': 'DiscordBot (https://supitstom.net, 1.0)',
+		},
+		body: form,
+	})
+		.then((res) => res.json())
+		.then((res) => {
+			console.log(`[TeapotService]: Completed POST to ${form.toString().replace(`&key=${env.TEAPOT_API.SECRET}`, '')}`);
+			return res;
+		})
+		.catch(console.error);
 }
 
 export const UserAvatarType = Object.freeze({
-  DISABLED: 0,
-  XBOX_GAMERPIC: 1,
-  DISCORD_AVATAR: 2,
-  CUSTOM: 3,
+	DISABLED: 0,
+	XBOX_GAMERPIC: 1,
+	DISCORD_AVATAR: 2,
+	CUSTOM: 3,
 });
 
 export const UserBannerType = Object.freeze({
-  DISABLED: 0,
-  XBOX_GAME_BANNER: 1,
-  DISCORD_BANNER: 2,
-  CUSTOM: 3,
+	DISABLED: 0,
+	XBOX_GAME_BANNER: 1,
+	DISCORD_BANNER: 2,
+	CUSTOM: 3,
 });
 
-export const avatarTypeLabel = (avatar_type) => ({
-  [UserAvatarType.DISABLED]: "No Avatar",
-  [UserAvatarType.XBOX_GAMERPIC]: "Xbox LIVE Gamerpic",
-  [UserAvatarType.DISCORD_AVATAR]: "Discord Avatar",
-}[avatar_type] ?? "Unknown Avatar");
+export const avatarTypeLabel = (avatar_type) =>
+	({
+		[UserAvatarType.DISABLED]: 'No Avatar',
+		[UserAvatarType.XBOX_GAMERPIC]: 'Xbox LIVE Gamerpic',
+		[UserAvatarType.DISCORD_AVATAR]: 'Discord Avatar',
+	})[avatar_type] ?? 'Unknown Avatar';
 
-export const bannerTypeLabel = (banner_type) => ({
-  [UserBannerType.DISABLED]: "No Banner",
-  [UserBannerType.XBOX_GAME_BANNER]: "Last Played Game",
-  [UserBannerType.DISCORD_BANNER]: "Discord Banner",
-}[banner_type] ?? "Unknown Banner");
+export const bannerTypeLabel = (banner_type) =>
+	({
+		[UserBannerType.DISABLED]: 'No Banner',
+		[UserBannerType.XBOX_GAME_BANNER]: 'Last Played Game',
+		[UserBannerType.DISCORD_BANNER]: 'Discord Banner',
+	})[banner_type] ?? 'Unknown Banner';
 
 export class TeapotBot {
-  constructor(env) {
-    this.env = env;
-  }
+	constructor(env) {
+		this.env = env;
+	}
 
-  // Get user + settings
-  async GetUser(discord_user) {
-    const user = await this.env.database
-      .prepare(`
+	// Get user + settings
+	async GetUser(discord_user) {
+		if (this.env.CLIENT.USE_MOCK_TEAPOT_USER == true) {
+			return teapot_user_dev.bot_user;
+		}
+
+		const user = await this.env.database
+			.prepare(
+				`
         SELECT id, email, timestamp, flags
         FROM users
         WHERE id = ?1
-      `)
-      .bind(discord_user.id)
-      .first();
+      `,
+			)
+			.bind(discord_user.id)
+			.first();
 
-    if (!user) {
-      console.warn(`[DatabaseManager]: no user present for ${discord_user.id}`);
-      return false;
-    }
+		if (!user) {
+			console.warn(`[DatabaseManager]: no user present for ${discord_user.id}`);
+			return false;
+		}
 
-    user.flags = user.flags ?? UserFlags.NONE;
+		user.flags = user.flags ?? UserFlags.NONE;
 
-    user.flags_internal = getActiveFlags(user.flags);
+		user.flags_internal = getActiveFlags(user.flags);
 
-    const settings = await this.env.database
-      .prepare(`
+		const settings = await this.env.database
+			.prepare(
+				`
         SELECT avatar_type, banner_type, private, render_details
         FROM user_settings
         WHERE id = ?1
-      `)
-      .bind(discord_user.id)
-      .first();
+      `,
+			)
+			.bind(discord_user.id)
+			.first();
 
-    user.settings = {
-      avatar_type:
-        settings?.avatar_type ?? UserAvatarType.XBOX_GAMERPIC,
+		user.settings = {
+			avatar_type: settings?.avatar_type ?? UserAvatarType.XBOX_GAMERPIC,
 
-      banner_type:
-        settings?.banner_type ?? UserBannerType.XBOX_GAME_BANNER,
+			banner_type: settings?.banner_type ?? UserBannerType.XBOX_GAME_BANNER,
 
-      private: Boolean(settings?.private),
+			private: Boolean(settings?.private),
 
-      // NEW BOOLEAN FIELD
-      render_details:
-        settings?.render_details !== undefined
-          ? Boolean(settings.render_details)
-          : true,
-    };
+			// NEW BOOLEAN FIELD
+			render_details: settings?.render_details !== undefined ? Boolean(settings.render_details) : true,
+		};
 
-    console.log(`[DatabaseManager]: GetUser returned ${JSON.stringify(user)}`);
+		console.log(`[DatabaseManager]: GetUser returned ${JSON.stringify(user)}`);
 
-    return user;
-  }
+		return user;
+	}
 
-  // Register user
-  async RegisterUser(discord_user, email, settings = {}) {
-    const userResult = await this.env.database
-      .prepare(`
+	// Register user
+	async RegisterUser(discord_user, email, settings = {}) {
+		if (this.env.CLIENT.USE_MOCK_TEAPOT_USER == true) {
+			return console.warn(`[DatabaseManager]: Cannot perform action "RegisterUser" while "USE_MOCK_TEAPOT_USER" is enabled`)
+		}
+
+		const userResult = await this.env.database
+			.prepare(
+				`
         REPLACE INTO users (
           id,
           email,
@@ -154,194 +170,205 @@ export class TeapotBot {
           flags
         )
         VALUES (?1, ?2, ?3, 0)
-      `)
-      .bind(discord_user.id, email, new Date().toISOString())
-      .run();
+      `,
+			)
+			.bind(discord_user.id, email, new Date().toISOString())
+			.run();
 
-    console.log(`[DatabaseManager]: RegisterUser completed for: ${discord_user.id}, took: ${userResult.meta.duration}ms`);
+		console.log(`[DatabaseManager]: RegisterUser completed for: ${discord_user.id}, took: ${userResult.meta.duration}ms`);
 
-    return {
-      user: userResult,
-    };
-  }
+		return {
+			user: userResult,
+		};
+	}
 
-  // Update settings
-  async UpdateSettings(discord_user, settings = {}) {
-    await this.env.database
-      .prepare(`
+	// Update settings
+	async UpdateSettings(discord_user, settings = {}) {
+    if (this.env.CLIENT.USE_MOCK_TEAPOT_USER == true) {
+			return console.warn(`[DatabaseManager]: Cannot perform action "UpdateSettings" while "USE_MOCK_TEAPOT_USER" is enabled`)
+		}
+
+		await this.env.database
+			.prepare(
+				`
         INSERT INTO user_settings (id, private, avatar_type, banner_type, render_details)
         VALUES (?1, 0, 1, 1, 1)
         ON CONFLICT(id) DO NOTHING
-      `)
-      .bind(discord_user.id)
-      .run();
+      `,
+			)
+			.bind(discord_user.id)
+			.run();
 
-    const fields = [];
-    const values = [];
+		const fields = [];
+		const values = [];
 
-    if (settings.private !== undefined) {
-      fields.push("private = ?1");
-      values.push(settings.private ? 1 : 0);
-    }
+		if (settings.private !== undefined) {
+			fields.push('private = ?1');
+			values.push(settings.private ? 1 : 0);
+		}
 
-    if (settings.avatar_type !== undefined) {
-      fields.push(`avatar_type = ?${values.length + 1}`);
-      values.push(settings.avatar_type);
-    }
+		if (settings.avatar_type !== undefined) {
+			fields.push(`avatar_type = ?${values.length + 1}`);
+			values.push(settings.avatar_type);
+		}
 
-    if (settings.banner_type !== undefined) {
-      fields.push(`banner_type = ?${values.length + 1}`);
-      values.push(settings.banner_type);
-    }
+		if (settings.banner_type !== undefined) {
+			fields.push(`banner_type = ?${values.length + 1}`);
+			values.push(settings.banner_type);
+		}
 
-    if (settings.render_details !== undefined) {
-      fields.push(`render_details = ?${values.length + 1}`);
-      values.push(settings.render_details ? 1 : 0);
-    }
+		if (settings.render_details !== undefined) {
+			fields.push(`render_details = ?${values.length + 1}`);
+			values.push(settings.render_details ? 1 : 0);
+		}
 
-    if (fields.length === 0) {
-      return { skipped: true };
-    }
+		if (fields.length === 0) {
+			return { skipped: true };
+		}
 
-    const query = `
+		const query = `
       UPDATE user_settings
-      SET ${fields.join(", ")}
+      SET ${fields.join(', ')}
       WHERE id = ?${values.length + 1}
     `;
 
-    const result = await this.env.database
-      .prepare(query)
-      .bind(...values, discord_user.id)
-      .run();
+		const result = await this.env.database
+			.prepare(query)
+			.bind(...values, discord_user.id)
+			.run();
 
-    console.log(`[DatabaseManager]: UpdateSettings completed for: ${discord_user.id}, took: ${result.meta.duration}ms`);
+		console.log(`[DatabaseManager]: UpdateSettings completed for: ${discord_user.id}, took: ${result.meta.duration}ms`);
 
-    return result;
-  }
+		return result;
+	}
 
-  // Unregister user
-  async UnregisterUser(discord_user) {
-    const userResult = await this.env.database
-      .prepare(`
+	// Unregister user
+	async UnregisterUser(discord_user) {
+    if (this.env.CLIENT.USE_MOCK_TEAPOT_USER == true) {
+			return console.warn(`[DatabaseManager]: Cannot perform action "UnregisterUser" while "USE_MOCK_TEAPOT_USER" is enabled`)
+		}
+    
+		const userResult = await this.env.database
+			.prepare(
+				`
         DELETE FROM users
         WHERE id = ?1
-      `)
-      .bind(discord_user.id)
-      .run();
+      `,
+			)
+			.bind(discord_user.id)
+			.run();
 
-    const settingsResult = await this.env.database
-      .prepare(`
+		const settingsResult = await this.env.database
+			.prepare(
+				`
         DELETE FROM user_settings
         WHERE id = ?1
-      `)
-      .bind(discord_user.id)
-      .run();
+      `,
+			)
+			.bind(discord_user.id)
+			.run();
 
-    console.log(`[DatabaseManager]: UnregisterUser completed for: ${discord_user.id}`);
+		console.log(`[DatabaseManager]: UnregisterUser completed for: ${discord_user.id}`);
 
-    return {
-      user: userResult,
-      settings: settingsResult,
-    };
-  }
+		return {
+			user: userResult,
+			settings: settingsResult,
+		};
+	}
 
-  // Check if user has flag
-  async HasFlag(discord_user, flag) {
-    const user = await this.GetUser(discord_user);
+	// Check if user has flag
+	async HasFlag(discord_user, flag) {
+		const user = await this.GetUser(discord_user);
 
-    if (!user) {
-      return false;
-    }
+		if (!user) {
+			return false;
+		}
 
-    return hasFlag(user.flags ?? 0, flag);
-  }
+		return hasFlag(user.flags ?? 0, flag);
+	}
 
-  // Add flag
-  async AddFlag(discord_user, flag) {
-    const result = await this.env.database
-      .prepare(`
+	// Add flag
+	async AddFlag(discord_user, flag) {
+    if (this.env.CLIENT.USE_MOCK_TEAPOT_USER == true) {
+			return console.warn(`[DatabaseManager]: Cannot perform action "AddFlag" while "USE_MOCK_TEAPOT_USER" is enabled`)
+		}
+
+		const result = await this.env.database
+			.prepare(
+				`
             UPDATE users
             SET flags = flags | ?1
             WHERE id = ?2
-        `)
-      .bind(
-        flag,
-        discord_user.id
-      )
-      .run();
+        `,
+			)
+			.bind(flag, discord_user.id)
+			.run();
 
-    console.log(
-      `[DatabaseManager]: Added flag ${getActiveFlags(flag)} to ${discord_user.id}`
-    );
+		console.log(`[DatabaseManager]: Added flag ${getActiveFlags(flag)} to ${discord_user.id}`);
 
-    return result;
-  }
+		return result;
+	}
 
-
-  // Remove flag
-  async RemoveFlag(discord_user, flag) {
-    const result = await this.env.database
-      .prepare(`
+	// Remove flag
+	async RemoveFlag(discord_user, flag) {
+		const result = await this.env.database
+			.prepare(
+				`
             UPDATE users
             SET flags = flags & ~?1
             WHERE id = ?2
-        `)
-      .bind(
-        flag,
-        discord_user.id
-      )
-      .run();
+        `,
+			)
+			.bind(flag, discord_user.id)
+			.run();
 
-    console.log(
-      `[DatabaseManager]: Removed flag ${getActiveFlags(flag)} from ${discord_user.id}`
-    );
+		console.log(`[DatabaseManager]: Removed flag ${getActiveFlags(flag)} from ${discord_user.id}`);
 
-    return result;
-  }
+		return result;
+	}
 
-
-  // Toggle flag
-  async ToggleFlag(discord_user, flag) {
-    const result = await this.env.database
-      .prepare(`
+	// Toggle flag
+	async ToggleFlag(discord_user, flag) {
+    if (this.env.CLIENT.USE_MOCK_TEAPOT_USER == true) {
+			return console.warn(`[DatabaseManager]: Cannot perform action "ToggleFlag" while "USE_MOCK_TEAPOT_USER" is enabled`)
+		}
+		const result = await this.env.database
+			.prepare(
+				`
             UPDATE users
             SET flags = flags ^ ?1
             WHERE id = ?2
-        `)
-      .bind(
-        flag,
-        discord_user.id
-      )
-      .run();
+        `,
+			)
+			.bind(flag, discord_user.id)
+			.run();
 
-    console.log(
-      `[DatabaseManager]: Toggled flag ${getActiveFlags(flag)} for ${discord_user.id}`
-    );
+		console.log(`[DatabaseManager]: Toggled flag ${getActiveFlags(flag)} for ${discord_user.id}`);
 
-    return result;
-  }
+		return result;
+	}
 
-  // get users with flag
-  async GetUsersByFlags(flags = UserFlags.NONE) {
-    // default getall
-    if (flags === UserFlags.NONE) {
-      return this.env.database
-        .prepare("SELECT id FROM users")
-        .all();
-    }
+	// get users with flag
+	async GetUsersByFlags(flags = UserFlags.NONE) {
+		// default getall
+		if (flags === UserFlags.NONE) {
+			return this.env.database.prepare('SELECT id FROM users').all();
+		}
 
-    // get x flag
-    return this.env.database
-      .prepare(`
+		// get x flag
+		return this.env.database
+			.prepare(
+				`
             SELECT id
             FROM users
             WHERE (flags & ?1) != 0
-        `)
-      .bind(flags)
-      .all();
-  }
+        `,
+			)
+			.bind(flags)
+			.all();
+	}
 
-  AreMonitorsOnline() {
-    return true;
-  }
+	AreMonitorsOnline() {
+		return true;
+	}
 }

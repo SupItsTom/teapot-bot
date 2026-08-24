@@ -72,10 +72,10 @@ export default async function (interaction, env, ctx) {
 
             MessageComponent.Seperator(),
 
-            _memberYearsOfService(teapot, bot_user)
+            _memberYearsOfService(env, teapot, bot_user)
           ]
         },
-        ...(env.CF_VERSION_METADATA.id === ''
+        ...(env.CLIENT.ENABLE_PROFILE_DEBUG
           ? [
             {
               type: MessageComponentTypes.CONTAINER,
@@ -93,7 +93,7 @@ export default async function (interaction, env, ctx) {
 }
 
 // Return Member Since component, with tenure if available for user
-function _memberYearsOfService(teapot, bot_user) {
+function _memberYearsOfService(env, teapot, bot_user) {
   const years = Math.floor(
     (Date.now() / 1000 - teapot.user.date_registered_unix) /
     (60 * 60 * 24 * 365.25)
@@ -102,14 +102,14 @@ function _memberYearsOfService(teapot, bot_user) {
   if (teapot.user.date_registered_unix === 920950991) {
     return MessageComponent.Text(`
 -# **MEMBER SINCE**
--# <:TeapotLive:1517630995988480020> Legacy Account **•** <:TeapotBot:1517630993899589802> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
+-# ${env.DISCORD_EMOJI.PLATFORM_TEAPOT} Legacy Account **•** ${env.DISCORD_EMOJI.PLATFORM_TEAPOT_BOT} <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
 `);
   }
 
   if (years <= 0) {
     return MessageComponent.Text(`
 -# **MEMBER SINCE**
--# <:TeapotLive:1517630995988480020> <t:${teapot.user.date_registered_unix}:D> **•** <:TeapotBot:1517630993899589802> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
+-# ${env.DISCORD_EMOJI.PLATFORM_TEAPOT} <t:${teapot.user.date_registered_unix}:D> **•** ${env.DISCORD_EMOJI.PLATFORM_TEAPOT_BOT} <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
 `);
   }
 
@@ -118,7 +118,7 @@ function _memberYearsOfService(teapot, bot_user) {
     components: [
       MessageComponent.Text(`
 -# **MEMBER SINCE**
--# <:TeapotLive:1517630995988480020> <t:${teapot.user.date_registered_unix}:D> **•** <:TeapotBot:1517630993899589802> <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
+-# ${env.DISCORD_EMOJI.PLATFORM_TEAPOT} <t:${teapot.user.date_registered_unix}:D> **•** ${env.DISCORD_EMOJI.PLATFORM_TEAPOT_BOT} <t:${Math.floor(new Date(bot_user.timestamp).getTime() / 1000)}:D>
 `)
     ],
     accessory: {

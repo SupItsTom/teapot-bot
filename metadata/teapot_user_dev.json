@@ -1,0 +1,86 @@
+{
+	"bot_user": {
+		"id": "95522978183258112",
+		"email": "testuser@teapot.bot.supitstom.net",
+		"timestamp": "2015-01-01T00:00:00.000Z",
+		"flags": 1,
+		"flags_internal": [],
+		"settings": { "avatar_type": 1, "banner_type": 0, "private": false, "render_details": true }
+	},
+	"overview": {
+		"status": true,
+		"user": {
+			"name": "A Teapot User",
+			"cpukey": "82FB5963F0D9C1F0CAE08634F477D360",
+			"gamertag": "tomisntfat",
+			"date_lastseen": "01/01/2012",
+			"date_lastseen_unix": 1325376000,
+			"date_registered": "01/01/2012",
+			"date_registered_unix": 1325376000,
+			"xke_count": "1337",
+			"online": true,
+			"options": {
+				"engines": {
+					"41560817": ["MW2", 0],
+					"415608C3": ["BO2", 1],
+					"415608CB": ["MW3", 1],
+					"41560855": ["BO1", 0],
+					"415608FC": ["GHOSTS", 1],
+					"41560914": ["AW", 1],
+					"4156091D": ["BO3", 1],
+					"4156081C": ["WAW", 1],
+					"415607E6": ["COD4", 1]
+				},
+				"xnotify": {
+					"welcome": 1,
+					"xamchal": 0,
+					"xoschal": 0
+				}
+			},
+			"colors": {
+				"dashbg": "80F28BFF",
+				"xuibutton": "FFF28BFF",
+				"xuibutton_press": "FFF28BFF",
+				"goldbar_l": "FFF28BFF",
+				"goldbar_r": "FFF28BFF",
+				"network": "FFF28BFF",
+				"bingsearch": "FFF28BFF",
+				"titles": "FFF28BFF",
+				"tpUserInfoLbl": "FFF28BFF",
+				"tpUserInfo": "FFF28BFF",
+				"tpPrefUserInfoLbl": "FFF28BFF",
+				"tpPrefUserInfo": "FFF28BFF",
+				"tiles_glow": "FFF28BFF"
+			},
+			"timeleft": {
+				"lifetime": false,
+				"current_day": "549",
+				"timeleft": "0h 0m 0s",
+				"banked": {
+					"inuse": true,
+					"days": "1337",
+					"timeleft": "0h 0m 0s"
+				},
+				"premium": false
+			},
+			"plugins": {
+				"Plugin1": "xbdm.xex",
+				"Plugin2": "XBLStealth.xex",
+				"Plugin3": "JRPC2.xex",
+				"Plugin4": "NiNJA_UI.xex"
+			},
+			"title": {
+				"name": "Test Package Title",
+				"id": "0x4D530AC4"
+			}
+		}
+	},
+
+	"kvstatus": {
+		"status": true,
+		"time": "67 years, 67 months, 67 days, 6 hours, 7 minutes",
+		"acc": {
+			"name": "A Teapot User"
+		}
+	}
+}

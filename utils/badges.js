@@ -1,88 +1,83 @@
 import { postTeapotRequest, TeapotBot } from "./teapot";
 import { UserFlags, hasFlag } from "./flags";
-import { IsStaging } from "./client";
 
-export const ProfileCardBadges = {
-  BADGE_SYSTEM: `[<:System:1517631050702913697>](https://supitstom.net/teapot-bot/badges/#system)`,
-  BADGE_DEVELOPER: `[<:Developer:1540754547960582164>](https://supitstom.net/teapot-bot/badges/#developer)`,
-  BADGE_BUG_HUNTER: `[<:BugHunter:1540754544219131944>](https://supitstom.net/teapot-bot/badges/#bug-hunter)`,
-  BADGE_SUPERIORITY: `[<:Superiority:1517631048945504396>](https://supitstom.net/teapot-bot/badges/#superiority)`,
-  BADGE_CLAN_MEMBER: `[<:ClanMember:1517631029320355932>](https://supitstom.net/teapot-bot/badges/#clan-member)`,
-  BADGE_PREMIUM: `[<:Premium:1517631046852546610>](https://supitstom.net/teapot-bot/badges/#premium)`,
-  BADGE_UNICORN: `[<:Unicorn:1540410949322932234>](https://supitstom.net/teapot-bot/badges/#unicorn)`,
-  BADGE_LIFETIME: `[<:Lifetime:1517631037243396239>](https://supitstom.net/teapot-bot/badges/#lifetime)`,
-};
-
-// rendered on profile in order here
-const DatabaseBadgeMap = Object.freeze([
-  {
-    flag: UserFlags.STAFF,
-    badge: ProfileCardBadges.BADGE_DEVELOPER,
-  },
-  {
-    flag: UserFlags.BUG_HUNTER,
-    badge: ProfileCardBadges.BADGE_BUG_HUNTER,
-  },
-  {
-    flag: UserFlags.BADGE_SUPERIORITY,
-    badge: ProfileCardBadges.BADGE_SUPERIORITY,
-  },
-  {
-    flag: UserFlags.BADGE_UNICORN,
-    badge: ProfileCardBadges.BADGE_UNICORN,
-  },
-  
-]);
+export function ProfileCardBadges(env) {
+	return {
+		BADGE_SYSTEM: `[${env.DISCORD_EMOJI.BADGE_SYSTEM}](https://supitstom.net/teapot-bot/badges/#system)`,
+		BADGE_DEVELOPER: `[${env.DISCORD_EMOJI.BADGE_DEVELOPER}](https://supitstom.net/teapot-bot/badges/#developer)`,
+		BADGE_BUG_HUNTER: `[${env.DISCORD_EMOJI.BADGE_BUG_HUNTER}](https://supitstom.net/teapot-bot/badges/#bug-hunter)`,
+		BADGE_SUPERIORITY: `[${env.DISCORD_EMOJI.BADGE_SUPERIORITY}](https://supitstom.net/teapot-bot/badges/#superiority)`,
+		BADGE_CLAN_MEMBER: `[${env.DISCORD_EMOJI.BADGE_CLAN_MEMBER}](https://supitstom.net/teapot-bot/badges/#clan-member)`,
+		BADGE_PREMIUM: `[${env.DISCORD_EMOJI.BADGE_PREMIUM}](https://supitstom.net/teapot-bot/badges/#premium)`,
+		BADGE_UNICORN: `[${env.DISCORD_EMOJI.BADGE_UNICORN}](https://supitstom.net/teapot-bot/badges/#unicorn)`,
+		BADGE_LIFETIME: `[${env.DISCORD_EMOJI.BADGE_LIFETIME}](https://supitstom.net/teapot-bot/badges/#lifetime)`,
+		BADGE_PLACEHOLDER: `[${env.DISCORD_EMOJI.BADGE_PLACEHOLDER}](https://supitstom.net/teapot-bot/badges/#placeholder)`,
+	};
+}
 
 export class Badges {
-  constructor(env, discord_user) {
-    this.env = env;
-    this.discord_user = discord_user;
-  }
+	constructor(env, discord_user) {
+		this.env = env;
+		this.discord_user = discord_user;
+		this.badges = ProfileCardBadges(env);
+	}
 
-  async GetAll() {
-    const bot_user = await new TeapotBot(this.env).GetUser(this.discord_user);
+	async GetAll() {
+		const bot_user = await new TeapotBot(this.env).GetUser(this.discord_user);
 
-    const teapot = await postTeapotRequest(this.env, {
-      action: "overview",
-      email: bot_user.email,
-    });
+		const teapot = await postTeapotRequest(this.env, {
+			action: "overview",
+			email: bot_user.email,
+		});
 
-    // Database-backed badges
-    const databaseBadges = DatabaseBadgeMap
-      .filter(({ flag }) => hasFlag(bot_user.flags ?? 0, flag))
-      .map(({ badge }) => badge)
-      .join(" ");
+		const DatabaseBadgeMap = Object.freeze([
+			{
+				flag: UserFlags.STAFF,
+				badge: this.badges.BADGE_DEVELOPER,
+			},
+			{
+				flag: UserFlags.BUG_HUNTER,
+				badge: this.badges.BADGE_BUG_HUNTER,
+			},
+			{
+				flag: UserFlags.BADGE_SUPERIORITY,
+				badge: this.badges.BADGE_SUPERIORITY,
+			},
+			{
+				flag: UserFlags.BADGE_UNICORN,
+				badge: this.badges.BADGE_UNICORN,
+			},
+		]);
 
-    // Dynamic badges
-    const isLifetime = teapot.user.timeleft.lifetime
-      ? ProfileCardBadges.BADGE_LIFETIME
-      : "";
+		const databaseBadges = DatabaseBadgeMap
+			.filter(({ flag }) => hasFlag(bot_user.flags ?? 0, flag))
+			.map(({ badge }) => badge)
+			.join(" ");
 
-    const isPremium = teapot.user.timeleft.premium
-      ? ProfileCardBadges.BADGE_PREMIUM
-      : "";
+		const isLifetime = teapot.user.timeleft.lifetime
+			? this.badges.BADGE_LIFETIME
+			: "";
 
-    const isClanMember =
-      this.discord_user.primary_guild &&
-        this.discord_user.primary_guild.identity_enabled &&
-        this.discord_user.primary_guild.identity_guild_id ===
-        "1004811174044508271"
-        ? ProfileCardBadges.BADGE_CLAN_MEMBER
-        : "";
+		const isPremium = teapot.user.timeleft.premium
+			? this.badges.BADGE_PREMIUM
+			: "";
 
-    // if (this.env.DISCORD_APPLICATION.CLIENT_ID !== "1447678850493321288") {
-    //   return "`ⓘ Badges disabled`";
-    // }
+		const isClanMember =
+			this.discord_user.primary_guild &&
+			this.discord_user.primary_guild.identity_enabled &&
+			this.discord_user.primary_guild.identity_guild_id ===
+				"1004811174044508271"
+				? this.badges.BADGE_CLAN_MEMBER
+				: "";
 
-    return [
-      databaseBadges,
-      isClanMember,
-      isLifetime,
-      isPremium,
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .trim();
-  }
+		return [
+			databaseBadges,
+			isClanMember,
+			isLifetime,
+			isPremium,
+		]
+			.filter(Boolean)
+			.join(" ")
+			.trim();
+	}
 }
