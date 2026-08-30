@@ -49,14 +49,7 @@ export default async function (interaction, env, ctx) {
 				{
 					type: MessageComponentTypes.CONTAINER,
 					components: [
-						MessageComponent.Text(
-							`**${
-								hasFlag(bot_user.flags, UserFlags.BUG_HUNTER) && env.CLIENT.EXPERIMENTS_ENABLED == true
-									? ` ${env.DISCORD_EMOJI.FLAIR_EXPERIMENTAL} PROFILE — EXPERIMENTS ENABLED`
-									: 'PROFILE'
-							}**`,
-							-1,
-						),
+						MessageComponent.Text(`**PROFILE**`, -1),
 
 						..._profileComponent({ bot_user, discord_user, teapot, _game_info, _profile_badges }),
 
@@ -66,7 +59,7 @@ export default async function (interaction, env, ctx) {
 
 									MessageComponent.Text(`
 -# **DETAILS**
-**Gamertag:** ${teapot.user.gamertag == '' ? 'Not Signed In' : `${teapot.user.gamertag}`}
+>>> **Gamertag:** ${teapot.user.gamertag == '' ? 'Not Signed In' : `${teapot.user.gamertag}`}
 **Challenges:** ${numberWithCommas(teapot.user.xke_count)}
 **Time Left:** ${teapot.user.timeleft.lifetime == true ? `Lifetime${teapot.user.timeleft.premium == true ? ' (Premium)' : ''}` : `${teapot.user.timeleft.banked.days}d ${teapot.user.timeleft.banked.timeleft}`}
 **Keyvault Time:** ${teapot_kv.time == '' ? 'Not set' : `${truncateRelativeTime(teapot_kv.time)}`}
@@ -74,13 +67,7 @@ export default async function (interaction, env, ctx) {
 								]
 							: []),
 
-//             ...(hasFlag(bot_user.flags, UserFlags.BUG_HUNTER) && env.CLIENT.EXPERIMENTS_ENABLED == true
-//             ?  [
-// MessageComponent.Seperator(),
-// MessageComponent.Text(`**Friends:** 0 • **Followers: 0**`)
-//             ] : []),
-
-            MessageComponent.Seperator(),
+						MessageComponent.Seperator(),
 
 						_memberYearsOfService(env, teapot, bot_user),
 					],
